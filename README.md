@@ -1,385 +1,287 @@
-# Laundry JagoFlutter
+# LegaliKas AI
 
 <p align="center">
-  <img src="assets/icons/logolaundry.png" alt="Laundry JagoFlutter Logo" width="200"/>
+  <img src="assets/icons/logo_baru.png" alt="LegaliKas AI Logo" width="180"/>
 </p>
 
 <p align="center">
-  <strong>Aplikasi Kasir Laundry UMKM Indonesia - Full Offline, Jalan Tanpa Internet!</strong>
+  <strong>Aplikasi Pembukuan & Legalitas UMKM Indonesia — AI On-Device, Full Offline!</strong>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-3.10.1+-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter Version" />
+  <img src="https://img.shields.io/badge/Dart-3.0.0+-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart Version" />
+  <img src="https://img.shields.io/badge/SQLite-Offline-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite Offline" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
+</p>
 
 ---
 
-## Tentang Aplikasi
+## 📋 Daftar Isi
 
-**Laundry JagoFlutter** adalah aplikasi kasir laundry modern yang dirancang khusus untuk UMKM Indonesia. Aplikasi ini berjalan **100% offline** - tidak memerlukan koneksi internet untuk beroperasi. Semua data tersimpan aman di perangkat lokal.
-
-### Fitur Utama
-
-- **Full Offline Mode** - Aplikasi berjalan tanpa internet
-- **Manajemen Order** - Buat, edit, dan kelola pesanan laundry
-- **Manajemen Pelanggan** - Database pelanggan lengkap
-- **Paket Layanan** - Kelola berbagai jenis layanan laundry
-- **Laporan Penjualan** - Analisa pendapatan harian, mingguan, bulanan
-- **Multi User** - Support Owner dan Kasir dengan hak akses berbeda
-- **Cetak Struk** - Dukungan printer thermal Bluetooth (58mm/80mm)
-- **Export Data** - Export laporan ke Excel
-- **Share WhatsApp** - Kirim struk ke pelanggan via WhatsApp
-
----
-
-## Tech Stack
-
-| Technology | Version | Description |
-|------------|---------|-------------|
-| **Flutter** | 3.10.1+ | Cross-platform UI Framework |
-| **Dart** | 3.0.0+ | Programming Language |
-| **flutter_bloc** | 9.1.1 | State Management (BLoC/Cubit Pattern) |
-| **sqflite** | 2.4.2 | SQLite Local Database |
-| **shared_preferences** | 2.5.4 | Key-Value Storage untuk Session |
-| **google_fonts** | 7.0.2 | Custom Typography (Poppins) |
-| **fl_chart** | 1.1.1 | Charts & Grafik Laporan |
-| **print_bluetooth_thermal** | 1.1.9 | Thermal Printer Bluetooth |
-| **excel** | 4.0.6 | Export Laporan ke Excel |
-| **share_plus** | 12.0.1 | Share ke WhatsApp & Apps |
-| **url_launcher** | 6.3.2 | Buka URL External |
-| **intl** | 0.20.2 | Format Tanggal & Mata Uang |
-| **permission_handler** | 12.0.1 | Handle Permissions Android/iOS |
-| **uuid** | 4.5.2 | Generate Unique ID |
-| **crypto** | 3.0.6 | Enkripsi Password |
-| **equatable** | 2.0.8 | Object Comparison untuk BLoC |
-| **path_provider** | 2.1.5 | Akses File System |
-| **esc_pos_utils_plus** | 2.0.3 | ESC/POS Commands untuk Printer |
+- [Tentang Aplikasi](#-tentang-aplikasi)
+- [Fitur Utama](#-fitur-utama)
+- [Teknologi & Dependensi](#-teknologi--dependensi)
+- [Arsitektur & Struktur Folder](#-arsitektur--struktur-folder)
+- [Memulai (Getting Started)](#-memulai-getting-started)
+  - [Prasyarat](#prasyarat)
+  - [Instalasi & Menjalankan](#instalasi--menjalankan)
+- [Build APK & Distribusi](#-build-apk--distribusi)
+  - [Build Debug APK](#build-debug-apk)
+  - [Build Release APK](#build-release-apk)
+  - [Build Split APK per ABI](#build-split-apk-per-abi-ukuran-ringan)
+  - [Signing APK untuk Release](#signing-apk-untuk-release)
+- [Kredensial Default](#-kredensial-default)
+- [Desain & Aksesibilitas](#-desain--aksesibilitas)
+- [Troubleshooting](#-troubleshooting)
+- [Lisensi](#-lisensi)
 
 ---
 
-## Arsitektur Aplikasi
+## 💡 Tentang Aplikasi
+
+**LegaliKas AI** adalah aplikasi kasir (POS), pembukuan keuangan, dan asisten legalitas usaha modern yang dirancang khusus untuk para pelaku Usaha Mikro, Kecil, dan Menengah (UMKM) di Indonesia.
+
+Aplikasi ini beroperasi **100% Full Offline** dengan pemrosesan kecerdasan buatan (*AI On-Device*) tanpa memerlukan koneksi internet, kuota data, atau biaya langganan API eksternal. Semua data usaha dan keuangan tersimpan aman di database lokal perangkat pengguna.
+
+### Mengapa LegaliKas AI?
+1. **Solusi Lengkap 2-in-1**: Menggabungkan sistem kasir & pembukuan harian dengan pusat akselerasi perizinan usaha (Halal & NIB).
+2. **Efisiensi Berbasis AI On-Device**: Catat pengeluaran lewat foto struk (OCR) dan catat transaksi via suara (Voice Input) tanpa kuota internet.
+3. **Inklusif & Aksesibel**: Dirancang dengan standar aksesibilitas WCAG AA dan dukungan penuh screen reader (*TalkBack*) untuk membantu pelaku usaha difabel.
+
+---
+
+## ✨ Fitur Utama
+
+### 🤖 1. AI On-Device & Otomasi Cerdas
+- **OCR Smart Receipt Scanner**: Foto struk/nota belanja bahan baku fisik, sistem otomatis mengekstrak nama item, nominal, tanggal, dan nama toko secara instan menggunakan *Google ML Kit Text Recognition*.
+- **Voice Bookkeeping (Pencatatan Suara)**: Input transaksi penjualan dan pengeluaran secara cepat hanya dengan berbicara dalam Bahasa Indonesia (*Speech-to-Text*).
+- **Graceful Fallback Mode**: Jika tulisan struk buram atau suara tidak terbaca sempurna, pengguna dapat langsung mengedit dan mengonfirmasi data secara manual tanpa hambatan.
+
+### 📜 2. Pusat Legalitas & Sertifikasi UMKM
+- **Wizard Self-Declare Sertifikasi Halal (SEHATI)**: Formulir 5 langkah terpadu untuk pengisian berkas pernyataan mandiri sertifikasi halal:
+  1. Informasi Pelaku Usaha & NIB
+  2. Daftar Bahan Baku & Pemasok
+  3. Proses Produksi Bersih & Terpisah
+  4. Lokasi & Fasilitas Produksi
+  5. Ringkasan & Ekspor Dokumen
+- **Ekspor Dokumen Halal ke PDF**: Menghasilkan berkas PDF siap cetak / siap unggah ke portal resmi SiHalal/BPJPH.
+- **Auto-Save Progress**: Progres pengisian formulir tersimpan otomatis di perangkat lokal.
+- **Panduan NIB OSS RBA**: Petunjuk langkah demi langkah pembuatan Nomor Induk Berusaha berbasis risiko.
+
+### 🛒 3. Kasir POS & Transaksi Penjualan
+- **Pencatatan Pesanan Kasir Cepat**: Keranjang belanja interaktif dengan pemilihan produk, kuantitas, dan kalkulasi total otomatis.
+- **Multi-Metode Pembayaran**: Mendukung Tunai (Cash), Transfer Bank, dan QRIS statis/dinamis.
+- **Riwayat Transaksi & Struk**: Daftar pesanan lengkap dengan pencarian nomor struk (*Invoice ID*).
+
+### 📓 4. Buku Kas & Pelacakan Biaya (Expense Tracking)
+- **Pencatatan Arus Kas**: Catat dan pantau seluruh pengeluaran operasional dan belanja bahan baku usaha.
+- **Audit Sumber Data**: Melacak asal pencatatan transaksi (apakah via *OCR*, *Voice*, atau *Manual*).
+
+### 📦 5. Manajemen Produk & Pelanggan
+- **Katalog Produk & Layanan**: Kelola harga satuan, kategori, dan deskripsi produk UMKM.
+- **Database Pelanggan**: Simpan kontak pelanggan, alamat, serta riwayat loyalitas dan belanja pelanggan.
+
+### 📊 6. Laporan Keuangan & Analitik Bisnis
+- **Visualisasi Grafik**: Grafik pendapatan harian, mingguan, bulanan, dan tahunan (*FL Chart*).
+- **Laba Rugi & Rekapitulasi**: Ringkasan omset penjualan, total pengeluaran, dan laba bersih usaha.
+- **Ekspor Laporan ke Excel**: Ekspor rekapitulasi data transaksi dan keuangan ke format file `.xlsx`.
+
+### 🖨️ 7. Konektivitas & Cetak Struk
+- **Printer Thermal Bluetooth**: Mendukung pencetakan struk transaksi ke printer thermal ukuran 58mm dan 80mm dengan perintah ESC/POS.
+- **Bagikan Struk via WhatsApp**: Kirim rincian nota/struk langsung ke nomor WhatsApp pelanggan.
+
+### 👥 8. Manajemen Akun & Hak Akses (Multi-User)
+- **Role Owner (Pemilik)**: Akses penuh ke dashboard laporan keuangan, pengaturan toko, manajemen user kasir, dan backup database.
+- **Role Kasir**: Akses fokus untuk melayani transaksi kasir, input buku kas, dan cetak struk penjualan.
+
+---
+
+## 🛠️ Teknologi & Dependensi
+
+| Teknologi / Package | Versi | Fungsi & Kegunaan |
+|---------------------|-------|-------------------|
+| **Flutter SDK** | 3.10.1+ | Framework aplikasi cross-platform |
+| **Dart SDK** | 3.0.0+ | Bahasa pemrograman utama |
+| **flutter_bloc** | ^9.1.1 | State Management arsitektur BLoC & Cubit |
+| **sqflite** & **sqflite_common_ffi** | ^2.4.2 | Database SQLite lokal (on-device) |
+| **google_mlkit_text_recognition** | ^0.14.0 | OCR nota & struk belanja on-device |
+| **speech_to_text** | ^7.0.0 | Input pencatatan suara (Bahasa Indonesia) |
+| **pdf** | ^3.11.1 | Generator berkas dokumen PDF Self-Declare Halal |
+| **excel** | ^4.0.6 | Ekspor laporan keuangan ke format Excel (.xlsx) |
+| **fl_chart** | ^1.1.1 | Grafik statistik dan visualisasi analitik |
+| **print_bluetooth_thermal** | ^1.1.9 | Konektivitas cetak struk via printer thermal Bluetooth |
+| **esc_pos_utils_plus** | ^2.0.3 | Formatting dan perintah ESC/POS printer |
+| **share_plus** | ^12.0.1 | Fitur share struk & file dokumen |
+| **url_launcher** | ^6.3.2 | Integrasi link eksternal (WhatsApp, panduan OSS) |
+| **image_picker** & **camera** | ^1.1.2 | Pengambilan foto nota belanja via kamera / galeri |
+| **shared_preferences** | ^2.5.4 | Penyimpanan session & preferensi toko |
+| **google_fonts** | ^7.0.2 | Tipografi aplikasi (Poppins) |
+| **intl** | ^0.20.2 | Format tanggal, waktu, dan mata uang Rupiah |
+| **crypto** | ^3.0.6 | Enkripsi hashing password pengguna |
+| **permission_handler** | ^12.0.1 | Manajemen izin (Kamera, Mikrofon, Bluetooth, Storage) |
+
+---
+
+## 🏗️ Arsitektur & Struktur Folder
+
+Proyek ini dibangun menggunakan pola arsitektur modular yang rapi dan terpisah berdasarkan tanggung jawab (*Separation of Concerns*):
 
 ```
 lib/
 ├── core/
-│   ├── constants/       # App constants & configurations
-│   ├── services/        # Business services (printer, whatsapp, export)
-│   ├── theme/           # Design system (colors, typography, spacing)
-│   └── utils/           # Utility functions (formatters, validators)
+│   ├── constants/       # Konstanta aplikasi, warna (Teal Theme), format waktu & uang
+│   ├── services/        # Service modul (OCR ML Kit, Voice Input, Printer Bluetooth, WhatsApp, Export)
+│   ├── theme/           # Design system, tema warna, spacing, & styling aksesibel WCAG AA
+│   └── utils/           # Helper fungsi, voice transaction parser, password hasher
 ├── data/
-│   ├── database/        # SQLite database helper & migrations
-│   ├── models/          # Data models (Order, Customer, Service, dll)
-│   └── repositories/    # Data repositories (CRUD operations)
+│   ├── database/        # DatabaseHelper SQLite, tabel skema & skrip migrasi
+│   ├── models/          # Data model (Order, Customer, Service, ExpenseEntry, User, Payment)
+│   └── repositories/    # Repository layer untuk operasi CRUD database lokal
 ├── logic/
-│   └── cubits/          # BLoC/Cubit state management
-│       ├── auth/        # Authentication state
-│       ├── order/       # Order management state
-│       ├── customer/    # Customer management state
-│       ├── service/     # Service management state
-│       └── report/      # Reporting state
+│   └── cubits/          # State management BLoC/Cubit:
+│       ├── auth/        # Otentikasi dan sesi pengguna
+│       ├── customer/    # Pengelolaan data pelanggan
+│       ├── expense/     # Pengelolaan buku kas & pengeluaran (OCR/Voice/Manual)
+│       ├── order/       # Pengelolaan transaksi kasir & pesanan
+│       ├── report/      # Pengolahan laporan keuangan & analitik
+│       ├── service/     # Pengelolaan produk & layanan
+│       └── user/        # Pengelolaan akun pengguna & kasir
 ├── presentation/
-│   ├── screens/         # UI screens
-│   │   ├── auth/        # Login screen
-│   │   ├── dashboard/   # Dashboard & statistics
-│   │   ├── orders/      # Order list & form
-│   │   ├── customers/   # Customer list & form
-│   │   ├── services/    # Service list & form
-│   │   ├── reports/     # Reports & analytics
-│   │   ├── settings/    # App settings
-│   │   └── onboarding/  # Onboarding slides
-│   └── widgets/         # Reusable widgets
-└── main.dart            # App entry point
+│   ├── screens/         # Tampilan UI Aplikasi:
+│   │   ├── auth/        # Layar Login
+│   │   ├── customers/   # Daftar & formulir data pelanggan
+│   │   ├── dashboard/   # Dashboard utama & statistik ringkas
+│   │   ├── expense/     # Layar scan nota OCR, catat suara, & buku kas
+│   │   ├── halal_wizard/# Wizard Self-Declare Halal 5 langkah & ekspor PDF
+│   │   ├── legalitas/   # Pusat Hub Legalitas & Perizinan UMKM
+│   │   ├── nib_guide/   # Panduan Interaktif Pembuatan NIB OSS RBA
+│   │   ├── onboarding/  # Layar Onboarding pengenalan fitur
+│   │   ├── orders/      # Layar kasir POS, keranjang, & riwayat struk
+│   │   ├── reports/     # Layar laporan keuangan, grafik, & ekspor Excel
+│   │   ├── services/    # Daftar & formulir katalog produk/jasa
+│   │   ├── settings/    # Pengaturan toko, Bluetooth printer, & kelola kasir
+│   │   └── main_screen.dart # Navigasi utama (Bottom Navigation Bar)
+│   └── widgets/         # Komponen UI reusable, modal, dialog, & widget aksesibilitas
+└── main.dart            # Entry point aplikasi
 ```
 
 ---
 
-## Getting Started
+## 🚀 Memulai (Getting Started)
 
-### Prerequisites
+### Prasyarat
+Pastikan sistem Anda telah terpasang perangkat lunak berikut:
+- **Flutter SDK**: `>= 3.10.1` (Direkomendasikan Flutter 3.22+)
+- **Dart SDK**: `>= 3.0.0`
+- **Android Studio** atau **Visual Studio Code** (dengan ekstensi Flutter & Dart)
+- **Android SDK Platform** & **Java Development Kit (JDK 17)**
 
-- Flutter SDK >= 3.10.1
-- Dart SDK >= 3.0.0
-- Android Studio / VS Code
-- Android SDK (untuk Android build)
-- Xcode (untuk iOS build, macOS only)
-- Java 17 (untuk Android build)
+### Instalasi & Menjalankan
 
-### Installation
-
-1. **Clone repository**
+1. **Clone repositori**:
    ```bash
-   git clone https://github.com/bahrie127/flutter_laundry_offline_app.git
-   cd flutter_laundry_offline_app
+   git clone https://github.com/codebycahyo/UMKMAPPS.git
+   cd UMKMAPPS
    ```
 
-2. **Install dependencies**
+2. **Unduh seluruh dependensi**:
    ```bash
    flutter pub get
    ```
 
-3. **Run the app**
+3. **Jalankan aplikasi di emulator atau device fisik**:
    ```bash
    flutter run
    ```
 
+> 💡 **Tips Device Fisik**: Untuk mencoba fitur **OCR Scan Nota** dan **Pencatatan Suara**, disarankan menggunakan perangkat Android fisik agar kamera dan mikrofon dapat berfungsi secara optimal.
+
 ---
 
-## Build APK
+## 📱 Build APK & Distribusi
 
-### Debug APK (untuk testing)
+### Build Debug APK
+Cocok untuk pengujian cepat di perangkat pengembang:
 ```bash
 flutter build apk --debug
 ```
-Output: `build/app/outputs/flutter-apk/app-debug.apk`
+*Output*: `build/app/outputs/flutter-apk/app-debug.apk`
 
-### Release APK (untuk distribusi)
+### Build Release APK
+Untuk instalasi langsung di perangkat pengguna:
 ```bash
 flutter build apk --release
 ```
-Output: `build/app/outputs/flutter-apk/app-release.apk`
+*Output*: `build/app/outputs/flutter-apk/app-release.apk`
 
-### Split APK per ABI (ukuran lebih kecil)
+### Build Split APK per ABI (Ukuran Ringan)
+Menghasilkan file APK terpisah dengan ukuran lebih kecil (~15–18 MB):
 ```bash
 flutter build apk --release --split-per-abi
 ```
-Output:
-- `build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk` (~15MB) - untuk device ARM 32-bit
-- `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk` (~16MB) - untuk device ARM 64-bit (recommended)
-- `build/app/outputs/flutter-apk/app-x86_64-release.apk` (~16MB) - untuk emulator
+*Output*:
+- `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk` *(Direkomendasikan untuk sebagian besar smartphone Android modern)*
+- `build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk` *(Untuk perangkat Android 32-bit)*
 
-### App Bundle (untuk Play Store)
-```bash
-flutter build appbundle --release
-```
-Output: `build/app/outputs/bundle/release/app-release.aab`
+### Signing APK untuk Release
 
----
+1. **Generate Keystore**:
+   ```bash
+   keytool -genkey -v -keystore ~/legalikas-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias legalikas
+   ```
 
-## Signing APK untuk Release
+2. **Buat file konfigurasi `android/key.properties`**:
+   ```properties
+   storePassword=your_keystore_password
+   keyPassword=your_key_password
+   keyAlias=legalikas
+   storeFile=/path/to/legalikas-release-key.jks
+   ```
 
-### 1. Generate Keystore
-```bash
-keytool -genkey -v -keystore ~/laundry-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias laundry
-```
-
-### 2. Buat file `android/key.properties`
-```properties
-storePassword=<password-anda>
-keyPassword=<password-anda>
-keyAlias=laundry
-storeFile=/Users/<username>/laundry-release-key.jks
-```
-
-> **PENTING:** Tambahkan `key.properties` ke `.gitignore` agar tidak ter-commit!
-
-### 3. Update `android/app/build.gradle.kts`
-```kotlin
-import java.util.Properties
-import java.io.FileInputStream
-
-val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-}
-
-android {
-    // ... existing config ...
-
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
-}
-```
-
-### 4. Build Signed APK
-```bash
-flutter build apk --release
-```
-
----
-
-## Distribusi APK
-
-### Opsi 1: Distribusi Langsung (Direct APK)
-
-1. Build APK release dengan signing
-2. Transfer file APK ke device via:
-   - Kirim via WhatsApp/Telegram
-   - Upload ke Google Drive/Dropbox
-   - Transfer via kabel USB
-3. Install APK di device (aktifkan "Install from Unknown Sources")
-
-### Opsi 2: Google Play Store
-
-1. **Buat akun Google Play Console** ($25 one-time fee)
-   - https://play.google.com/console
-
-2. **Siapkan assets**
-   - App icon: 512x512 PNG
-   - Feature graphic: 1024x500 PNG
-   - Screenshots: minimal 2 (phone), opsional tablet
-   - Short description (80 karakter)
-   - Full description (4000 karakter)
-
-3. **Build App Bundle**
+3. **Build App Bundle (AAB) untuk Google Play Store**:
    ```bash
    flutter build appbundle --release
    ```
-
-4. **Upload ke Play Console**
-   - Create app > Upload AAB
-   - Isi store listing, content rating, pricing
-   - Submit for review
-
-5. **Timeline**
-   - Review pertama: 1-7 hari
-   - Update selanjutnya: 1-3 hari
-
-### Opsi 3: Alternative App Stores
-
-| Store | Pros | Cons |
-|-------|------|------|
-| **APKPure** | No review, instant publish | Less trusted |
-| **Huawei AppGallery** | Free, large China market | Review required |
-| **Samsung Galaxy Store** | Pre-installed Samsung | Review required |
-| **Amazon Appstore** | Free, Fire devices | Review required |
-
-### Opsi 4: Firebase App Distribution (Testing)
-
-1. **Setup Firebase**
-   ```bash
-   npm install -g firebase-tools
-   firebase login
-   firebase init
-   ```
-
-2. **Distribute APK**
-   ```bash
-   firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-     --app YOUR_FIREBASE_APP_ID \
-     --groups "testers"
-   ```
+   *Output*: `build/app/outputs/bundle/release/app-release.aab`
 
 ---
 
-## Build iOS
+## 🔐 Kredensial Default
 
-### Debug
-```bash
-flutter build ios --debug
-```
+Setelah instalasi pertama kali, Anda dapat masuk menggunakan akun default berikut:
 
-### Release
-```bash
-flutter build ios --release
-```
+| Role | Username | Password Default | Hak Akses |
+|------|----------|------------------|-----------|
+| **Owner (Pemilik Usaha)** | `owner` | `admin123` | Akses penuh (Kasir, Buku Kas, Legalitas, Laporan, Pengaturan) |
+| **Kasir** | Dibuat oleh Owner | Ditentukan Owner | Akses transaksi kasir, input kas, dan cetak struk |
 
-### Archive untuk App Store
-```bash
-flutter build ipa
-```
-
-Output: `build/ios/ipa/flutter_laundry_offline_app.ipa`
-
-### Submit ke App Store
-
-1. Buka Xcode > Open `ios/Runner.xcworkspace`
-2. Product > Archive
-3. Distribute App > App Store Connect
-4. Upload
+> ⚠️ **Catatan Keamanan**: Demi keamanan data usaha, segera ubah password akun default pada menu **Pengaturan > Akun & Pengguna** setelah login pertama kali.
 
 ---
 
-## Configuration
+## 🎨 Desain & Aksesibilitas
 
-### Package Name
-Current: `com.jagoflutter.laundryoffline`
+### 🎨 Sistem Warna (Teal Nature Palette)
+- **Primary**: `#0F766E` (Deep Teal)
+- **Primary Light**: `#14B8A6` (Teal Light)
+- **Primary Dark**: `#0D5F58` (Teal Dark)
+- **Accent / Alert**: `#D97706` (Amber Warm)
+- **Background**: `#F0FDFA` (Soft Mint Tint)
+- **Surface / Card**: `#FFFFFF` (Pure White)
 
-Untuk mengubah package name:
-```bash
-flutter pub run change_app_package_name:main com.yourcompany.yourapp
-```
-
-### App Icon
-Logo: `assets/icons/logolaundry.png`
-
-Regenerate icons:
-```bash
-flutter pub run flutter_launcher_icons
-```
-
-### App Name
-Edit `lib/core/constants/app_constants.dart`:
-```dart
-static const String appName = 'Laundry JagoFlutter';
-```
-
-Dan `android/app/src/main/AndroidManifest.xml`:
-```xml
-android:label="Laundry JagoFlutter"
-```
+### ♿ Aksesibilitas (Inklusif & Ramah Disabilitas)
+- **Dukungan TalkBack / Screen Reader**: Komponen utama dilengkapi anotasi `Semantics` yang jelas untuk tunanetra.
+- **Target Sentuh Ergonomis**: Seluruh tombol interaktif memiliki target sentuh minimum `48x48 dp`.
+- **Kontras Warna Standar WCAG AA**: Rasio kontras tinggi antara teks dan latar belakang untuk memudahkan keterbacaan dalam kondisi pencahayaan terang maupun redup.
+- **Alternatif Input Suara**: Membantu pengguna dengan keterbatasan mobilitas fisik dalam mencatat pembukuan keuangan.
 
 ---
 
-## Default Credentials
+## 🔧 Troubleshooting
 
-| Role | Username | Password |
-|------|----------|----------|
-| Owner | `owner` | `admin123` |
-
-> **Note:** Segera ubah password setelah login pertama kali!
-
----
-
-## Design System
-
-### Colors (Purple/Violet Theme)
-```dart
-Primary: #7B2D8E (Violet)
-Primary Light: #9B4DB0
-Primary Dark: #5A1D6B
-Background: #FAF7FB
-Surface: #FFFFFF
-Error: #E53935
-Success: #43A047
-Warning: #FB8C00
-```
-
-### Typography (Poppins)
-| Style | Size | Weight |
-|-------|------|--------|
-| Display Large | 32sp | Bold |
-| Title Large | 24sp | SemiBold |
-| Title Medium | 18sp | SemiBold |
-| Body Large | 16sp | Regular |
-| Body Medium | 14sp | Regular |
-| Body Small | 12sp | Regular |
-| Label | 10sp | Medium |
-
-### Spacing
-```dart
-xs: 4dp
-sm: 8dp
-md: 12dp
-lg: 16dp
-xl: 24dp
-xxl: 32dp
-```
-
----
-
-## Troubleshooting
-
-### Error: "Gradle build failed"
+### 1. Error: Gradle build failed
+Bersihkan cache build Flutter dan Gradle:
 ```bash
 cd android
 ./gradlew clean
@@ -389,84 +291,16 @@ flutter pub get
 flutter run
 ```
 
-### Error: "SDK location not found"
-Buat file `android/local.properties`:
-```properties
-sdk.dir=/Users/<username>/Library/Android/sdk
-```
+### 2. Printer Thermal Bluetooth Tidak Terhubung
+1. Pastikan Bluetooth pada perangkat Android dalam keadaan aktif.
+2. Lakukan *Pairing* terlebih dahulu antara printer dan perangkat melalui menu **Pengaturan Bluetooth Android**.
+3. Buka menu **Pengaturan Toko & Printer** di aplikasi, lalu pilih printer yang telah terhubung.
 
-### Error: "Printer not connecting"
-1. Pastikan Bluetooth enabled
-2. Pair printer di Settings Bluetooth device
-3. Restart aplikasi
-
-### Error: "Permission denied"
-Tambahkan permissions di AndroidManifest.xml (sudah ada di project):
-```xml
-<uses-permission android:name="android.permission.BLUETOOTH"/>
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
-```
+### 3. Izin Akses Kamera / Mikrofon Ditolak
+Pastikan izin kamera (untuk scan nota) dan mikrofon (untuk input suara) telah diizinkan melalui **Pengaturan Aplikasi Android > Izin (Permissions)**.
 
 ---
 
-## Contributing
+## 📄 Lisensi
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
----
-
-## Mentor & Developer
-
-<table>
-  <tr>
-    <td align="center">
-      <strong>Saiful Bahri</strong><br/>
-      <a href="https://instagram.com/codewithbahri">@codewithbahri</a><br/><br/>
-      Founder JagoFlutter.com<br/>
-      Co-Founder & CTO PT HINT<br/><br/>
-      13+ tahun pengalaman di industri teknologi<br/>
-      dari startup hingga unicorn (Go-Jek, dll)
-    </td>
-  </tr>
-</table>
-
-### Connect with me
-- LinkedIn: [linkedin.com/in/bahrie](https://linkedin.com/in/bahrie)
-- GitHub: [github.com/bahrie127](https://github.com/bahrie127)
-- Instagram: [instagram.com/codewithbahri](https://instagram.com/codewithbahri)
-- YouTube: [youtube.com/@codewithbahri](https://youtube.com/@codewithbahri)
-- WhatsApp: [wa.me/6285640899224](https://wa.me/6285640899224)
-
----
-
-## Learn Flutter
-
-Ingin belajar Flutter dari NOL hingga PRO?
-
-Kunjungi **[JagoFlutter.com](https://jagoflutter.com)** untuk:
-- Tutorial lengkap Flutter
-- Project-based learning
-- Mentoring langsung
-- Komunitas developer
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-<p align="center">
-  Made with love by <a href="https://jagoflutter.com">JagoFlutter.com</a>
-</p>
-#   P O S - A p p s  
- 
+Proyek ini dilisensikan di bawah **MIT License**. Silakan lihat berkas [LICENSE](LICENSE) untuk informasi lebih lanjut.
