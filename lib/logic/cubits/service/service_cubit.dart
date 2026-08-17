@@ -8,12 +8,11 @@ class ServiceCubit extends Cubit<ServiceState> {
   List<Service> _services = [];
 
   ServiceCubit({ServiceRepository? serviceRepository})
-      : _serviceRepository = serviceRepository ?? ServiceRepository(),
-        super(const ServiceInitial());
+    : _serviceRepository = serviceRepository ?? ServiceRepository(),
+      super(const ServiceInitial());
 
   List<Service> get services => _services;
 
-  /// Load all active services
   Future<void> loadServices() async {
     emit(const ServiceLoading());
 
@@ -25,12 +24,10 @@ class ServiceCubit extends Cubit<ServiceState> {
     }
   }
 
-  /// Add new service
   Future<void> addService(Service service) async {
     emit(const ServiceLoading());
 
     try {
-      // Check duplicate name
       final exists = await _serviceRepository.serviceNameExists(service.name);
       if (exists) {
         emit(const ServiceError('Nama layanan sudah ada'));
@@ -41,7 +38,6 @@ class ServiceCubit extends Cubit<ServiceState> {
       await _serviceRepository.createService(service);
       emit(const ServiceOperationSuccess('Layanan berhasil ditambahkan'));
 
-      // Reload services
       await loadServices();
     } catch (e) {
       emit(ServiceError(e.toString().replaceAll('Exception: ', '')));
@@ -49,12 +45,10 @@ class ServiceCubit extends Cubit<ServiceState> {
     }
   }
 
-  /// Update existing service
   Future<void> updateService(Service service) async {
     emit(const ServiceLoading());
 
     try {
-      // Check duplicate name (excluding current service)
       final exists = await _serviceRepository.serviceNameExists(
         service.name,
         excludeId: service.id,
@@ -68,7 +62,6 @@ class ServiceCubit extends Cubit<ServiceState> {
       await _serviceRepository.updateService(service);
       emit(const ServiceOperationSuccess('Layanan berhasil diupdate'));
 
-      // Reload services
       await loadServices();
     } catch (e) {
       emit(ServiceError(e.toString().replaceAll('Exception: ', '')));
@@ -76,7 +69,6 @@ class ServiceCubit extends Cubit<ServiceState> {
     }
   }
 
-  /// Delete service (soft delete)
   Future<void> deleteService(int id) async {
     emit(const ServiceLoading());
 
@@ -84,7 +76,6 @@ class ServiceCubit extends Cubit<ServiceState> {
       await _serviceRepository.deleteService(id);
       emit(const ServiceOperationSuccess('Layanan berhasil dihapus'));
 
-      // Reload services
       await loadServices();
     } catch (e) {
       emit(ServiceError(e.toString().replaceAll('Exception: ', '')));

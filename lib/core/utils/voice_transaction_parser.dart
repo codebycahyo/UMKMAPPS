@@ -4,8 +4,8 @@ class VoiceParseResult {
   final bool success;
   final ExpenseEntry? entry;
   final String rawText;
-  final String confidence; // 'high', 'low', 'none'
-  final String? detectedCommand; // 'simpan', 'batal', 'ulangi', 'kembali', 'lanjut'
+  final String confidence;
+  final String? detectedCommand;
   final String? feedbackMessage;
 
   VoiceParseResult({
@@ -19,9 +19,18 @@ class VoiceParseResult {
 }
 
 class VoiceTransactionParser {
-  // Navigation / confirmation voice commands
   static const Map<String, List<String>> _voiceCommands = {
-    'simpan': ['simpan', 'save', 'oke', 'ok', 'konfirmasi', 'sudah benar', 'catat', 'ya', 'benar'],
+    'simpan': [
+      'simpan',
+      'save',
+      'oke',
+      'ok',
+      'konfirmasi',
+      'sudah benar',
+      'catat',
+      'ya',
+      'benar',
+    ],
     'batal': ['batal', 'cancel', 'hapus', 'jangan', 'batalin', 'tidak'],
     'ulangi': ['ulang', 'ulangi', 'rekam ulang', 'coba lagi', 'reset'],
     'kembali': ['kembali', 'back', 'tutup'],
@@ -29,13 +38,11 @@ class VoiceTransactionParser {
     'bantuan': ['bantuan', 'help', 'panduan', 'cara pakai'],
   };
 
-  /// Parses Indonesian words / mixed digits into integer numbers
   int extractNominal(String text) {
     if (text.trim().isEmpty) return 0;
 
     String cleanText = text.toLowerCase().trim();
 
-    // 0. Handle slang / colloquial Indonesian terms
     final Map<String, int> slang = {
       'cepek ceng': 100000,
       'setengah juta': 500000,
@@ -61,27 +68,26 @@ class VoiceTransactionParser {
       }
     }
 
-    // 1. Direct regex for "50k", "100k", "25k" notation
     final kMatch = RegExp(r'(\d+)\s*k\b').firstMatch(cleanText);
     if (kMatch != null) {
       final val = int.tryParse(kMatch.group(1)!) ?? 0;
       if (val > 0) return val * 1000;
     }
 
-    // 2. Direct regex for formatted numbers like "Rp 25.000", "25,000", "25.000", "50000"
-    final directNumberMatch = RegExp(r'(?:rp\.?\s*)?(\d{1,3}(?:[.,]\d{3})+|\d+)').allMatches(cleanText);
+    final directNumberMatch = RegExp(
+      r'(?:rp\.?\s*)?(\d{1,3}(?:[.,]\d{3})+|\d+)',
+    ).allMatches(cleanText);
     for (final match in directNumberMatch) {
       final matchedStr = match.group(1);
       if (matchedStr != null) {
-        // If string contains separators like 25.000 or 100,000
         final cleanNum = matchedStr.replaceAll(RegExp(r'[.,]'), '');
         final parsed = int.tryParse(cleanNum);
         if (parsed != null && parsed >= 100) {
-          // Check if followed by "ribu" or "juta" multiplier
           final afterMatch = cleanText.substring(match.end).trim();
           if (afterMatch.startsWith('juta') || afterMatch.startsWith('jt')) {
             return parsed * 1000000;
-          } else if (afterMatch.startsWith('ribu') || afterMatch.startsWith('rb')) {
+          } else if (afterMatch.startsWith('ribu') ||
+              afterMatch.startsWith('rb')) {
             return parsed * 1000;
           }
           return parsed;
@@ -89,10 +95,15 @@ class VoiceTransactionParser {
       }
     }
 
-    // 3. Handle mixed cases like "1.5 juta", "2,5 jt", "1.5 ribu"
-    final decimalMultiplierMatch = RegExp(r'(\d+[.,]\d+)\s*(juta|jt|ribu|rb)').firstMatch(cleanText);
+    final decimalMultiplierMatch = RegExp(
+      r'(\d+[.,]\d+)\s*(juta|jt|ribu|rb)',
+    ).firstMatch(cleanText);
     if (decimalMultiplierMatch != null) {
-      final numPart = double.tryParse(decimalMultiplierMatch.group(1)!.replaceAll(',', '.')) ?? 0;
+      final numPart =
+          double.tryParse(
+            decimalMultiplierMatch.group(1)!.replaceAll(',', '.'),
+          ) ??
+          0;
       final unitPart = decimalMultiplierMatch.group(2)!;
       if (unitPart.startsWith('j') || unitPart == 'jt') {
         return (numPart * 1000000).round();
@@ -101,13 +112,10 @@ class VoiceTransactionParser {
       }
     }
 
-    // 4. Indonesian full words to number parsing
     return _parseIndonesianWordsToNumber(cleanText);
   }
 
-  /// Converts full Indonesian number words into an integer value
   int _parseIndonesianWordsToNumber(String text) {
-    // Normalization for compound words
     String t = text
         .replaceAll('seribu', 'satu ribu')
         .replaceAll('sejuta', 'satu juta')
@@ -194,7 +202,6 @@ class VoiceTransactionParser {
     return total;
   }
 
-  /// Detects whether the spoken input is a voice command like "simpan" or "batal"
   String? detectCommand(String text) {
     final lower = text.toLowerCase().trim();
     for (final entry in _voiceCommands.entries) {
@@ -207,7 +214,6 @@ class VoiceTransactionParser {
     return null;
   }
 
-  /// Parses spoken Indonesian sentence into structured transaction entry
   VoiceParseResult parseTransaction(String text) {
     if (text.trim().isEmpty) {
       return VoiceParseResult(
@@ -224,14 +230,32 @@ class VoiceTransactionParser {
     String type = '';
     String item = text;
 
-    // 1. Determine Type
     final List<String> masukKeywords = [
-      'terjual', 'laku', 'jual', 'penjualan', 'omset', 'omzet', 
-      'masuk', 'dapat', 'pendapatan', 'terima', 'order'
+      'terjual',
+      'laku',
+      'jual',
+      'penjualan',
+      'omset',
+      'omzet',
+      'masuk',
+      'dapat',
+      'pendapatan',
+      'terima',
+      'order',
     ];
     final List<String> keluarKeywords = [
-      'beli', 'bayar', 'keluar', 'belanja', 'kulakan', 'kulak', 
-      'pengeluaran', 'ongkir', 'gaji', 'listrik', 'sewa', 'biaya'
+      'beli',
+      'bayar',
+      'keluar',
+      'belanja',
+      'kulakan',
+      'kulak',
+      'pengeluaran',
+      'ongkir',
+      'gaji',
+      'listrik',
+      'sewa',
+      'biaya',
     ];
 
     String? matchedKeyword;
@@ -254,26 +278,48 @@ class VoiceTransactionParser {
       }
     }
 
-    // Default to keluar if not specified but nominal found
     if (type.isEmpty) {
       type = 'keluar';
     }
 
-    // 2. Determine Nominal
     final int nominal = extractNominal(text);
 
-    // 3. Extract Item Name
     if (matchedKeyword != null) {
-      // Remove the action keyword
-      item = text.replaceAll(RegExp(matchedKeyword, caseSensitive: false), '').trim();
+      item = text
+          .replaceAll(RegExp(matchedKeyword, caseSensitive: false), '')
+          .trim();
     }
 
-    // Clean up item by removing common number phrases and price indicators
     final removeWords = [
-      'rp', 'rupiah', 'sebesar', 'seharga', 'senilai', 'ribu', 'rb', 'juta', 'jt',
-      'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan',
-      'sepuluh', 'sebelas', 'belas', 'puluh', 'ratus', 'seratus', 'seribu', 'sejuta',
-      'sebanyak', 'seharga', 'total'
+      'rp',
+      'rupiah',
+      'sebesar',
+      'seharga',
+      'senilai',
+      'ribu',
+      'rb',
+      'juta',
+      'jt',
+      'satu',
+      'dua',
+      'tiga',
+      'empat',
+      'lima',
+      'enam',
+      'tujuh',
+      'delapan',
+      'sembilan',
+      'sepuluh',
+      'sebelas',
+      'belas',
+      'puluh',
+      'ratus',
+      'seratus',
+      'seribu',
+      'sejuta',
+      'sebanyak',
+      'seharga',
+      'total',
     ];
 
     final itemWords = item.split(RegExp(r'\s+')).where((w) {
@@ -284,27 +330,26 @@ class VoiceTransactionParser {
 
     item = itemWords.join(' ').trim();
 
-    // Fallback if item became empty
     if (item.isEmpty) {
       item = type == 'masuk' ? 'Penjualan' : 'Pengeluaran';
     } else {
-      // Capitalize first letter
       item = item[0].toUpperCase() + (item.length > 1 ? item.substring(1) : '');
     }
 
-    // 4. Determine Confidence & Feedback Message
     String confidence = 'none';
     String feedback = '';
 
     if (nominal > 0 && item.isNotEmpty) {
       confidence = 'high';
-      feedback = 'Tercatat ${type == "masuk" ? "Pemasukan" : "Pengeluaran"}: $item senilai Rp $nominal';
+      feedback =
+          'Tercatat ${type == "masuk" ? "Pemasukan" : "Pengeluaran"}: $item senilai Rp $nominal';
     } else if (nominal > 0 || item.isNotEmpty) {
       confidence = 'low';
       feedback = 'Data transaksi belum lengkap. Mohon periksa kembali.';
     } else {
       confidence = 'none';
-      feedback = 'Tidak dapat mengenali detail transaksi. Silakan masukkan secara manual.';
+      feedback =
+          'Tidak dapat mengenali detail transaksi. Silakan masukkan secara manual.';
     }
 
     ExpenseEntry? entry;
@@ -332,4 +377,3 @@ class VoiceTransactionParser {
     );
   }
 }
-

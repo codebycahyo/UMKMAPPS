@@ -5,19 +5,14 @@ class CustomerRepository {
   final DatabaseHelper _databaseHelper;
 
   CustomerRepository({DatabaseHelper? databaseHelper})
-      : _databaseHelper = databaseHelper ?? DatabaseHelper.instance;
+    : _databaseHelper = databaseHelper ?? DatabaseHelper.instance;
 
-  /// Get all customers
   Future<List<Customer>> getAllCustomers() async {
     final db = await _databaseHelper.database;
-    final result = await db.query(
-      'customers',
-      orderBy: 'name ASC',
-    );
+    final result = await db.query('customers', orderBy: 'name ASC');
     return result.map((map) => Customer.fromMap(map)).toList();
   }
 
-  /// Get customer by ID
   Future<Customer?> getCustomerById(int id) async {
     final db = await _databaseHelper.database;
     final result = await db.query(
@@ -29,7 +24,6 @@ class CustomerRepository {
     return Customer.fromMap(result.first);
   }
 
-  /// Search customers by name or phone
   Future<List<Customer>> searchCustomers(String query) async {
     final db = await _databaseHelper.database;
     final result = await db.query(
@@ -41,7 +35,6 @@ class CustomerRepository {
     return result.map((map) => Customer.fromMap(map)).toList();
   }
 
-  /// Create new customer
   Future<Customer> createCustomer(Customer customer) async {
     final db = await _databaseHelper.database;
 
@@ -49,7 +42,6 @@ class CustomerRepository {
       throw Exception('Nama customer tidak boleh kosong');
     }
 
-    // Check phone uniqueness if provided
     if (customer.phone != null && customer.phone!.isNotEmpty) {
       final existing = await getCustomerByPhone(customer.phone!);
       if (existing != null) {
@@ -78,7 +70,6 @@ class CustomerRepository {
     );
   }
 
-  /// Update customer
   Future<Customer> updateCustomer(Customer customer) async {
     final db = await _databaseHelper.database;
 
@@ -90,7 +81,6 @@ class CustomerRepository {
       throw Exception('Nama customer tidak boleh kosong');
     }
 
-    // Check phone uniqueness if provided (excluding current customer)
     if (customer.phone != null && customer.phone!.isNotEmpty) {
       final existing = await getCustomerByPhone(customer.phone!);
       if (existing != null && existing.id != customer.id) {
@@ -115,7 +105,6 @@ class CustomerRepository {
     return customer.copyWith(updatedAt: DateTime.now());
   }
 
-  /// Get customer by phone
   Future<Customer?> getCustomerByPhone(String phone) async {
     final db = await _databaseHelper.database;
     final cleaned = phone.replaceAll(RegExp(r'[^0-9]'), '');
@@ -129,15 +118,9 @@ class CustomerRepository {
     return Customer.fromMap(result.first);
   }
 
-  /// Get or create customer by name (when no phone provided)
-  /// If exact name exists, return existing customer
-  /// If not, create new customer
-  Future<Customer> getOrCreateByName({
-    required String name,
-  }) async {
+  Future<Customer> getOrCreateByName({required String name}) async {
     final db = await _databaseHelper.database;
 
-    // Check if customer with this exact name exists
     final result = await db.query(
       'customers',
       where: 'LOWER(name) = LOWER(?)',
@@ -149,7 +132,6 @@ class CustomerRepository {
       return Customer.fromMap(result.first);
     }
 
-    // Create new customer
     final now = DateTime.now().toIso8601String();
     final id = await db.insert('customers', {
       'name': name.trim(),
@@ -170,9 +152,6 @@ class CustomerRepository {
     );
   }
 
-  /// Get or create customer by phone (phone is unique identifier)
-  /// If phone exists, update name if different and return existing customer
-  /// If phone doesn't exist, create new customer
   Future<Customer> getOrCreateByPhone({
     required String name,
     required String phone,
@@ -184,18 +163,13 @@ class CustomerRepository {
       throw Exception('Nomor HP tidak boleh kosong');
     }
 
-    // Check if customer with this phone exists
     final existing = await getCustomerByPhone(cleanedPhone);
 
     if (existing != null) {
-      // Update name if different
       if (existing.name != name.trim()) {
         await db.update(
           'customers',
-          {
-            'name': name.trim(),
-            'updated_at': DateTime.now().toIso8601String(),
-          },
+          {'name': name.trim(), 'updated_at': DateTime.now().toIso8601String()},
           where: 'id = ?',
           whereArgs: [existing.id],
         );
@@ -204,7 +178,6 @@ class CustomerRepository {
       return existing;
     }
 
-    // Create new customer
     final now = DateTime.now().toIso8601String();
     final id = await db.insert('customers', {
       'name': name.trim(),
@@ -226,17 +199,11 @@ class CustomerRepository {
     );
   }
 
-  /// Delete customer
   Future<void> deleteCustomer(int id) async {
     final db = await _databaseHelper.database;
-    await db.delete(
-      'customers',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await db.delete('customers', where: 'id = ?', whereArgs: [id]);
   }
 
-  /// Update customer order stats (called after order creation)
   Future<void> updateCustomerStats({
     required int customerId,
     required int orderAmount,
@@ -259,7 +226,6 @@ class CustomerRepository {
     );
   }
 
-  /// Get top customers by total spent
   Future<List<Customer>> getTopCustomers({int limit = 10}) async {
     final db = await _databaseHelper.database;
     final result = await db.query(
@@ -270,12 +236,9 @@ class CustomerRepository {
     return result.map((map) => Customer.fromMap(map)).toList();
   }
 
-  /// Get customer count
   Future<int> getCustomerCount() async {
     final db = await _databaseHelper.database;
-    final result = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM customers',
-    );
+    final result = await db.rawQuery('SELECT COUNT(*) as count FROM customers');
     return result.first['count'] as int;
   }
 }

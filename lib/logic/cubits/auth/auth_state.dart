@@ -8,17 +8,14 @@ abstract class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Initial state - checking auth status
 class AuthInitial extends AuthState {
   const AuthInitial();
 }
 
-/// Loading state - during login/logout
 class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
-/// Authenticated state - user is logged in
 class AuthAuthenticated extends AuthState {
   final User user;
 
@@ -28,12 +25,10 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
-/// Unauthenticated state - user is not logged in
 class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
 }
 
-/// Error state - auth operation failed
 class AuthError extends AuthState {
   final String message;
 
@@ -43,7 +38,6 @@ class AuthError extends AuthState {
   List<Object?> get props => [message];
 }
 
-/// Password changed successfully
 class AuthPasswordChanged extends AuthState {
   const AuthPasswordChanged();
 }

@@ -8,12 +8,11 @@ class UserCubit extends Cubit<UserState> {
   List<User> _users = [];
 
   UserCubit({UserRepository? userRepository})
-      : _userRepository = userRepository ?? UserRepository(),
-        super(const UserInitial());
+    : _userRepository = userRepository ?? UserRepository(),
+      super(const UserInitial());
 
   List<User> get users => _users;
 
-  /// Load all users
   Future<void> loadUsers() async {
     emit(const UserLoading());
 
@@ -25,7 +24,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  /// Create new user
   Future<void> createUser({
     required String username,
     required String password,
@@ -44,16 +42,14 @@ class UserCubit extends Cubit<UserState> {
 
       emit(const UserOperationSuccess('User berhasil ditambahkan'));
 
-      // Reload users
       await loadUsers();
     } catch (e) {
       emit(UserError(e.toString().replaceAll('Exception: ', '')));
-      // Re-emit loaded state to recover
+
       emit(UserLoaded(_users));
     }
   }
 
-  /// Update user
   Future<void> updateUser({
     required int id,
     required String name,
@@ -62,24 +58,18 @@ class UserCubit extends Cubit<UserState> {
     emit(const UserLoading());
 
     try {
-      await _userRepository.updateUser(
-        id: id,
-        name: name,
-        role: role,
-      );
+      await _userRepository.updateUser(id: id, name: name, role: role);
 
       emit(const UserOperationSuccess('User berhasil diupdate'));
 
-      // Reload users
       await loadUsers();
     } catch (e) {
       emit(UserError(e.toString().replaceAll('Exception: ', '')));
-      // Re-emit loaded state to recover
+
       emit(UserLoaded(_users));
     }
   }
 
-  /// Reset user password
   Future<void> resetPassword({
     required int userId,
     required String newPassword,
@@ -94,16 +84,14 @@ class UserCubit extends Cubit<UserState> {
 
       emit(const UserOperationSuccess('Password berhasil direset'));
 
-      // Re-emit loaded state
       emit(UserLoaded(_users));
     } catch (e) {
       emit(UserError(e.toString().replaceAll('Exception: ', '')));
-      // Re-emit loaded state to recover
+
       emit(UserLoaded(_users));
     }
   }
 
-  /// Toggle user active status
   Future<void> toggleUserStatus(int id) async {
     try {
       final isActive = await _userRepository.toggleUserStatus(id);
@@ -111,11 +99,10 @@ class UserCubit extends Cubit<UserState> {
 
       emit(UserOperationSuccess(message));
 
-      // Reload users
       await loadUsers();
     } catch (e) {
       emit(UserError(e.toString().replaceAll('Exception: ', '')));
-      // Re-emit loaded state to recover
+
       emit(UserLoaded(_users));
     }
   }

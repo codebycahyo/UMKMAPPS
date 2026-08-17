@@ -11,10 +11,9 @@ class OrderRepository {
   OrderRepository({
     DatabaseHelper? databaseHelper,
     CustomerRepository? customerRepository,
-  })  : _databaseHelper = databaseHelper ?? DatabaseHelper.instance,
-        _customerRepository = customerRepository ?? CustomerRepository();
+  }) : _databaseHelper = databaseHelper ?? DatabaseHelper.instance,
+       _customerRepository = customerRepository ?? CustomerRepository();
 
-  /// Get all orders with optional filter and pagination
   Future<List<Order>> getAllOrders({
     OrderStatus? status,
     int limit = 20,
@@ -42,7 +41,6 @@ class OrderRepository {
     return result.map((map) => Order.fromMap(map)).toList();
   }
 
-  /// Get order by ID with items and payments
   Future<Order?> getOrderById(int id) async {
     final db = await _databaseHelper.database;
 
@@ -56,7 +54,6 @@ class OrderRepository {
 
     final order = Order.fromMap(orderResult.first);
 
-    // Get items
     final itemsResult = await db.query(
       'order_items',
       where: 'order_id = ?',
@@ -64,7 +61,6 @@ class OrderRepository {
     );
     final items = itemsResult.map((map) => OrderItem.fromMap(map)).toList();
 
-    // Get payments
     final paymentsResult = await db.query(
       'payments',
       where: 'order_id = ?',
@@ -76,7 +72,6 @@ class OrderRepository {
     return order.copyWith(items: items, payments: payments);
   }
 
-  /// Create new order with items
   Future<Order> createOrder({
     required Order order,
     required List<OrderItem> items,
@@ -84,7 +79,6 @@ class OrderRepository {
   }) async {
     final db = await _databaseHelper.database;
 
-    // Auto-save customer if phone is provided (before transaction)
     int? customerId = order.customerId;
     if (order.customerPhone != null && order.customerPhone!.isNotEmpty) {
       try {
@@ -93,14 +87,10 @@ class OrderRepository {
           phone: order.customerPhone!,
         );
         customerId = customer.id;
-      } catch (_) {
-        // Ignore customer creation errors, continue with order
-      }
+      } catch (_) {}
     }
 
-    // Create order in transaction
     final createdOrder = await db.transaction((txn) async {
-      // Insert order
       final now = DateTime.now().toIso8601String();
       final orderId = await txn.insert('orders', {
         'invoice_no': order.invoiceNo,
@@ -120,7 +110,6 @@ class OrderRepository {
         'updated_at': now,
       });
 
-      // Insert items
       for (final item in items) {
         await txn.insert('order_items', {
           'order_id': orderId,
@@ -133,7 +122,6 @@ class OrderRepository {
         });
       }
 
-      // Insert initial payment if provided
       if (initialPayment != null && initialPayment.amount > 0) {
         await txn.insert('payments', {
           'order_id': orderId,
@@ -150,22 +138,18 @@ class OrderRepository {
       return order.copyWith(id: orderId, customerId: customerId);
     });
 
-    // Update customer stats AFTER transaction completes (to avoid deadlock)
     if (customerId != null) {
       try {
         await _customerRepository.updateCustomerStats(
           customerId: customerId,
           orderAmount: order.totalPrice,
         );
-      } catch (_) {
-        // Ignore stats update errors
-      }
+      } catch (_) {}
     }
 
     return createdOrder;
   }
 
-  /// Update order status
   Future<void> updateOrderStatus(int id, OrderStatus newStatus) async {
     final db = await _databaseHelper.database;
 
@@ -180,24 +164,19 @@ class OrderRepository {
     );
   }
 
-  /// Delete order
   Future<void> deleteOrder(int id) async {
     final db = await _databaseHelper.database;
-    // Items and payments will be cascade deleted
-    await db.delete(
-      'orders',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+
+    await db.delete('orders', where: 'id = ?', whereArgs: [id]);
   }
 
-  /// Search orders
   Future<List<Order>> searchOrders(String query) async {
     final db = await _databaseHelper.database;
 
     final result = await db.query(
       'orders',
-      where: 'customer_name LIKE ? OR customer_phone LIKE ? OR invoice_no LIKE ?',
+      where:
+          'customer_name LIKE ? OR customer_phone LIKE ? OR invoice_no LIKE ?',
       whereArgs: ['%$query%', '%$query%', '%$query%'],
       orderBy: 'created_at DESC',
     );
@@ -205,12 +184,22 @@ class OrderRepository {
     return result.map((map) => Order.fromMap(map)).toList();
   }
 
-  /// Get orders by date range
   Future<List<Order>> getOrdersByDateRange(DateTime start, DateTime end) async {
     final db = await _databaseHelper.database;
 
-    final startStr = DateTime(start.year, start.month, start.day).toIso8601String();
-    final endStr = DateTime(end.year, end.month, end.day, 23, 59, 59).toIso8601String();
+    final startStr = DateTime(
+      start.year,
+      start.month,
+      start.day,
+    ).toIso8601String();
+    final endStr = DateTime(
+      end.year,
+      end.month,
+      end.day,
+      23,
+      59,
+      59,
+    ).toIso8601String();
 
     final result = await db.query(
       'orders',
@@ -222,7 +211,6 @@ class OrderRepository {
     return result.map((map) => Order.fromMap(map)).toList();
   }
 
-  /// Get orders by status count
   Future<Map<OrderStatus, int>> getOrderCountByStatus() async {
     final db = await _databaseHelper.database;
 
@@ -238,12 +226,22 @@ class OrderRepository {
     return counts;
   }
 
-  /// Get today's order count by status
   Future<Map<OrderStatus, int>> getTodayOrderCountByStatus() async {
     final db = await _databaseHelper.database;
     final today = DateTime.now();
-    final startOfDay = DateTime(today.year, today.month, today.day).toIso8601String();
-    final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59).toIso8601String();
+    final startOfDay = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    ).toIso8601String();
+    final endOfDay = DateTime(
+      today.year,
+      today.month,
+      today.day,
+      23,
+      59,
+      59,
+    ).toIso8601String();
 
     final counts = <OrderStatus, int>{};
     for (final status in OrderStatus.values) {
@@ -257,7 +255,6 @@ class OrderRepository {
     return counts;
   }
 
-  /// Get recent orders
   Future<List<Order>> getRecentOrders({int limit = 5}) async {
     final db = await _databaseHelper.database;
 
@@ -270,16 +267,12 @@ class OrderRepository {
     return result.map((map) => Order.fromMap(map)).toList();
   }
 
-  /// Update paid amount after payment
   Future<void> updatePaidAmount(int orderId, int newPaidAmount) async {
     final db = await _databaseHelper.database;
 
     await db.update(
       'orders',
-      {
-        'paid': newPaidAmount,
-        'updated_at': DateTime.now().toIso8601String(),
-      },
+      {'paid': newPaidAmount, 'updated_at': DateTime.now().toIso8601String()},
       where: 'id = ?',
       whereArgs: [orderId],
     );

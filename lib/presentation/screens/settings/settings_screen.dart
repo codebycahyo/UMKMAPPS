@@ -342,22 +342,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             return Column(
               children: [
-                // Header with gradient
                 _buildHeader(user),
 
-                // Settings content
                 Expanded(
                   child: BlocBuilder<SettingsCubit, SettingsState>(
                     bloc: _settingsCubit,
                     builder: (context, settingsState) {
-                      // Get laundry info from state
-                      LaundryInfo? laundryInfo;
+                      StoreInfo? storeInfo;
                       if (settingsState is SettingsLoaded) {
-                        laundryInfo = settingsState.laundryInfo;
+                        storeInfo = settingsState.storeInfo;
                       } else if (settingsState is SettingsUpdated) {
-                        laundryInfo = settingsState.laundryInfo;
+                        storeInfo = settingsState.storeInfo;
                       } else {
-                        laundryInfo = _settingsCubit.currentInfo;
+                        storeInfo = _settingsCubit.currentInfo;
                       }
 
                       return ListView(
@@ -365,7 +362,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           const SizedBox(height: AppSpacing.lg),
 
-                          // Laundry Info Section
                           _buildSection(
                             title: 'Informasi Toko',
                             children: [
@@ -374,17 +370,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 icon: Icons.store,
                                 title: 'Nama Toko',
                                 subtitle:
-                                    laundryInfo?.name ??
-                                    AppConstants.defaultLaundryName,
+                                    storeInfo?.name ??
+                                    AppConstants.defaultStoreName,
                                 onTap: () => _showEditDialog(
                                   title: 'Edit Nama Toko',
                                   currentValue:
-                                      laundryInfo?.name ??
-                                      AppConstants.defaultLaundryName,
+                                      storeInfo?.name ??
+                                      AppConstants.defaultStoreName,
                                   hint: 'Masukkan nama toko',
                                   icon: Icons.store,
                                   onSave: (value) =>
-                                      _settingsCubit.updateLaundryName(value),
+                                      _settingsCubit.updateStoreName(value),
                                 ),
                               ),
                               _buildDivider(),
@@ -393,18 +389,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 icon: Icons.location_on,
                                 title: 'Alamat',
                                 subtitle:
-                                    laundryInfo?.address ??
-                                    AppConstants.defaultLaundryAddress,
+                                    storeInfo?.address ??
+                                    AppConstants.defaultStoreAddress,
                                 onTap: () => _showEditDialog(
                                   title: 'Edit Alamat',
                                   currentValue:
-                                      laundryInfo?.address ??
-                                      AppConstants.defaultLaundryAddress,
+                                      storeInfo?.address ??
+                                      AppConstants.defaultStoreAddress,
                                   hint: 'Masukkan alamat toko',
                                   icon: Icons.location_on,
                                   maxLines: 2,
-                                  onSave: (value) => _settingsCubit
-                                      .updateLaundryAddress(value),
+                                  onSave: (value) =>
+                                      _settingsCubit.updateStoreAddress(value),
                                 ),
                               ),
                               _buildDivider(),
@@ -413,24 +409,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 icon: Icons.phone,
                                 title: 'Nomor HP',
                                 subtitle:
-                                    laundryInfo?.phone ??
-                                    AppConstants.defaultLaundryPhone,
+                                    storeInfo?.phone ??
+                                    AppConstants.defaultStorePhone,
                                 onTap: () => _showEditDialog(
                                   title: 'Edit Nomor HP',
                                   currentValue:
-                                      laundryInfo?.phone ??
-                                      AppConstants.defaultLaundryPhone,
+                                      storeInfo?.phone ??
+                                      AppConstants.defaultStorePhone,
                                   hint: 'Masukkan nomor HP',
                                   icon: Icons.phone,
                                   keyboardType: TextInputType.phone,
                                   onSave: (value) =>
-                                      _settingsCubit.updateLaundryPhone(value),
+                                      _settingsCubit.updateStorePhone(value),
                                 ),
                               ),
                             ],
                           ),
 
-                          // Service Management Section
                           _buildSection(
                             title: 'Layanan',
                             children: [
@@ -454,7 +449,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ],
                           ),
 
-                          // Customer Management Section
                           _buildSection(
                             title: 'Pelanggan',
                             children: [
@@ -478,7 +472,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ],
                           ),
 
-                          // Legalitas & Kepatuhan Section
                           _buildSection(
                             title: 'Legalitas & Sertifikasi',
                             children: [
@@ -486,12 +479,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 context: context,
                                 icon: Icons.verified_user,
                                 title: 'Pusat Legalitas Usaha',
-                                subtitle: 'Wizard Halal SEHATI & Panduan NIB OSS',
+                                subtitle:
+                                    'Wizard Halal SEHATI & Panduan NIB OSS',
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const LegalitasHubScreen(),
+                                      builder: (_) =>
+                                          const LegalitasHubScreen(),
                                     ),
                                   );
                                 },
@@ -499,7 +494,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ],
                           ),
 
-                          // App Settings Section
                           _buildSection(
                             title: 'Pengaturan Aplikasi',
                             children: [
@@ -508,12 +502,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 icon: Icons.receipt,
                                 title: 'Prefix Invoice',
                                 subtitle:
-                                    laundryInfo?.invoicePrefix ??
+                                    storeInfo?.invoicePrefix ??
                                     AppConstants.defaultInvoicePrefix,
                                 onTap: () => _showEditDialog(
                                   title: 'Edit Prefix Invoice',
                                   currentValue:
-                                      laundryInfo?.invoicePrefix ??
+                                      storeInfo?.invoicePrefix ??
                                       AppConstants.defaultInvoicePrefix,
                                   hint: 'Masukkan prefix (maks 10 karakter)',
                                   icon: Icons.receipt,
@@ -541,7 +535,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ],
                           ),
 
-                          // User Management Section
                           _buildSection(
                             title: 'Manajemen User',
                             children: [
@@ -573,7 +566,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ],
                           ),
 
-                          // About Section
                           _buildSection(
                             title: 'Tentang Aplikasi',
                             children: [
@@ -585,20 +577,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 showArrow: false,
                                 onTap: null,
                               ),
-                              // _buildDivider(),
-                              // _buildSettingTile(
-                              //   context: context,
-                              //   icon: Icons.school,
-                              //   title: 'JagoFlutter.com',
-                              //   subtitle: 'Belajar Flutter dari NOL hingga PRO',
-                              //   showArrow: false,
-                              //   onTap: null,
-                              // ),
                             ],
                           ),
 
-
-                          // Logout Button
                           Padding(
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             child: GestureDetector(
@@ -658,7 +639,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              // Title row
               Row(
                 children: [
                   Expanded(
@@ -676,7 +656,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               if (user != null) ...[
                 const SizedBox(height: AppSpacing.xl),
 
-                // User info card
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
@@ -688,7 +667,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Row(
                     children: [
-                      // Avatar
                       Container(
                         width: 48,
                         height: 48,
@@ -703,7 +681,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(width: AppSpacing.md),
-                      // User details
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -724,7 +702,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                       ),
-                      // Role badge
+
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
@@ -811,7 +789,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              // Icon container
               Container(
                 width: 40,
                 height: 40,
@@ -822,7 +799,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Icon(icon, color: AppThemeColors.primary, size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
-              // Text content
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -844,7 +821,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
-              // Arrow or edit icon
+
               if (showArrow && onTap != null)
                 Container(
                   width: 28,

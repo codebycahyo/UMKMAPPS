@@ -19,7 +19,7 @@ class _StepIngredientsState extends State<StepIngredients> {
     'Enzim',
     'Pewarna',
     'Perisa/Flavor',
-    'Emulsifier'
+    'Emulsifier',
   ];
 
   @override
@@ -43,9 +43,9 @@ class _StepIngredientsState extends State<StepIngredients> {
         .toList();
 
     context.read<HalalWizardCubit>().updateStep2Data(
-          bahanBaku: bahanBaku,
-          bahanWaspada: _bahanWaspada,
-        );
+      bahanBaku: bahanBaku,
+      bahanWaspada: _bahanWaspada,
+    );
   }
 
   void _addBahan() {
@@ -124,7 +124,10 @@ class _StepIngredientsState extends State<StepIngredients> {
                         button: true,
                         label: 'Hapus Bahan Baku',
                         child: IconButton(
-                          icon: const Icon(Icons.remove_circle, color: Colors.red),
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
                           onPressed: () => _removeBahan(index),
                         ),
                       ),
@@ -193,7 +196,8 @@ class _StepIngredientsState extends State<StepIngredients> {
             builder: (context, state) {
               final stepIndex = 1;
               final checklist = state.documentChecklist[stepIndex] ?? [];
-              final labels = HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
+              final labels =
+                  HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
               final checkedCount = checklist.where((c) => c).length;
 
               return Column(
@@ -202,7 +206,9 @@ class _StepIngredientsState extends State<StepIngredients> {
                   Text('$checkedCount dari ${labels.length} dokumen siap'),
                   const SizedBox(height: 8),
                   ...List.generate(labels.length, (index) {
-                    final isChecked = index < checklist.length ? checklist[index] : false;
+                    final isChecked = index < checklist.length
+                        ? checklist[index]
+                        : false;
                     return Semantics(
                       checked: isChecked,
                       label: 'Checkbox ${labels[index]}',
@@ -211,7 +217,10 @@ class _StepIngredientsState extends State<StepIngredients> {
                         value: isChecked,
                         activeColor: const Color(0xFFD97706),
                         onChanged: (val) {
-                          context.read<HalalWizardCubit>().toggleDocumentCheck(stepIndex, index);
+                          context.read<HalalWizardCubit>().toggleDocumentCheck(
+                            stepIndex,
+                            index,
+                          );
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),

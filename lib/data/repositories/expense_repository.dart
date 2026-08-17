@@ -44,14 +44,13 @@ class ExpenseRepository {
 
   Future<int> deleteExpense(int id) async {
     final db = await _databaseHelper.database;
-    return await db.delete(
-      _tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete(_tableName, where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<List<ExpenseEntry>> getExpensesByDateRange(DateTime start, DateTime end) async {
+  Future<List<ExpenseEntry>> getExpensesByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
       _tableName,

@@ -56,8 +56,12 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
       try {
         final inputImage = InputImage.fromFilePath(pickedFile.path);
-        final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-        final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+        final textRecognizer = TextRecognizer(
+          script: TextRecognitionScript.latin,
+        );
+        final RecognizedText recognizedText = await textRecognizer.processImage(
+          inputImage,
+        );
 
         _rawText = recognizedText.text;
 
@@ -68,7 +72,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
           _nominalController.text = parsedExpense.nominal.toString();
           _supplierController.text = parsedExpense.supplier ?? '';
           _selectedDate = parsedExpense.tanggal;
-          _tanggalController.text = _selectedDate.toLocal().toString().split(' ')[0];
+          _tanggalController.text = _selectedDate.toLocal().toString().split(
+            ' ',
+          )[0];
           _selectedType = parsedExpense.type;
           _source = 'ocr';
         });
@@ -84,9 +90,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
         }
       } catch (e) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal memproses gambar: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal memproses gambar: $e')));
       } finally {
         if (mounted) {
           setState(() {
@@ -107,7 +113,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _tanggalController.text = _selectedDate.toLocal().toString().split(' ')[0];
+        _tanggalController.text = _selectedDate.toLocal().toString().split(
+          ' ',
+        )[0];
       });
     }
   }
@@ -174,7 +182,8 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                           button: true,
                           label: 'Ambil Foto Nota dari Kamera',
                           child: ElevatedButton.icon(
-                            onPressed: () => _processImage(source: ImageSource.camera),
+                            onPressed: () =>
+                                _processImage(source: ImageSource.camera),
                             icon: const Icon(Icons.camera_alt),
                             label: const Text('Kamera'),
                             style: ElevatedButton.styleFrom(
@@ -191,7 +200,8 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                           button: true,
                           label: 'Pilih Foto Nota dari Galeri',
                           child: OutlinedButton.icon(
-                            onPressed: () => _processImage(source: ImageSource.gallery),
+                            onPressed: () =>
+                                _processImage(source: ImageSource.gallery),
                             icon: const Icon(Icons.photo_library_rounded),
                             label: const Text('Galeri'),
                             style: OutlinedButton.styleFrom(
@@ -215,11 +225,19 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                             border: OutlineInputBorder(),
                           ),
                           items: const [
-                            DropdownMenuItem(value: 'masuk', child: Text('Pemasukan')),
-                            DropdownMenuItem(value: 'keluar', child: Text('Pengeluaran')),
+                            DropdownMenuItem(
+                              value: 'masuk',
+                              child: Text('Pemasukan'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'keluar',
+                              child: Text('Pengeluaran'),
+                            ),
                           ],
                           onChanged: (val) {
-                            if (val != null) setState(() => _selectedType = val);
+                            if (val != null) {
+                              setState(() => _selectedType = val);
+                            }
                           },
                         ),
                         const SizedBox(height: 16),
@@ -241,8 +259,12 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                           ),
                           keyboardType: TextInputType.number,
                           validator: (val) {
-                            if (val == null || val.isEmpty) return 'Wajib diisi';
-                            if (int.tryParse(val) == null) return 'Harus berupa angka valid';
+                            if (val == null || val.isEmpty) {
+                              return 'Wajib diisi';
+                            }
+                            if (int.tryParse(val) == null) {
+                              return 'Harus berupa angka valid';
+                            }
                             return null;
                           },
                         ),
@@ -257,8 +279,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                                 border: OutlineInputBorder(),
                                 suffixIcon: Icon(Icons.calendar_today),
                               ),
-                              validator: (val) =>
-                                  val == null || val.isEmpty ? 'Wajib diisi' : null,
+                              validator: (val) => val == null || val.isEmpty
+                                  ? 'Wajib diisi'
+                                  : null,
                             ),
                           ),
                         ),
@@ -286,7 +309,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

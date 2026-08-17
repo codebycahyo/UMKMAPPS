@@ -18,7 +18,6 @@ class SessionService {
     return _instance!;
   }
 
-  /// Save user session after successful login
   Future<void> saveSession({
     required int userId,
     required String username,
@@ -32,32 +31,26 @@ class SessionService {
     await _prefs!.setBool(_keyIsLoggedIn, true);
   }
 
-  /// Get saved user ID
   int? getUserId() {
     return _prefs!.getInt(_keyUserId);
   }
 
-  /// Get saved username
   String? getUsername() {
     return _prefs!.getString(_keyUsername);
   }
 
-  /// Get saved user role
   String? getUserRole() {
     return _prefs!.getString(_keyUserRole);
   }
 
-  /// Get saved user name
   String? getUserName() {
     return _prefs!.getString(_keyUserName);
   }
 
-  /// Check if user is logged in
   bool isLoggedIn() {
     return _prefs!.getBool(_keyIsLoggedIn) ?? false;
   }
 
-  /// Clear session on logout
   Future<void> clearSession() async {
     await _prefs!.remove(_keyUserId);
     await _prefs!.remove(_keyUsername);
@@ -66,7 +59,6 @@ class SessionService {
     await _prefs!.setBool(_keyIsLoggedIn, false);
   }
 
-  /// Get all session data as Map
   Map<String, dynamic> getSessionData() {
     return {
       'userId': getUserId(),

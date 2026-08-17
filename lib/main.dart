@@ -15,10 +15,9 @@ import 'package:flutter_laundry_offline_app/presentation/screens/main_screen.dar
 import 'package:flutter_laundry_offline_app/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set status bar style
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -26,80 +25,120 @@ void main() async {
     ),
   );
 
-  // Initialize all at once
-  final results = await Future.wait([
-    SharedPreferences.getInstance(),
-    DateFormatter.initialize(),
-    DatabaseHelper.instance.database,
-  ]);
-
-  final prefs = results[0] as SharedPreferences;
-  final showOnboarding = !(prefs.getBool('onboarding_complete') ?? false);
-
-  runApp(MyApp(showOnboarding: showOnboarding));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool showOnboarding;
-
-  const MyApp({super.key, required this.showOnboarding});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthCubit()..checkAuthStatus()),
-        BlocProvider(create: (_) => ExpenseCubit()..loadExpenses()),
-        BlocProvider(create: (_) => CustomerCubit()..loadCustomers()),
-        BlocProvider(create: (_) => OrderCubit()..loadOrders()),
+        BlocProvider(create: (_) => AuthCubit()),
+        BlocProvider(create: (_) => ExpenseCubit()),
+        BlocProvider(create: (_) => CustomerCubit()),
+        BlocProvider(create: (_) => OrderCubit()),
         BlocProvider(create: (_) => ReportCubit()),
       ],
       child: MaterialApp(
         title: 'LegaliKas AI',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: AuthWrapper(showOnboarding: showOnboarding),
+        home: const AuthWrapper(),
       ),
     );
   }
 }
 
-/// Wrapper widget that handles auth state changes
 class AuthWrapper extends StatefulWidget {
-  final bool showOnboarding;
-
-  const AuthWrapper({super.key, required this.showOnboarding});
+  const AuthWrapper({super.key});
 
   @override
   State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
-  late bool _showOnboarding;
+  bool _isInitializing = true;
+  bool _showOnboarding = false;
 
   @override
   void initState() {
     super.initState();
-    _showOnboarding = widget.showOnboarding;
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    try {
+      await DateFormatter.initialize();
+      await DatabaseHelper.instance.database;
+      final prefs = await SharedPreferences.getInstance();
+      final showOnboarding = !(prefs.getBool('onboarding_complete') ?? false);
+      if (mounted) {
+        setState(() {
+          _showOnboarding = showOnboarding;
+          _isInitializing = false;
+        });
+        context.read<AuthCubit>().checkAuthStatus();
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _isInitializing = false;
+        });
+        context.read<AuthCubit>().checkAuthStatus();
+      }
+    }
   }
 
   void _onOnboardingComplete() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_complete', true);
-    setState(() {
-      _showOnboarding = false;
-    });
+    if (mounted) {
+      setState(() {
+        _showOnboarding = false;
+      });
+      context.read<AuthCubit>().checkAuthStatus();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isInitializing) {
+      return Scaffold(
+        backgroundColor: AppThemeColors.background,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 120,
+                height: 120,
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: AppRadius.xlRadius,
+                  boxShadow: AppShadows.medium,
+                ),
+                child: Image.asset(
+                  'assets/icons/logo_baru.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              const CircularProgressIndicator(color: AppThemeColors.primary),
+            ],
+          ),
+        ),
+      );
+    }
+
     if (_showOnboarding) {
       return OnboardingScreen(onComplete: _onOnboardingComplete);
     }
 
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        // Show loading indicator while checking auth status
         if (state is AuthInitial || state is AuthLoading) {
           return Scaffold(
             backgroundColor: AppThemeColors.background,
@@ -131,12 +170,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
           );
         }
 
-        // Show main screen if authenticated
         if (state is AuthAuthenticated) {
           return const MainScreen();
         }
 
-        // Show login screen if not authenticated
         return const LoginScreen();
       },
     );

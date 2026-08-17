@@ -8,7 +8,7 @@ class OcrService {
     String supplier = extractSupplier(rawText);
 
     return ExpenseEntry(
-      type: 'keluar', // Default assumption for receipts
+      type: 'keluar',
       item: item,
       nominal: nominal,
       tanggal: tanggal,
@@ -26,7 +26,6 @@ class OcrService {
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i];
       if (line.contains('total') || line.contains('jumlah')) {
-        // try to find number in this line or next line
         final number = _extractLargestNumberFromLine(line);
         if (number > 0) return number;
 
@@ -45,14 +44,13 @@ class OcrService {
   }
 
   static int _extractLargestNumberFromLine(String line) {
-    // Remove non digit characters except comma and dot
     final RegExp regExp = RegExp(r'\d+[.,\d]*');
     final matches = regExp.allMatches(line);
-    
+
     int maxNumber = 0;
     for (final match in matches) {
       String numStr = match.group(0) ?? '';
-      // Clean up punctuation
+
       numStr = numStr.replaceAll(RegExp(r'[.,]'), '');
       if (numStr.isNotEmpty) {
         final number = int.tryParse(numStr) ?? 0;
@@ -65,8 +63,9 @@ class OcrService {
   }
 
   static DateTime extractDate(String text) {
-    // Basic regex for DD/MM/YYYY or DD-MM-YYYY
-    final RegExp dateRegExp = RegExp(r'\b(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})\b');
+    final RegExp dateRegExp = RegExp(
+      r'\b(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})\b',
+    );
     final match = dateRegExp.firstMatch(text);
     if (match != null) {
       try {
@@ -75,17 +74,16 @@ class OcrService {
         int year = int.parse(match.group(3)!);
         if (year < 100) year += 2000;
         return DateTime(year, month, day);
-      } catch (e) {
-        // Fallback
+      } catch (_) {
+        return DateTime.now();
       }
     }
-    return DateTime.now(); // Fallback to current date
+    return DateTime.now();
   }
 
   static String extractItems(String text) {
     final lines = text.split('\n');
     if (lines.length > 2) {
-      // Return a chunk of lines that likely contains items (skipping header)
       return lines.skip(1).take(2).join(', ');
     }
     return 'Item dari Nota';
@@ -94,7 +92,7 @@ class OcrService {
   static String extractSupplier(String text) {
     final lines = text.split('\n');
     if (lines.isNotEmpty) {
-      return lines.first.trim(); // First line is usually the store name
+      return lines.first.trim();
     }
     return 'Toko Tidak Diketahui';
   }

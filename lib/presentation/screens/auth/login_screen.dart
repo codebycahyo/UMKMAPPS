@@ -94,7 +94,6 @@ class _LoginScreenState extends State<LoginScreen>
       child: Scaffold(
         body: Stack(
           children: [
-            // Background gradient header
             Container(
               height: size.height * 0.45,
               decoration: const BoxDecoration(
@@ -106,7 +105,6 @@ class _LoginScreenState extends State<LoginScreen>
               ),
             ),
 
-            // Content
             SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
@@ -115,12 +113,10 @@ class _LoginScreenState extends State<LoginScreen>
                     children: [
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Header Animation
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Column(
                           children: [
-                            // Logo
                             Container(
                               width: 100,
                               height: 100,
@@ -138,7 +134,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                             const SizedBox(height: AppSpacing.xl),
 
-                            // Title
                             Text(
                               'Selamat Datang',
                               style: AppTypography.displaySmall.copyWith(
@@ -160,7 +155,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                       const SizedBox(height: AppSpacing.xxl),
 
-                      // Login Form Card
                       SlideTransition(
                         position: _slideAnimation,
                         child: FadeTransition(
@@ -191,7 +185,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                                   const SizedBox(height: AppSpacing.xxl),
 
-                                  // Username Field
                                   CustomTextField(
                                     label: 'Username',
                                     hint: 'Masukkan username',
@@ -212,7 +205,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                                   const SizedBox(height: AppSpacing.lg),
 
-                                  // Password Field
                                   CustomTextField(
                                     label: 'Password',
                                     hint: 'Masukkan password',
@@ -232,7 +224,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                                   const SizedBox(height: AppSpacing.xxl),
 
-                                  // Login Button
                                   CustomButton(
                                     text: 'Login',
                                     onPressed: _isLoading ? null : _handleLogin,
@@ -248,7 +239,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                       const SizedBox(height: AppSpacing.xxl),
 
-                      // Info Card
                       SlideTransition(
                         position: _slideAnimation,
                         child: FadeTransition(
@@ -310,7 +300,6 @@ class _LoginScreenState extends State<LoginScreen>
 
                       const SizedBox(height: AppSpacing.xxl),
 
-                      // Version
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Text(

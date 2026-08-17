@@ -75,10 +75,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       backgroundColor: AppThemeColors.background,
       body: Column(
         children: [
-          // Header
           _buildHeader(),
 
-          // Content
           Expanded(
             child: BlocConsumer<CustomerCubit, CustomerState>(
               listener: (context, state) {
@@ -114,7 +112,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 }
 
                 return RefreshIndicator(
-                  onRefresh: () => context.read<CustomerCubit>().loadCustomers(),
+                  onRefresh: () =>
+                      context.read<CustomerCubit>().loadCustomers(),
                   color: AppThemeColors.primary,
                   child: ListView.builder(
                     padding: const EdgeInsets.all(AppSpacing.lg),
@@ -136,9 +135,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -147,7 +144,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             children: [
               Row(
                 children: [
-                  // Back button
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
@@ -165,7 +161,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
-                  // Title
+
                   Expanded(
                     child: Text(
                       'Pelanggan',
@@ -175,7 +171,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                       ),
                     ),
                   ),
-                  // Search toggle
+
                   GestureDetector(
                     onTap: _toggleSearch,
                     child: Container(
@@ -195,7 +191,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 ],
               ),
 
-              // Search Field
               if (_isSearching) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
@@ -320,7 +315,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
-                // Avatar
                 Container(
                   width: 52,
                   height: 52,
@@ -347,7 +341,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                         ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                // Info
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,7 +365,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: AppThemeColors.warning.withValues(alpha: 0.1),
+                                color: AppThemeColors.warning.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: AppRadius.smRadius,
                               ),
                               child: Text(
@@ -386,7 +382,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                           ],
                         ],
                       ),
-                      if (customer.phone != null && customer.phone!.isNotEmpty) ...[
+                      if (customer.phone != null &&
+                          customer.phone!.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         Text(
                           customer.phone!,
@@ -398,7 +395,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [
-                          // Order count
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
@@ -417,18 +413,22 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          // Total spent
+
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: AppThemeColors.success.withValues(alpha: 0.1),
+                              color: AppThemeColors.success.withValues(
+                                alpha: 0.1,
+                              ),
                               borderRadius: AppRadius.smRadius,
                             ),
                             child: Text(
-                              CurrencyFormatter.formatCompact(customer.totalSpent),
+                              CurrencyFormatter.formatCompact(
+                                customer.totalSpent,
+                              ),
                               style: AppTypography.labelSmall.copyWith(
                                 color: AppThemeColors.success,
                                 fontWeight: FontWeight.w500,
@@ -440,7 +440,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                     ],
                   ),
                 ),
-                // Arrow
+
                 Container(
                   width: 32,
                   height: 32,

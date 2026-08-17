@@ -2,14 +2,13 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter/foundation.dart';
 
 class VoiceInputService {
-  // Singleton pattern
   static final VoiceInputService _instance = VoiceInputService._internal();
   factory VoiceInputService() => _instance;
   VoiceInputService._internal();
 
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isAvailable = false;
-  
+
   bool get isAvailable => _isAvailable;
   bool get isListening => _speech.isListening;
 
@@ -17,7 +16,8 @@ class VoiceInputService {
     try {
       _isAvailable = await _speech.initialize(
         onStatus: (status) => debugPrint('onStatus: $status'),
-        onError: (errorNotification) => debugPrint('onError: $errorNotification'),
+        onError: (errorNotification) =>
+            debugPrint('onError: $errorNotification'),
       );
       return _isAvailable;
     } catch (e) {

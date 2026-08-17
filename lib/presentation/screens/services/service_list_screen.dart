@@ -25,13 +25,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.lgRadius,
-        ),
-        title: Text(
-          'Hapus Produk/Layanan',
-          style: AppTypography.titleLarge,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgRadius),
+        title: Text('Hapus Produk/Layanan', style: AppTypography.titleLarge),
         content: Text(
           'Apakah Anda yakin ingin menghapus "${service.name}"?',
           style: AppTypography.bodyMedium,
@@ -53,15 +48,11 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppThemeColors.error,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.smRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.smRadius),
             ),
             child: Text(
               'Hapus',
-              style: AppTypography.labelMedium.copyWith(
-                color: Colors.white,
-              ),
+              style: AppTypography.labelMedium.copyWith(color: Colors.white),
             ),
           ),
         ],
@@ -87,10 +78,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
       backgroundColor: AppThemeColors.background,
       body: Column(
         children: [
-          // Header
           _buildHeader(),
 
-          // Content
           Expanded(
             child: BlocConsumer<ServiceCubit, ServiceState>(
               listener: (context, state) {
@@ -148,16 +137,13 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              // Back button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -175,7 +161,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
-              // Title
+
               Expanded(
                 child: Text(
                   'Produk / Layanan',
@@ -185,7 +171,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                   ),
                 ),
               ),
-              // Add button
+
               GestureDetector(
                 onTap: () => _navigateToForm(),
                 child: Container(
@@ -195,11 +181,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: AppRadius.smRadius,
                   ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ),
             ],
@@ -296,7 +278,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
-                // Icon
                 Container(
                   width: 56,
                   height: 56,
@@ -311,7 +292,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                // Content
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,14 +306,15 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [
-                          // Price badge
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: AppThemeColors.success.withValues(alpha: 0.1),
+                              color: AppThemeColors.success.withValues(
+                                alpha: 0.1,
+                              ),
                               borderRadius: AppRadius.smRadius,
                             ),
                             child: Text(
@@ -372,7 +354,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                     ],
                   ),
                 ),
-                // Actions
+
                 PopupMenuButton<String>(
                   icon: Container(
                     width: 32,
@@ -419,10 +401,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            'Edit',
-                            style: AppTypography.bodyMedium,
-                          ),
+                          Text('Edit', style: AppTypography.bodyMedium),
                         ],
                       ),
                     ),
@@ -434,7 +413,9 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                             width: 28,
                             height: 28,
                             decoration: BoxDecoration(
-                              color: AppThemeColors.error.withValues(alpha: 0.1),
+                              color: AppThemeColors.error.withValues(
+                                alpha: 0.1,
+                              ),
                               borderRadius: AppRadius.smRadius,
                             ),
                             child: const Icon(

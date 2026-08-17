@@ -1,51 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Design System Colors
 class AppThemeColors {
   AppThemeColors._();
 
-  // Teal Palette — LegaliKas AI (trust & legality)
-  static const Color primary = Color(0xFF0F766E); // Teal 700
-  static const Color primaryLight = Color(0xFF14B8A6); // Teal 500
-  static const Color primaryDark = Color(0xFF0D5F58); // Teal 800
-  static const Color primarySurface = Color(0xFFE6F7F5); // Teal 50
+  static const Color primary = Color(0xFF0F766E);
+  static const Color primaryLight = Color(0xFF14B8A6);
+  static const Color primaryDark = Color(0xFF0D5F58);
+  static const Color primarySurface = Color(0xFFE6F7F5);
 
-  // Secondary Colors
-  static const Color secondary = Color(0xFF5EEAD4); // Teal 300
-  static const Color secondaryLight = Color(0xFFCCFBF1); // Teal 100
+  static const Color secondary = Color(0xFF5EEAD4);
+  static const Color secondaryLight = Color(0xFFCCFBF1);
 
-  // Accent Gold — for halal/verified elements
-  static const Color accent = Color(0xFFD97706); // Amber 600
-  static const Color accentLight = Color(0xFFFCD34D); // Amber 300
-  static const Color accentSurface = Color(0xFFFEF3C7); // Amber 50
+  static const Color accent = Color(0xFFD97706);
+  static const Color accentLight = Color(0xFFFCD34D);
+  static const Color accentSurface = Color(0xFFFEF3C7);
 
-  // Background Colors
-  static const Color background = Color(0xFFF0FDFA); // Teal 50-ish
+  static const Color background = Color(0xFFF0FDFA);
   static const Color surface = Colors.white;
   static const Color cardBackground = Colors.white;
 
-  // Text Colors
-  static const Color textPrimary = Color(0xFF0F172A); // Slate 900
-  static const Color textSecondary = Color(0xFF475569); // Slate 600
-  static const Color textHint = Color(0xFF94A3B8); // Slate 400
+  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textSecondary = Color(0xFF475569);
+  static const Color textHint = Color(0xFF94A3B8);
   static const Color textOnPrimary = Colors.white;
 
-  // Status Colors
   static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFF9800);
   static const Color error = Color(0xFFF44336);
   static const Color info = Color(0xFF2196F3);
-  static const Color completed = Color(0xFF607D8B); 
+  static const Color completed = Color(0xFF607D8B);
 
-  // Neutral Colors
-  static const Color border = Color(0xFFCBD5E1); // Slate 300
-  static const Color divider = Color(0xFFF1F5F9); // Slate 100
-  static const Color disabled = Color(0xFF94A3B8); // Slate 400
+  static const Color border = Color(0xFFCBD5E1);
+  static const Color divider = Color(0xFFF1F5F9);
+  static const Color disabled = Color(0xFF94A3B8);
   static const Color shimmer = Color(0xFFF1F5F9);
-  static const Color inputFill = Color(0xFFF8FAFC); // Slate 50
+  static const Color inputFill = Color(0xFFF8FAFC);
 
-  // Gradient
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -59,7 +50,6 @@ class AppThemeColors {
   );
 }
 
-/// Design System Spacing
 class AppSpacing {
   AppSpacing._();
 
@@ -72,7 +62,6 @@ class AppSpacing {
   static const double xxxl = 32.0;
 }
 
-/// Design System Border Radius
 class AppRadius {
   AppRadius._();
 
@@ -93,172 +82,168 @@ class AppRadius {
   static BorderRadius get fullRadius => BorderRadius.circular(full);
 }
 
-/// Design System Shadows
 class AppShadows {
   AppShadows._();
 
   static List<BoxShadow> get small => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.04),
+      blurRadius: 8,
+      offset: const Offset(0, 2),
+    ),
+  ];
 
   static List<BoxShadow> get medium => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.08),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   static List<BoxShadow> get large => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.12),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.12),
+      blurRadius: 24,
+      offset: const Offset(0, 8),
+    ),
+  ];
 
   static List<BoxShadow> get primaryShadow => [
-        BoxShadow(
-          color: AppThemeColors.primary.withValues(alpha: 0.3),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: AppThemeColors.primary.withValues(alpha: 0.3),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
-  // Alias for backward compatibility during transition or theme change
   static List<BoxShadow> get purple => primaryShadow;
 
   static List<BoxShadow> get card => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 10,
-          offset: const Offset(0, 2),
-        ),
-      ];
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.05),
+      blurRadius: 10,
+      offset: const Offset(0, 2),
+    ),
+  ];
 }
 
-/// Design System Typography
 class AppTypography {
   AppTypography._();
 
   static TextStyle get displayLarge => GoogleFonts.poppins(
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-        color: AppThemeColors.textPrimary,
-        height: 1.2,
-      );
+    fontSize: 32,
+    fontWeight: FontWeight.bold,
+    color: AppThemeColors.textPrimary,
+    height: 1.2,
+  );
 
   static TextStyle get displayMedium => GoogleFonts.poppins(
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-        color: AppThemeColors.textPrimary,
-        height: 1.2,
-      );
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: AppThemeColors.textPrimary,
+    height: 1.2,
+  );
 
   static TextStyle get displaySmall => GoogleFonts.poppins(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-        color: AppThemeColors.textPrimary,
-        height: 1.3,
-      );
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: AppThemeColors.textPrimary,
+    height: 1.3,
+  );
 
   static TextStyle get headlineLarge => GoogleFonts.poppins(
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        color: AppThemeColors.textPrimary,
-        height: 1.3,
-      );
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    color: AppThemeColors.textPrimary,
+    height: 1.3,
+  );
 
   static TextStyle get headlineMedium => GoogleFonts.poppins(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: AppThemeColors.textPrimary,
-        height: 1.3,
-      );
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: AppThemeColors.textPrimary,
+    height: 1.3,
+  );
 
   static TextStyle get headlineSmall => GoogleFonts.poppins(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: AppThemeColors.textPrimary,
-        height: 1.4,
-      );
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: AppThemeColors.textPrimary,
+    height: 1.4,
+  );
 
   static TextStyle get titleLarge => GoogleFonts.poppins(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: AppThemeColors.textPrimary,
-        height: 1.4,
-      );
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppThemeColors.textPrimary,
+    height: 1.4,
+  );
 
   static TextStyle get titleMedium => GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AppThemeColors.textPrimary,
-        height: 1.4,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppThemeColors.textPrimary,
+    height: 1.4,
+  );
 
   static TextStyle get titleSmall => GoogleFonts.poppins(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AppThemeColors.textPrimary,
-        height: 1.4,
-      );
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: AppThemeColors.textPrimary,
+    height: 1.4,
+  );
 
   static TextStyle get bodyLarge => GoogleFonts.poppins(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: AppThemeColors.textPrimary,
-        height: 1.5,
-      );
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    color: AppThemeColors.textPrimary,
+    height: 1.5,
+  );
 
   static TextStyle get bodyMedium => GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.normal,
-        color: AppThemeColors.textPrimary,
-        height: 1.5,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    color: AppThemeColors.textPrimary,
+    height: 1.5,
+  );
 
   static TextStyle get bodySmall => GoogleFonts.poppins(
-        fontSize: 12,
-        fontWeight: FontWeight.normal,
-        color: AppThemeColors.textSecondary,
-        height: 1.5,
-      );
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+    color: AppThemeColors.textSecondary,
+    height: 1.5,
+  );
 
   static TextStyle get labelLarge => GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: AppThemeColors.textPrimary,
-        height: 1.4,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppThemeColors.textPrimary,
+    height: 1.4,
+  );
 
   static TextStyle get labelMedium => GoogleFonts.poppins(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: AppThemeColors.textSecondary,
-        height: 1.4,
-      );
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppThemeColors.textSecondary,
+    height: 1.4,
+  );
 
   static TextStyle get labelSmall => GoogleFonts.poppins(
-        fontSize: 10,
-        fontWeight: FontWeight.w500,
-        color: AppThemeColors.textSecondary,
-        height: 1.4,
-      );
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppThemeColors.textSecondary,
+    height: 1.4,
+  );
 
   static TextStyle get button => GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: Colors.white,
-        height: 1.4,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+    height: 1.4,
+  );
 }
 
-/// Main App Theme
 class AppTheme {
   AppTheme._();
 
@@ -302,9 +287,7 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mdRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
         color: AppThemeColors.cardBackground,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -316,9 +299,7 @@ class AppTheme {
             horizontal: AppSpacing.xl,
             vertical: AppSpacing.lg,
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdRadius,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
           textStyle: AppTypography.button,
         ),
       ),
@@ -330,9 +311,7 @@ class AppTheme {
             horizontal: AppSpacing.xl,
             vertical: AppSpacing.lg,
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdRadius,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
           textStyle: AppTypography.button.copyWith(
             color: AppThemeColors.primary,
           ),
@@ -361,10 +340,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdRadius,
-          borderSide: const BorderSide(
-            color: AppThemeColors.primary,
-            width: 2,
-          ),
+          borderSide: const BorderSide(color: AppThemeColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdRadius,
@@ -372,10 +348,7 @@ class AppTheme {
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdRadius,
-          borderSide: const BorderSide(
-            color: AppThemeColors.error,
-            width: 2,
-          ),
+          borderSide: const BorderSide(color: AppThemeColors.error, width: 2),
         ),
         labelStyle: AppTypography.bodyMedium.copyWith(
           color: AppThemeColors.textSecondary,
@@ -399,9 +372,7 @@ class AppTheme {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.fullRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.fullRadius),
       ),
       dividerTheme: const DividerThemeData(
         color: AppThemeColors.divider,
@@ -409,10 +380,10 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppThemeColors.textPrimary,
-        contentTextStyle: AppTypography.bodyMedium.copyWith(color: Colors.white),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.smRadius,
+        contentTextStyle: AppTypography.bodyMedium.copyWith(
+          color: Colors.white,
         ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.smRadius),
         behavior: SnackBarBehavior.floating,
       ),
     );

@@ -6,9 +6,9 @@ import 'package:flutter_laundry_offline_app/logic/cubits/expense/expense_state.d
 class ExpenseCubit extends Cubit<ExpenseState> {
   final ExpenseRepository _repository;
 
-  ExpenseCubit([ExpenseRepository? repository]) 
-      : _repository = repository ?? ExpenseRepository(), 
-        super(ExpenseInitial());
+  ExpenseCubit([ExpenseRepository? repository])
+    : _repository = repository ?? ExpenseRepository(),
+      super(ExpenseInitial());
 
   Future<void> loadExpenses() async {
     emit(ExpenseLoading());
@@ -67,7 +67,9 @@ class ExpenseCubit extends Cubit<ExpenseState> {
     }
     emit(ExpenseLoading());
     try {
-      final expenses = await _repository.getExpensesBySource(source.toLowerCase());
+      final expenses = await _repository.getExpensesBySource(
+        source.toLowerCase(),
+      );
       emit(ExpenseLoaded(expenses: expenses));
     } catch (e) {
       emit(ExpenseError(message: e.toString()));

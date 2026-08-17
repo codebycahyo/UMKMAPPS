@@ -59,19 +59,15 @@ class CustomerDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Customer header card
               _buildHeaderCard(context),
               const SizedBox(height: 16),
 
-              // Statistics card
               _buildStatisticsCard(),
               const SizedBox(height: 16),
 
-              // Contact info card
               _buildContactCard(),
               const SizedBox(height: 16),
 
-              // Notes card (if exists)
               if (customer.notes != null && customer.notes!.isNotEmpty)
                 _buildNotesCard(),
             ],
@@ -87,7 +83,6 @@ class CustomerDetailScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            // Avatar
             CircleAvatar(
               radius: 36,
               backgroundColor: customer.isLoyalCustomer
@@ -105,7 +100,7 @@ class CustomerDetailScreen extends StatelessWidget {
                     ),
             ),
             const SizedBox(width: 16),
-            // Name and badge
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,12 +314,7 @@ class CustomerDetailScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                ),
-              ),
+              Text(value, style: GoogleFonts.poppins(fontSize: 14)),
             ],
           ),
         ),

@@ -32,11 +32,11 @@ class _StepBusinessInfoState extends State<StepBusinessInfo> {
 
   void _updateData() {
     context.read<HalalWizardCubit>().updateStep1Data(
-          namaUsaha: _namaController.text,
-          nib: _nibController.text,
-          alamatUsaha: _alamatController.text,
-          teleponUsaha: _teleponController.text,
-        );
+      namaUsaha: _namaController.text,
+      nib: _nibController.text,
+      alamatUsaha: _alamatController.text,
+      teleponUsaha: _teleponController.text,
+    );
   }
 
   @override
@@ -121,7 +121,8 @@ class _StepBusinessInfoState extends State<StepBusinessInfo> {
             builder: (context, state) {
               final stepIndex = 0;
               final checklist = state.documentChecklist[stepIndex] ?? [];
-              final labels = HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
+              final labels =
+                  HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
               final checkedCount = checklist.where((c) => c).length;
 
               return Column(
@@ -130,7 +131,9 @@ class _StepBusinessInfoState extends State<StepBusinessInfo> {
                   Text('$checkedCount dari ${labels.length} dokumen siap'),
                   const SizedBox(height: 8),
                   ...List.generate(labels.length, (index) {
-                    final isChecked = index < checklist.length ? checklist[index] : false;
+                    final isChecked = index < checklist.length
+                        ? checklist[index]
+                        : false;
                     return Semantics(
                       checked: isChecked,
                       label: 'Checkbox ${labels[index]}',
@@ -139,7 +142,10 @@ class _StepBusinessInfoState extends State<StepBusinessInfo> {
                         value: isChecked,
                         activeColor: const Color(0xFFD97706),
                         onChanged: (val) {
-                          context.read<HalalWizardCubit>().toggleDocumentCheck(stepIndex, index);
+                          context.read<HalalWizardCubit>().toggleDocumentCheck(
+                            stepIndex,
+                            index,
+                          );
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),

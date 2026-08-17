@@ -47,17 +47,17 @@ class _UserFormScreenState extends State<UserFormScreen> {
     if (_formKey.currentState!.validate()) {
       if (isEditing) {
         context.read<UserCubit>().updateUser(
-              id: widget.user!.id!,
-              name: _nameController.text,
-              role: _selectedRole,
-            );
+          id: widget.user!.id!,
+          name: _nameController.text,
+          role: _selectedRole,
+        );
       } else {
         context.read<UserCubit>().createUser(
-              username: _usernameController.text,
-              password: _passwordController.text,
-              name: _nameController.text,
-              role: _selectedRole,
-            );
+          username: _usernameController.text,
+          password: _passwordController.text,
+          name: _nameController.text,
+          role: _selectedRole,
+        );
       }
     }
   }
@@ -80,9 +80,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
               content: Text(state.message),
               backgroundColor: AppThemeColors.error,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
             ),
           );
         }
@@ -91,10 +89,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
         backgroundColor: AppThemeColors.background,
         body: Column(
           children: [
-            // Header
             _buildHeader(),
 
-            // Form Content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.lg),
@@ -103,7 +99,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // User Icon
                       Center(
                         child: Container(
                           width: 80,
@@ -115,17 +110,18 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Color(0xFF9575CD), // Light purple
-                                      Color(0xFF7E57C2), // Purple
+                                      Color(0xFF9575CD),
+                                      Color(0xFF7E57C2),
                                     ],
                                   ),
                             borderRadius: AppRadius.lgRadius,
                             boxShadow: [
                               BoxShadow(
-                                color: (_selectedRole == UserRole.owner
-                                        ? AppThemeColors.primary
-                                        : const Color(0xFF7E57C2))
-                                    .withValues(alpha: 0.3),
+                                color:
+                                    (_selectedRole == UserRole.owner
+                                            ? AppThemeColors.primary
+                                            : const Color(0xFF7E57C2))
+                                        .withValues(alpha: 0.3),
                                 blurRadius: 16,
                                 offset: const Offset(0, 4),
                               ),
@@ -143,7 +139,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Form Card
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -154,7 +149,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Section Title
                             Row(
                               children: [
                                 Container(
@@ -177,7 +171,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
                             const SizedBox(height: AppSpacing.lg),
 
-                            // Username Field
                             _buildInputLabel('Username'),
                             const SizedBox(height: AppSpacing.sm),
                             TextFormField(
@@ -197,7 +190,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                 if (value.length < 3) {
                                   return 'Username minimal 3 karakter';
                                 }
-                                if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+                                if (!RegExp(
+                                  r'^[a-zA-Z0-9_]+$',
+                                ).hasMatch(value)) {
                                   return 'Username hanya boleh huruf, angka, dan underscore';
                                 }
                                 return null;
@@ -206,7 +201,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
                             const SizedBox(height: AppSpacing.lg),
 
-                            // Name Field
                             _buildInputLabel('Nama Lengkap'),
                             const SizedBox(height: AppSpacing.sm),
                             TextFormField(
@@ -225,7 +219,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
                               },
                             ),
 
-                            // Password Field (only for new user)
                             if (!isEditing) ...[
                               const SizedBox(height: AppSpacing.lg),
                               _buildInputLabel('Password'),
@@ -266,7 +259,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
                             const SizedBox(height: AppSpacing.lg),
 
-                            // Role Selection
                             _buildInputLabel('Role'),
                             const SizedBox(height: AppSpacing.sm),
                             _buildRoleSelector(),
@@ -276,12 +268,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
                       const SizedBox(height: AppSpacing.lg),
 
-                      // Permissions Card
                       _buildPermissionsCard(),
 
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Save Button
                       _buildSaveButton(),
 
                       const SizedBox(height: AppSpacing.lg),
@@ -298,16 +288,13 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -326,7 +313,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
               ),
               const SizedBox(width: AppSpacing.md),
 
-              // Title
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,35 +376,23 @@ class _UserFormScreenState extends State<UserFormScreen> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.border,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.border),
       ),
       disabledBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.border,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.primary,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.error,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.error,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.error, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -427,7 +401,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
     );
   }
 
-  // Secondary purple color for Kasir role
   static const Color _kasirColor = Color(0xFF7E57C2);
 
   Widget _buildRoleSelector() {
@@ -487,22 +460,18 @@ class _UserFormScreenState extends State<UserFormScreen> {
         ),
         child: Column(
           children: [
-            // Icon
             Container(
               width: 48,
               height: 48,
               decoration: BoxDecoration(
                 gradient: isSelected
                     ? (role == UserRole.owner
-                        ? AppThemeColors.primaryGradient
-                        : const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF9575CD),
-                              Color(0xFF7E57C2),
-                            ],
-                          ))
+                          ? AppThemeColors.primaryGradient
+                          : const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF9575CD), Color(0xFF7E57C2)],
+                            ))
                     : null,
                 color: isSelected ? null : AppThemeColors.background,
                 borderRadius: AppRadius.mdRadius,
@@ -516,7 +485,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
             const SizedBox(height: AppSpacing.sm),
 
-            // Role Name
             Text(
               role.displayName,
               style: AppTypography.labelMedium.copyWith(
@@ -525,14 +493,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
               ),
             ),
 
-            // Check icon
             if (isSelected) ...[
               const SizedBox(height: AppSpacing.xs),
-              Icon(
-                Icons.check_circle,
-                color: color,
-                size: 16,
-              ),
+              Icon(Icons.check_circle, color: color, size: 16),
             ],
           ],
         ),
@@ -572,7 +535,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             children: [
               Container(
@@ -615,49 +577,51 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Permissions List
-          ...permissions.map((permission) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: (permission.allowed
-                                ? AppThemeColors.success
-                                : AppThemeColors.error)
-                            .withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        permission.allowed ? Icons.check : Icons.close,
-                        size: 14,
-                        color: permission.allowed
-                            ? AppThemeColors.success
-                            : AppThemeColors.error,
+          ...permissions.map(
+            (permission) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color:
+                          (permission.allowed
+                                  ? AppThemeColors.success
+                                  : AppThemeColors.error)
+                              .withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      permission.allowed ? Icons.check : Icons.close,
+                      size: 14,
+                      color: permission.allowed
+                          ? AppThemeColors.success
+                          : AppThemeColors.error,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      permission.feature,
+                      style: AppTypography.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Text(
-                        permission.feature,
-                        style: AppTypography.bodyMedium.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                  ),
+                  Text(
+                    permission.access,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: permission.allowed
+                          ? AppThemeColors.textSecondary
+                          : AppThemeColors.error,
                     ),
-                    Text(
-                      permission.access,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: permission.allowed
-                            ? AppThemeColors.textSecondary
-                            : AppThemeColors.error,
-                      ),
-                    ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -675,12 +639,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.lg,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdRadius,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
         ),
         child: _isLoading
             ? const SizedBox(

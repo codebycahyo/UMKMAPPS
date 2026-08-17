@@ -65,7 +65,10 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                 icon: const Icon(Icons.event),
                 tooltip: 'Set Deadline SEHATI',
                 onPressed: () async {
-                  final currentDeadline = context.read<HalalWizardCubit>().state.sehatiDeadline;
+                  final currentDeadline = context
+                      .read<HalalWizardCubit>()
+                      .state
+                      .sehatiDeadline;
                   final picked = await showDatePicker(
                     context: context,
                     initialDate: currentDeadline ?? DateTime.now(),
@@ -77,21 +80,24 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                   }
                 },
               );
-            }
+            },
           ),
         ],
       ),
       body: BlocConsumer<HalalWizardCubit, HalalWizardState>(
-        listenWhen: (previous, current) => previous.currentStep != current.currentStep,
+        listenWhen: (previous, current) =>
+            previous.currentStep != current.currentStep,
         listener: (context, state) {
           _onStepChanged(context, state.currentStep);
         },
         builder: (context, state) {
           return Column(
             children: [
-              // Progress Indicator
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 24.0,
+                ),
                 color: Colors.grey.shade100,
                 child: Column(
                   children: [
@@ -105,15 +111,23 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                           height: 30,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isCompleted || isActive ? const Color(0xFFD97706) : Colors.grey.shade300,
+                            color: isCompleted || isActive
+                                ? const Color(0xFFD97706)
+                                : Colors.grey.shade300,
                           ),
                           child: Center(
                             child: isCompleted
-                                ? const Icon(Icons.check, size: 16, color: Colors.white)
+                                ? const Icon(
+                                    Icons.check,
+                                    size: 16,
+                                    color: Colors.white,
+                                  )
                                 : Text(
                                     '${index + 1}',
                                     style: TextStyle(
-                                      color: isActive ? Colors.white : Colors.grey.shade600,
+                                      color: isActive
+                                          ? Colors.white
+                                          : Colors.grey.shade600,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -129,38 +143,71 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                     const SizedBox(height: 8),
                     Builder(
                       builder: (context) {
-                        final percent = context.read<HalalWizardCubit>().getDocumentCompletionPercent();
+                        final percent = context
+                            .read<HalalWizardCubit>()
+                            .getDocumentCompletionPercent();
                         return LinearProgressIndicator(
                           value: percent / 100,
                           backgroundColor: Colors.grey.shade300,
                           color: const Color(0xFFD97706),
                         );
-                      }
+                      },
                     ),
                     const SizedBox(height: 4),
-                    Text('${context.read<HalalWizardCubit>().getDocumentCompletionPercent()}% Dokumen Siap', style: const TextStyle(fontSize: 12)),
+                    Text(
+                      '${context.read<HalalWizardCubit>().getDocumentCompletionPercent()}% Dokumen Siap',
+                      style: const TextStyle(fontSize: 12),
+                    ),
                     if (state.sehatiDeadline != null) ...[
                       const SizedBox(height: 8),
                       Builder(
                         builder: (context) {
                           final now = DateTime.now();
                           final deadline = state.sehatiDeadline!;
-                          final diff = deadline.difference(DateTime(now.year, now.month, now.day)).inDays;
-                          
+                          final diff = deadline
+                              .difference(
+                                DateTime(now.year, now.month, now.day),
+                              )
+                              .inDays;
+
                           if (diff < 0) {
                             return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(color: Colors.red.shade100, borderRadius: BorderRadius.circular(16)),
-                              child: Text('Tenggat waktu SEHATI telah terlewat!', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade100,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Text(
+                                'Tenggat waktu SEHATI telah terlewat!',
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             );
                           } else {
                             return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(color: Colors.orange.shade100, borderRadius: BorderRadius.circular(16)),
-                              child: Text('Sisa $diff hari menuju tenggat SEHATI', style: const TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold)),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.shade100,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Text(
+                                'Sisa $diff hari menuju tenggat SEHATI',
+                                style: const TextStyle(
+                                  color: Colors.deepOrange,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             );
                           }
-                        }
+                        },
                       ),
                     ],
                   ],
@@ -169,7 +216,7 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
               Expanded(
                 child: PageView(
                   controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(), // Prevent swipe to skip validation
+                  physics: const NeverScrollableScrollPhysics(),
                   children: const [
                     StepBusinessInfo(),
                     StepIngredients(),
@@ -179,7 +226,7 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                   ],
                 ),
               ),
-              // Bottom Navigation
+
               if (state.currentStep < 4)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -191,9 +238,13 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                         label: 'Kembali',
                         child: TextButton(
                           onPressed: state.currentStep > 0
-                              ? () => context.read<HalalWizardCubit>().previousStep()
+                              ? () => context
+                                    .read<HalalWizardCubit>()
+                                    .previousStep()
                               : null,
-                          style: TextButton.styleFrom(minimumSize: const Size(80, 48)),
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(80, 48),
+                          ),
                           child: const Text('Kembali'),
                         ),
                       ),
@@ -201,8 +252,12 @@ class _HalalWizardViewState extends State<_HalalWizardView> {
                         button: true,
                         label: 'Selanjutnya',
                         child: ElevatedButton(
-                          onPressed: context.read<HalalWizardCubit>().validateCurrentStep()
-                              ? () => context.read<HalalWizardCubit>().nextStep()
+                          onPressed:
+                              context
+                                  .read<HalalWizardCubit>()
+                                  .validateCurrentStep()
+                              ? () =>
+                                    context.read<HalalWizardCubit>().nextStep()
                               : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0F766E),

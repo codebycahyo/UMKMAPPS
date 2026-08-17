@@ -45,14 +45,18 @@ void main() {
     });
 
     test('Parses full sentence into transaction entry', () {
-      final res1 = parser.parseTransaction('terjual nasi goreng dua puluh ribu');
+      final res1 = parser.parseTransaction(
+        'terjual nasi goreng dua puluh ribu',
+      );
       expect(res1.success, true);
       expect(res1.confidence, 'high');
       expect(res1.entry?.type, 'masuk');
       expect(res1.entry?.nominal, 20000);
       expect(res1.entry?.item.toLowerCase().contains('nasi goreng'), true);
 
-      final res2 = parser.parseTransaction('beli minyak goreng seratus lima puluh ribu');
+      final res2 = parser.parseTransaction(
+        'beli minyak goreng seratus lima puluh ribu',
+      );
       expect(res2.success, true);
       expect(res2.confidence, 'high');
       expect(res2.entry?.type, 'keluar');

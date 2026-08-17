@@ -14,7 +14,7 @@ class ManualEntryScreen extends StatefulWidget {
 
 class _ManualEntryScreenState extends State<ManualEntryScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   String _type = 'keluar';
   String _item = '';
   String _nominalText = '';
@@ -22,7 +22,12 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
   String? _supplier;
   String? _kategori;
 
-  final List<String> _kategoriList = ['Bahan Baku', 'Operasional', 'Gaji', 'Lainnya'];
+  final List<String> _kategoriList = [
+    'Bahan Baku',
+    'Operasional',
+    'Gaji',
+    'Lainnya',
+  ];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -41,9 +46,10 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
   void _save() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      
-      final int nominal = int.tryParse(_nominalText.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
-      
+
+      final int nominal =
+          int.tryParse(_nominalText.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+
       final entry = ExpenseEntry(
         type: _type,
         item: _item,
@@ -56,10 +62,13 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
       );
 
       context.read<ExpenseCubit>().addExpense(entry);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Transaksi berhasil disimpan', style: AppTypography.bodyMedium.copyWith(color: Colors.white)),
+          content: Text(
+            'Transaksi berhasil disimpan',
+            style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+          ),
           backgroundColor: AppThemeColors.success,
         ),
       );
@@ -71,7 +80,12 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Manual', style: AppTypography.headlineSmall.copyWith(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Input Manual',
+          style: AppTypography.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -90,10 +104,15 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                   initialValue: _type,
                   decoration: InputDecoration(
                     labelText: 'Tipe Transaksi',
-                    border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
                   items: const [
-                    DropdownMenuItem(value: 'keluar', child: Text('Pengeluaran')),
+                    DropdownMenuItem(
+                      value: 'keluar',
+                      child: Text('Pengeluaran'),
+                    ),
                     DropdownMenuItem(value: 'masuk', child: Text('Pemasukan')),
                   ],
                   onChanged: (val) {
@@ -107,9 +126,13 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Nama Item',
-                    border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
-                  validator: (value) => value == null || value.isEmpty ? 'Nama item harus diisi' : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Nama item harus diisi'
+                      : null,
                   onSaved: (value) => _item = value ?? '',
                 ),
               ),
@@ -119,11 +142,15 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Nominal (Rp)',
-                    border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (value) => value == null || value.isEmpty ? 'Nominal harus diisi' : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Nominal harus diisi'
+                      : null,
                   onSaved: (value) => _nominalText = value ?? '',
                 ),
               ),
@@ -136,7 +163,9 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                   child: InputDecorator(
                     decoration: InputDecoration(
                       labelText: 'Tanggal',
-                      border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
+                      border: OutlineInputBorder(
+                        borderRadius: AppRadius.mdRadius,
+                      ),
                     ),
                     child: Text(
                       '${_tanggal.day}/${_tanggal.month}/${_tanggal.year}',
@@ -151,7 +180,9 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Supplier/Toko (Opsional)',
-                    border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
                   onSaved: (value) => _supplier = value,
                 ),
@@ -163,7 +194,9 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                   initialValue: _kategori,
                   decoration: InputDecoration(
                     labelText: 'Kategori',
-                    border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
                   items: _kategoriList.map((String category) {
                     return DropdownMenuItem<String>(

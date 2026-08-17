@@ -43,7 +43,7 @@ class Payment extends Equatable {
   final int? id;
   final int orderId;
   final int amount;
-  final int change; // Kembalian
+  final int change;
   final DateTime paymentDate;
   final PaymentMethod paymentMethod;
   final String? notes;
@@ -83,8 +83,9 @@ class Payment extends Equatable {
       amount: map['amount'] as int,
       change: (map['change'] as int?) ?? 0,
       paymentDate: DateTime.parse(map['payment_date'] as String),
-      paymentMethod:
-          PaymentMethodExtension.fromString(map['payment_method'] as String),
+      paymentMethod: PaymentMethodExtension.fromString(
+        map['payment_method'] as String,
+      ),
       notes: map['notes'] as String?,
       receivedBy: map['received_by'] as int?,
       createdAt: map['created_at'] != null
@@ -119,14 +120,14 @@ class Payment extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        orderId,
-        amount,
-        change,
-        paymentDate,
-        paymentMethod,
-        notes,
-        receivedBy,
-        createdAt,
-      ];
+    id,
+    orderId,
+    amount,
+    change,
+    paymentDate,
+    paymentMethod,
+    notes,
+    receivedBy,
+    createdAt,
+  ];
 }

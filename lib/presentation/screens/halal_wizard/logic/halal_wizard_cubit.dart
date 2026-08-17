@@ -7,7 +7,6 @@ class HalalWizardState extends Equatable {
   final int currentStep;
   final bool isCompleted;
 
-  // New fields
   final Map<int, List<bool>> documentChecklist;
   final DateTime? sehatiDeadline;
 
@@ -16,33 +15,28 @@ class HalalWizardState extends Equatable {
     1: ['Daftar Bahan Baku Lengkap', 'Sertifikat Halal Supplier (jika ada)'],
     2: ['Foto Area Produksi', 'SOP Proses Produksi'],
     3: ['Bukti Kepemilikan/Sewa Lokasi', 'Foto Lokasi Produksi'],
-    4: ['Tanda Tangan Pernyataan']
+    4: ['Tanda Tangan Pernyataan'],
   };
 
-  // Step 1
   final String namaUsaha;
   final String nib;
   final String alamatUsaha;
   final String teleponUsaha;
 
-  // Step 2
   final List<String> bahanBaku;
   final List<String> bahanWaspada;
 
-  // Step 3
   final String deskripsiProses;
   final String tempatProses;
   final bool prosesTerpisah;
   final bool alatTidakBersama;
 
-  // Step 4
   final String alamatProduksi;
   final String statusTempat;
   final String luasArea;
   final bool lokasiBersih;
   final bool lokasiTerpisahHaram;
 
-  // Step 5
   final bool setujuPernyataan;
 
   const HalalWizardState({
@@ -140,7 +134,9 @@ class HalalWizardState extends Equatable {
       'lokasiBersih': lokasiBersih,
       'lokasiTerpisahHaram': lokasiTerpisahHaram,
       'setujuPernyataan': setujuPernyataan,
-      'documentChecklist': documentChecklist.map((key, value) => MapEntry(key.toString(), value)),
+      'documentChecklist': documentChecklist.map(
+        (key, value) => MapEntry(key.toString(), value),
+      ),
       'sehatiDeadline': sehatiDeadline?.toIso8601String(),
     };
   }
@@ -167,7 +163,8 @@ class HalalWizardState extends Equatable {
       setujuPernyataan: json['setujuPernyataan'] ?? false,
       documentChecklist: json['documentChecklist'] != null
           ? (json['documentChecklist'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(int.parse(key), List<bool>.from(value)))
+              (key, value) => MapEntry(int.parse(key), List<bool>.from(value)),
+            )
           : const {
               0: [false, false, false],
               1: [false, false],
@@ -183,27 +180,27 @@ class HalalWizardState extends Equatable {
 
   @override
   List<Object?> get props => [
-        currentStep,
-        isCompleted,
-        namaUsaha,
-        nib,
-        alamatUsaha,
-        teleponUsaha,
-        bahanBaku,
-        bahanWaspada,
-        deskripsiProses,
-        tempatProses,
-        prosesTerpisah,
-        alatTidakBersama,
-        alamatProduksi,
-        statusTempat,
-        luasArea,
-        lokasiBersih,
-        lokasiTerpisahHaram,
-        setujuPernyataan,
-        documentChecklist,
-        sehatiDeadline,
-      ];
+    currentStep,
+    isCompleted,
+    namaUsaha,
+    nib,
+    alamatUsaha,
+    teleponUsaha,
+    bahanBaku,
+    bahanWaspada,
+    deskripsiProses,
+    tempatProses,
+    prosesTerpisah,
+    alatTidakBersama,
+    alamatProduksi,
+    statusTempat,
+    luasArea,
+    lokasiBersih,
+    lokasiTerpisahHaram,
+    setujuPernyataan,
+    documentChecklist,
+    sehatiDeadline,
+  ];
 }
 
 class HalalWizardCubit extends Cubit<HalalWizardState> {
@@ -220,8 +217,8 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
       try {
         final json = jsonDecode(jsonString);
         emit(HalalWizardState.fromJson(json));
-      } catch (e) {
-        // Fallback to initial state
+      } catch (_) {
+        emit(const HalalWizardState());
       }
     }
   }
@@ -237,12 +234,14 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
     required String alamatUsaha,
     required String teleponUsaha,
   }) {
-    emit(state.copyWith(
-      namaUsaha: namaUsaha,
-      nib: nib,
-      alamatUsaha: alamatUsaha,
-      teleponUsaha: teleponUsaha,
-    ));
+    emit(
+      state.copyWith(
+        namaUsaha: namaUsaha,
+        nib: nib,
+        alamatUsaha: alamatUsaha,
+        teleponUsaha: teleponUsaha,
+      ),
+    );
     saveProgress();
   }
 
@@ -250,10 +249,7 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
     required List<String> bahanBaku,
     required List<String> bahanWaspada,
   }) {
-    emit(state.copyWith(
-      bahanBaku: bahanBaku,
-      bahanWaspada: bahanWaspada,
-    ));
+    emit(state.copyWith(bahanBaku: bahanBaku, bahanWaspada: bahanWaspada));
     saveProgress();
   }
 
@@ -263,12 +259,14 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
     required bool prosesTerpisah,
     required bool alatTidakBersama,
   }) {
-    emit(state.copyWith(
-      deskripsiProses: deskripsiProses,
-      tempatProses: tempatProses,
-      prosesTerpisah: prosesTerpisah,
-      alatTidakBersama: alatTidakBersama,
-    ));
+    emit(
+      state.copyWith(
+        deskripsiProses: deskripsiProses,
+        tempatProses: tempatProses,
+        prosesTerpisah: prosesTerpisah,
+        alatTidakBersama: alatTidakBersama,
+      ),
+    );
     saveProgress();
   }
 
@@ -279,13 +277,15 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
     required bool lokasiBersih,
     required bool lokasiTerpisahHaram,
   }) {
-    emit(state.copyWith(
-      alamatProduksi: alamatProduksi,
-      statusTempat: statusTempat,
-      luasArea: luasArea,
-      lokasiBersih: lokasiBersih,
-      lokasiTerpisahHaram: lokasiTerpisahHaram,
-    ));
+    emit(
+      state.copyWith(
+        alamatProduksi: alamatProduksi,
+        statusTempat: statusTempat,
+        luasArea: luasArea,
+        lokasiBersih: lokasiBersih,
+        lokasiTerpisahHaram: lokasiTerpisahHaram,
+      ),
+    );
     saveProgress();
   }
 
@@ -311,7 +311,6 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
   }
 
   void clearSehatiDeadline() {
-    // using copyWith with a workaround or explicitly creating a new state without deadline
     emit(state.copyWith(sehatiDeadline: null));
     saveProgress();
   }
@@ -336,7 +335,8 @@ class HalalWizardCubit extends Cubit<HalalWizardState> {
       case 1:
         return state.bahanBaku.isNotEmpty;
       case 2:
-        return state.deskripsiProses.trim().isNotEmpty && state.tempatProses.trim().isNotEmpty;
+        return state.deskripsiProses.trim().isNotEmpty &&
+            state.tempatProses.trim().isNotEmpty;
       case 3:
         return state.alamatProduksi.trim().isNotEmpty;
       case 4:

@@ -21,7 +21,8 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
 
   bool _isWhyNibExpanded = true;
 
-  int get _readyDocsCount => _documents.where((doc) => doc['isChecked'] as bool).length;
+  int get _readyDocsCount =>
+      _documents.where((doc) => doc['isChecked'] as bool).length;
 
   Future<void> _launchUrl(String urlString) async {
     final Uri url = Uri.parse(urlString);
@@ -35,9 +36,9 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     }
   }
@@ -94,7 +95,9 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
           const SizedBox(height: AppSpacing.sm),
           Text(
             'NIB adalah identitas pelaku usaha yang diterbitkan oleh Lembaga OSS. Setiap UMKM wajib memiliki NIB untuk legalitas usaha.',
-            style: AppTypography.bodyMedium.copyWith(color: Colors.white.withValues(alpha: 0.9)),
+            style: AppTypography.bodyMedium.copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -131,11 +134,26 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
               bottom: AppSpacing.lg,
             ),
             children: [
-              _buildBenefitItem(Icons.verified_rounded, 'Syarat pengajuan sertifikasi halal SEHATI'),
-              _buildBenefitItem(Icons.gavel_rounded, 'Syarat mengikuti tender/pengadaan pemerintah'),
-              _buildBenefitItem(Icons.account_balance_rounded, 'Akses ke pembiayaan & kredit usaha dari bank'),
-              _buildBenefitItem(Icons.shield_rounded, 'Perlindungan hukum bagi usaha Anda'),
-              _buildBenefitItem(Icons.money_off_rounded, 'Gratis dan mudah diurus secara online'),
+              _buildBenefitItem(
+                Icons.verified_rounded,
+                'Syarat pengajuan sertifikasi halal SEHATI',
+              ),
+              _buildBenefitItem(
+                Icons.gavel_rounded,
+                'Syarat mengikuti tender/pengadaan pemerintah',
+              ),
+              _buildBenefitItem(
+                Icons.account_balance_rounded,
+                'Akses ke pembiayaan & kredit usaha dari bank',
+              ),
+              _buildBenefitItem(
+                Icons.shield_rounded,
+                'Perlindungan hukum bagi usaha Anda',
+              ),
+              _buildBenefitItem(
+                Icons.money_off_rounded,
+                'Gratis dan mudah diurus secara online',
+              ),
             ],
           ),
         ),
@@ -151,12 +169,7 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
         children: [
           Icon(icon, size: 20, color: AppThemeColors.primary),
           const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTypography.bodyMedium,
-            ),
-          ),
+          Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
     );
@@ -168,10 +181,7 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Dokumen yang Dibutuhkan',
-            style: AppTypography.titleLarge,
-          ),
+          Text('Dokumen yang Dibutuhkan', style: AppTypography.titleLarge),
           const SizedBox(height: AppSpacing.xs),
           Text(
             '$_readyDocsCount dari ${_documents.length} dokumen siap',
@@ -200,8 +210,12 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
                     title: Text(
                       doc['title'] as String,
                       style: AppTypography.bodyMedium.copyWith(
-                        decoration: doc['isChecked'] as bool ? TextDecoration.lineThrough : null,
-                        color: doc['isChecked'] as bool ? AppThemeColors.textHint : AppThemeColors.textPrimary,
+                        decoration: doc['isChecked'] as bool
+                            ? TextDecoration.lineThrough
+                            : null,
+                        color: doc['isChecked'] as bool
+                            ? AppThemeColors.textHint
+                            : AppThemeColors.textPrimary,
                       ),
                     ),
                     value: doc['isChecked'] as bool,
@@ -212,7 +226,9 @@ class _NibGuideScreenState extends State<NibGuideScreen> {
                       });
                     },
                     controlAffinity: ListTileControlAffinity.leading,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
                     visualDensity: VisualDensity.compact,
                   ),
                 );

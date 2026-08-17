@@ -21,16 +21,15 @@ class OrderCubit extends Cubit<OrderState> {
     OrderRepository? orderRepository,
     PaymentRepository? paymentRepository,
     CustomerRepository? customerRepository,
-  })  : _orderRepository = orderRepository ?? OrderRepository(),
-        _paymentRepository = paymentRepository ?? PaymentRepository(),
-        _customerRepository = customerRepository ?? CustomerRepository(),
-        super(const OrderInitial());
+  }) : _orderRepository = orderRepository ?? OrderRepository(),
+       _paymentRepository = paymentRepository ?? PaymentRepository(),
+       _customerRepository = customerRepository ?? CustomerRepository(),
+       super(const OrderInitial());
 
   List<Order> get orders => _orders;
   OrderStatus? get currentFilter => _currentFilter;
   bool get hasMore => _hasMore;
 
-  /// Load all orders with optional filter (first page)
   Future<void> loadOrders({OrderStatus? status}) async {
     emit(const OrderLoading());
     _currentFilter = status;
@@ -51,7 +50,6 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  /// Load more orders (pagination)
   Future<void> loadMoreOrders() async {
     if (!_hasMore) return;
 
@@ -70,18 +68,19 @@ class OrderCubit extends Cubit<OrderState> {
       _orders = [..._orders, ...newOrders];
       _hasMore = newOrders.length >= _pageSize;
 
-      emit(OrderLoaded(
-        _orders,
-        filterStatus: _currentFilter,
-        hasMore: _hasMore,
-        isLoadingMore: false,
-      ));
+      emit(
+        OrderLoaded(
+          _orders,
+          filterStatus: _currentFilter,
+          hasMore: _hasMore,
+          isLoadingMore: false,
+        ),
+      );
     } catch (e) {
       emit(currentState.copyWith(isLoadingMore: false));
     }
   }
 
-  /// Load order detail with items and payments
   Future<void> loadOrderDetail(int id) async {
     emit(const OrderLoading());
 
@@ -97,7 +96,6 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  /// Create new order
   Future<void> createOrder({
     required String customerName,
     String? customerPhone,
@@ -112,7 +110,6 @@ class OrderCubit extends Cubit<OrderState> {
     emit(const OrderLoading());
 
     try {
-      // Validate
       if (customerName.trim().isEmpty) {
         emit(const OrderError('Nama customer tidak boleh kosong'));
         return;
@@ -122,26 +119,22 @@ class OrderCubit extends Cubit<OrderState> {
         return;
       }
 
-      // If manual input (no customerId), save customer to database
       int? finalCustomerId = customerId;
       if (finalCustomerId == null) {
         try {
-          final customer = customerPhone != null && customerPhone.trim().isNotEmpty
+          final customer =
+              customerPhone != null && customerPhone.trim().isNotEmpty
               ? await _customerRepository.getOrCreateByPhone(
                   name: customerName,
                   phone: customerPhone,
                 )
-              : await _customerRepository.getOrCreateByName(
-                  name: customerName,
-                );
+              : await _customerRepository.getOrCreateByName(name: customerName);
           finalCustomerId = customer.id;
-        } catch (e) {
-          // If customer creation fails, continue without customerId
-          // This allows order creation even if customer save fails
+        } catch (_) {
+          finalCustomerId = null;
         }
       }
 
-      // Calculate totals
       int totalItems = items.length;
       double totalWeight = 0;
       int totalPrice = 0;
@@ -151,15 +144,16 @@ class OrderCubit extends Cubit<OrderState> {
         totalPrice += item.subtotal;
       }
 
-      // Generate invoice
       final invoiceNo = await InvoiceGenerator.generate();
 
-      // Hitung kembalian (jika bayar lebih dari total)
-      final change = initialPayment > totalPrice ? initialPayment - totalPrice : 0;
-      // Yang dicatat sebagai "paid" di order adalah maksimal = totalPrice
-      final paidAmount = initialPayment > totalPrice ? totalPrice : initialPayment;
+      final change = initialPayment > totalPrice
+          ? initialPayment - totalPrice
+          : 0;
 
-      // Create order
+      final paidAmount = initialPayment > totalPrice
+          ? totalPrice
+          : initialPayment;
+
       final order = Order(
         invoiceNo: invoiceNo,
         customerId: finalCustomerId,
@@ -176,20 +170,18 @@ class OrderCubit extends Cubit<OrderState> {
         createdBy: createdBy,
       );
 
-      // Prepare initial payment if any
       Payment? payment;
       if (initialPayment > 0) {
         payment = Payment(
-          orderId: 0, // Will be set after order creation
-          amount: initialPayment, // Simpan jumlah bayar apa adanya
-          change: change, // Simpan kembalian
+          orderId: 0,
+          amount: initialPayment,
+          change: change,
           paymentDate: DateTime.now(),
           paymentMethod: paymentMethod,
           receivedBy: createdBy,
         );
       }
 
-      // Save to database
       final createdOrder = await _orderRepository.createOrder(
         order: order,
         items: items.map((item) => item.copyWith(orderId: 0)).toList(),
@@ -198,30 +190,29 @@ class OrderCubit extends Cubit<OrderState> {
 
       emit(OrderCreated(createdOrder));
 
-      // Reload orders
       await loadOrders(status: _currentFilter);
     } catch (e) {
       emit(OrderError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
-  /// Update order status
   Future<void> updateStatus(int orderId, OrderStatus newStatus) async {
     emit(const OrderLoading());
 
     try {
       await _orderRepository.updateOrderStatus(orderId, newStatus);
-      emit(OrderOperationSuccess('Status berhasil diubah ke ${newStatus.displayName}'));
+      emit(
+        OrderOperationSuccess(
+          'Status berhasil diubah ke ${newStatus.displayName}',
+        ),
+      );
 
-      // Reload orders
       await loadOrders(status: _currentFilter);
     } catch (e) {
       emit(OrderError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
-  /// Add payment to order
-  /// Menyimpan pembayaran apa adanya beserta kembalian
   Future<void> addPayment({
     required int orderId,
     required int amount,
@@ -232,7 +223,6 @@ class OrderCubit extends Cubit<OrderState> {
     emit(const OrderLoading());
 
     try {
-      // Get order to check remaining payment
       final order = await _orderRepository.getOrderById(orderId);
       if (order == null) {
         emit(const OrderError('Order tidak ditemukan'));
@@ -245,13 +235,12 @@ class OrderCubit extends Cubit<OrderState> {
         return;
       }
 
-      // Hitung kembalian jika bayar lebih dari sisa
       final change = amount > remaining ? amount - remaining : 0;
 
       final payment = Payment(
         orderId: orderId,
-        amount: amount, // Simpan apa adanya
-        change: change, // Simpan kembalian
+        amount: amount,
+        change: change,
         paymentDate: DateTime.now(),
         paymentMethod: method,
         notes: notes,
@@ -261,14 +250,12 @@ class OrderCubit extends Cubit<OrderState> {
       await _paymentRepository.addPayment(payment);
       emit(const OrderOperationSuccess('Pembayaran berhasil ditambahkan'));
 
-      // Reload order detail
       await loadOrderDetail(orderId);
     } catch (e) {
       emit(OrderError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
-  /// Delete order
   Future<void> deleteOrder(int orderId) async {
     emit(const OrderLoading());
 
@@ -276,14 +263,12 @@ class OrderCubit extends Cubit<OrderState> {
       await _orderRepository.deleteOrder(orderId);
       emit(const OrderOperationSuccess('Order berhasil dihapus'));
 
-      // Reload orders
       await loadOrders(status: _currentFilter);
     } catch (e) {
       emit(OrderError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
-  /// Search orders
   Future<void> searchOrders(String query) async {
     emit(const OrderLoading());
 

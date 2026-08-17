@@ -21,7 +21,6 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
   }
 
   Future<void> _requestPermissionsAndLoad() async {
-    // Request Bluetooth permissions
     await [
       Permission.bluetooth,
       Permission.bluetoothScan,
@@ -45,7 +44,10 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
             child: BlocConsumer<PrinterCubit, PrinterState>(
               listener: (context, state) {
                 if (state is PrinterConnected) {
-                  _showSnackBar('Berhasil terhubung ke ${state.deviceName}', isSuccess: true);
+                  _showSnackBar(
+                    'Berhasil terhubung ke ${state.deviceName}',
+                    isSuccess: true,
+                  );
                 } else if (state is PrinterDisconnected) {
                   _showSnackBar('Printer terputus', isSuccess: true);
                 } else if (state is PrinterPrintSuccess) {
@@ -60,7 +62,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircularProgressIndicator(color: AppThemeColors.primary),
+                        CircularProgressIndicator(
+                          color: AppThemeColors.primary,
+                        ),
                         SizedBox(height: AppSpacing.md),
                         Text('Mencari printer...'),
                       ],
@@ -77,7 +81,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const CircularProgressIndicator(color: AppThemeColors.primary),
+                        const CircularProgressIndicator(
+                          color: AppThemeColors.primary,
+                        ),
                         const SizedBox(height: AppSpacing.md),
                         Text('Menghubungkan ke ${state.deviceName}...'),
                       ],
@@ -90,7 +96,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircularProgressIndicator(color: AppThemeColors.primary),
+                        CircularProgressIndicator(
+                          color: AppThemeColors.primary,
+                        ),
                         SizedBox(height: AppSpacing.md),
                         Text('Mencetak...'),
                       ],
@@ -121,7 +129,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: isSuccess ? AppThemeColors.success : AppThemeColors.error,
+        backgroundColor: isSuccess
+            ? AppThemeColors.success
+            : AppThemeColors.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
@@ -138,7 +148,6 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              // Back button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -148,11 +157,15 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: AppRadius.smRadius,
                   ),
-                  child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
-              // Title
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +187,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                   ],
                 ),
               ),
-              // Refresh button
+
               GestureDetector(
                 onTap: () => context.read<PrinterCubit>().loadDevices(),
                 child: Container(
@@ -184,7 +197,11 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: AppRadius.smRadius,
                   ),
-                  child: const Icon(Icons.refresh, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
               ),
             ],
@@ -200,21 +217,17 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Bluetooth Status
           _buildBluetoothStatus(state.bluetoothEnabled),
           const SizedBox(height: AppSpacing.lg),
 
-          // Paper Size Setting
           _buildPaperSizeSection(context, state.paperSize),
           const SizedBox(height: AppSpacing.lg),
 
-          // Connected Printer
           if (state.connectedDevice != null) ...[
             _buildConnectedPrinter(context, state.connectedDevice!),
             const SizedBox(height: AppSpacing.lg),
           ],
 
-          // Available Devices
           _buildDevicesList(context, state),
         ],
       ),
@@ -250,7 +263,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                   isEnabled ? 'Bluetooth Aktif' : 'Bluetooth Nonaktif',
                   style: AppTypography.labelMedium.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: isEnabled ? AppThemeColors.success : AppThemeColors.error,
+                    color: isEnabled
+                        ? AppThemeColors.success
+                        : AppThemeColors.error,
                   ),
                 ),
                 Text(
@@ -286,16 +301,32 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Ukuran Kertas',
-                style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                style: AppTypography.titleMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
             children: [
-              Expanded(child: _buildPaperSizeOption(context, '58', '58mm', currentSize)),
+              Expanded(
+                child: _buildPaperSizeOption(
+                  context,
+                  '58',
+                  '58mm',
+                  currentSize,
+                ),
+              ),
               const SizedBox(width: AppSpacing.md),
-              Expanded(child: _buildPaperSizeOption(context, '80', '80mm', currentSize)),
+              Expanded(
+                child: _buildPaperSizeOption(
+                  context,
+                  '80',
+                  '80mm',
+                  currentSize,
+                ),
+              ),
             ],
           ),
         ],
@@ -313,7 +344,10 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
     return GestureDetector(
       onTap: () => context.read<PrinterCubit>().setPaperSize(size),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md, horizontal: AppSpacing.lg),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.md,
+          horizontal: AppSpacing.lg,
+        ),
         decoration: BoxDecoration(
           gradient: isSelected ? AppThemeColors.primaryGradient : null,
           color: isSelected ? null : AppThemeColors.background,
@@ -412,14 +446,19 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => context.read<PrinterCubit>().disconnectDevice(),
+                  onPressed: () =>
+                      context.read<PrinterCubit>().disconnectDevice(),
                   icon: const Icon(Icons.link_off, size: 18),
                   label: const Text('Putuskan'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppThemeColors.error,
                     side: const BorderSide(color: AppThemeColors.error),
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
                 ),
               ),
@@ -432,8 +471,12 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppThemeColors.primary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadius.mdRadius,
+                    ),
                   ),
                 ),
               ),
@@ -446,7 +489,11 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
 
   Widget _buildDevicesList(BuildContext context, PrinterDevicesLoaded state) {
     final availableDevices = state.devices
-        .where((d) => state.connectedDevice == null || d.address != state.connectedDevice!.address)
+        .where(
+          (d) =>
+              state.connectedDevice == null ||
+              d.address != state.connectedDevice!.address,
+        )
         .toList();
 
     return Container(
@@ -465,7 +512,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Perangkat Tersedia',
-                style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                style: AppTypography.titleMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Spacer(),
               Text(
@@ -484,7 +533,8 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: availableDevices.length,
-              separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final device = availableDevices[index];
                 return _buildDeviceItem(context, device);
@@ -523,7 +573,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                 children: [
                   Text(
                     device.name,
-                    style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+                    style: AppTypography.labelMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   Text(
                     device.address,
@@ -585,7 +637,9 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
             const SizedBox(height: AppSpacing.lg),
             Text(
               'Belum ada printer',
-              style: AppTypography.titleLarge.copyWith(fontWeight: FontWeight.w600),
+              style: AppTypography.titleLarge.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(

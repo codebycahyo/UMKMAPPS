@@ -8,19 +8,16 @@ class AuthRepository {
   SessionService? _sessionService;
 
   AuthRepository({DatabaseHelper? databaseHelper})
-      : _databaseHelper = databaseHelper ?? DatabaseHelper.instance;
+    : _databaseHelper = databaseHelper ?? DatabaseHelper.instance;
 
   Future<SessionService> get _session async {
     _sessionService ??= await SessionService.getInstance();
     return _sessionService!;
   }
 
-  /// Login with username and password
-  /// Returns User if successful, throws exception if failed
   Future<User> login(String username, String password) async {
     final db = await _databaseHelper.database;
 
-    // Find user by username
     final result = await db.query(
       'users',
       where: 'username = ? AND is_active = 1',
@@ -34,14 +31,12 @@ class AuthRepository {
     final userMap = result.first;
     final storedHash = userMap['password_hash'] as String;
 
-    // Verify password
     if (!PasswordHelper.verifyPassword(password, storedHash)) {
       throw Exception('Password salah');
     }
 
     final user = User.fromMap(userMap);
 
-    // Save session
     final session = await _session;
     await session.saveSession(
       userId: user.id!,
@@ -53,20 +48,16 @@ class AuthRepository {
     return user;
   }
 
-  /// Logout and clear session
   Future<void> logout() async {
     final session = await _session;
     await session.clearSession();
   }
 
-  /// Check if user is logged in
   Future<bool> isLoggedIn() async {
     final session = await _session;
     return session.isLoggedIn();
   }
 
-  /// Get current logged in user
-  /// Returns null if not logged in
   Future<User?> getCurrentUser() async {
     final session = await _session;
 
@@ -87,7 +78,6 @@ class AuthRepository {
     );
 
     if (result.isEmpty) {
-      // Session exists but user not found/inactive, clear session
       await session.clearSession();
       return null;
     }
@@ -95,7 +85,6 @@ class AuthRepository {
     return User.fromMap(result.first);
   }
 
-  /// Change password for current user
   Future<void> changePassword({
     required int userId,
     required String currentPassword,
@@ -103,7 +92,6 @@ class AuthRepository {
   }) async {
     final db = await _databaseHelper.database;
 
-    // Get current user
     final result = await db.query(
       'users',
       where: 'id = ?',
@@ -116,21 +104,17 @@ class AuthRepository {
 
     final storedHash = result.first['password_hash'] as String;
 
-    // Verify current password
     if (!PasswordHelper.verifyPassword(currentPassword, storedHash)) {
       throw Exception('Password lama salah');
     }
 
-    // Validate new password
     final validation = PasswordHelper.validatePassword(newPassword);
     if (validation != null) {
       throw Exception(validation);
     }
 
-    // Hash new password
     final newHash = PasswordHelper.hashPassword(newPassword);
 
-    // Update password
     await db.update(
       'users',
       {

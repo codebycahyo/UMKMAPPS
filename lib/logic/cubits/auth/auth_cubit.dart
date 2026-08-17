@@ -8,13 +8,11 @@ class AuthCubit extends Cubit<AuthState> {
   User? _currentUser;
 
   AuthCubit({AuthRepository? authRepository})
-      : _authRepository = authRepository ?? AuthRepository(),
-        super(const AuthInitial());
+    : _authRepository = authRepository ?? AuthRepository(),
+      super(const AuthInitial());
 
-  /// Get current user
   User? get currentUser => _currentUser;
 
-  /// Check auth status on app start
   Future<void> checkAuthStatus() async {
     emit(const AuthLoading());
 
@@ -34,7 +32,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  /// Login with username and password
   Future<void> login(String username, String password) async {
     emit(const AuthLoading());
 
@@ -57,7 +54,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  /// Logout
   Future<void> logout() async {
     emit(const AuthLoading());
 
@@ -70,7 +66,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  /// Change password
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -96,16 +91,15 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       emit(const AuthPasswordChanged());
-      // Re-emit authenticated state
+
       emit(AuthAuthenticated(_currentUser!));
     } catch (e) {
       emit(AuthError(e.toString().replaceAll('Exception: ', '')));
-      // Re-emit authenticated state to recover
+
       emit(AuthAuthenticated(_currentUser!));
     }
   }
 
-  /// Refresh current user data
   Future<void> refreshUser() async {
     try {
       final user = await _authRepository.getCurrentUser();

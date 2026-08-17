@@ -83,9 +83,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
               content: Text(state.message),
               backgroundColor: AppThemeColors.error,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
             ),
           );
         }
@@ -94,10 +92,8 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
         backgroundColor: AppThemeColors.background,
         body: Column(
           children: [
-            // Header
             _buildHeader(),
 
-            // Form Content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.lg),
@@ -106,22 +102,18 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Customer Avatar
                       _buildCustomerAvatar(),
 
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Form Card
                       _buildFormCard(),
 
                       const SizedBox(height: AppSpacing.lg),
 
-                      // Info Card
                       _buildInfoCard(),
 
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Save Button
                       _buildSaveButton(),
 
                       const SizedBox(height: AppSpacing.lg),
@@ -138,16 +130,13 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -166,7 +155,6 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
               ),
               const SizedBox(width: AppSpacing.md),
 
-              // Title
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,11 +200,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
             ),
           ],
         ),
-        child: const Icon(
-          Icons.person,
-          color: Colors.white,
-          size: 40,
-        ),
+        child: const Icon(Icons.person, color: Colors.white, size: 40),
       ),
     );
   }
@@ -232,7 +216,6 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title
           Row(
             children: [
               Container(
@@ -255,7 +238,6 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Name Field
           _buildInputLabel('Nama Pelanggan', isRequired: true),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
@@ -277,7 +259,6 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Phone Field
           _buildInputLabel('Nomor HP'),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
@@ -293,7 +274,6 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Address Field
           _buildInputLabel('Alamat'),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
@@ -310,7 +290,6 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Notes Field
           _buildInputLabel('Catatan'),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
@@ -362,10 +341,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       hintStyle: AppTypography.bodyMedium.copyWith(
         color: AppThemeColors.textHint,
       ),
-      prefixIcon: Icon(
-        prefixIcon,
-        color: AppThemeColors.primary,
-      ),
+      prefixIcon: Icon(prefixIcon, color: AppThemeColors.primary),
       filled: true,
       fillColor: AppThemeColors.inputFill,
       border: OutlineInputBorder(
@@ -374,29 +350,19 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.border,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.primary,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.error,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.error,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.error, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -473,12 +439,8 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacing.lg,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdRadius,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
             ),
             child: isLoading
                 ? const SizedBox(

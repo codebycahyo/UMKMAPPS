@@ -106,7 +106,6 @@ class User extends Equatable {
     );
   }
 
-  // Permission checks
   bool get canManageUsers => role == UserRole.owner;
   bool get canManageServices => role == UserRole.owner;
   bool get canAccessReports => role == UserRole.owner;
@@ -116,13 +115,13 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        username,
-        passwordHash,
-        name,
-        role,
-        isActive,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    username,
+    passwordHash,
+    name,
+    role,
+    isActive,
+    createdAt,
+    updatedAt,
+  ];
 }

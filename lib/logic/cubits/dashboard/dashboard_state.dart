@@ -22,12 +22,11 @@ class DashboardLoaded extends DashboardState {
   final int monthOrderCount;
   final List<Order> recentOrders;
 
-  // LegaliKas AI financial data
   final int totalIncome;
   final int totalExpense;
   final int netBalance;
   final List<DailyFinancial> chartData;
-  final String selectedPeriod; // 'harian', 'mingguan', 'bulanan'
+  final String selectedPeriod;
 
   const DashboardLoaded({
     required this.todayStatusCounts,
@@ -43,16 +42,16 @@ class DashboardLoaded extends DashboardState {
 
   @override
   List<Object?> get props => [
-        todayStatusCounts,
-        todayRevenue,
-        monthOrderCount,
-        recentOrders,
-        totalIncome,
-        totalExpense,
-        netBalance,
-        chartData,
-        selectedPeriod,
-      ];
+    todayStatusCounts,
+    todayRevenue,
+    monthOrderCount,
+    recentOrders,
+    totalIncome,
+    totalExpense,
+    netBalance,
+    chartData,
+    selectedPeriod,
+  ];
 }
 
 class DashboardError extends DashboardState {
@@ -64,7 +63,6 @@ class DashboardError extends DashboardState {
   List<Object?> get props => [message];
 }
 
-/// Data class for daily income/expense chart
 class DailyFinancial extends Equatable {
   final DateTime date;
   final int income;

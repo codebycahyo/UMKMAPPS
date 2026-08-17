@@ -14,7 +14,12 @@ class TransactionHubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Catat Transaksi', style: AppTypography.headlineSmall.copyWith(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Catat Transaksi',
+          style: AppTypography.headlineSmall.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -29,7 +34,9 @@ class TransactionHubScreen extends StatelessWidget {
             children: [
               Text(
                 'Pilih Metode Pencatatan',
-                style: AppTypography.titleMedium.copyWith(color: AppThemeColors.textPrimary),
+                style: AppTypography.titleMedium.copyWith(
+                  color: AppThemeColors.textPrimary,
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
               _buildActionCard(
@@ -106,11 +113,15 @@ class TransactionHubScreen extends StatelessWidget {
                   },
                   style: TextButton.styleFrom(
                     minimumSize: const Size.fromHeight(48),
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
                   ),
                   child: Text(
-                    'Lihat Semua Catatan', 
-                    style: AppTypography.button.copyWith(color: AppThemeColors.primary),
+                    'Lihat Semua Catatan',
+                    style: AppTypography.button.copyWith(
+                      color: AppThemeColors.primary,
+                    ),
                   ),
                 ),
               ),
@@ -167,16 +178,27 @@ class TransactionHubScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: AppTypography.titleMedium.copyWith(
-                        color: AppThemeColors.textPrimary,
-                        fontWeight: FontWeight.w600,
-                      )),
+                      Text(
+                        title,
+                        style: AppTypography.titleMedium.copyWith(
+                          color: AppThemeColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(description, style: AppTypography.bodySmall.copyWith(color: AppThemeColors.textSecondary)),
+                      Text(
+                        description,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppThemeColors.textSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, color: AppThemeColors.textSecondary),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppThemeColors.textSecondary,
+                ),
               ],
             ),
           ),

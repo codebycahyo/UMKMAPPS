@@ -10,18 +10,19 @@ class ReportCubit extends Cubit<ReportState> {
   ReportCubit({
     ReportRepository? reportRepository,
     ExportService? exportService,
-  })  : _reportRepository = reportRepository ?? ReportRepository(),
-        _exportService = exportService ?? ExportService(),
-        super(const ReportInitial());
+  }) : _reportRepository = reportRepository ?? ReportRepository(),
+       _exportService = exportService ?? ExportService(),
+       super(const ReportInitial());
 
-  /// Load report data
   Future<void> loadReport(DateTime startDate, DateTime endDate) async {
     emit(const ReportLoading());
 
     try {
       final data = await _reportRepository.getReportData(startDate, endDate);
-      final orders =
-          await _reportRepository.getOrdersByDateRange(startDate, endDate);
+      final orders = await _reportRepository.getOrdersByDateRange(
+        startDate,
+        endDate,
+      );
 
       emit(ReportLoaded(data: data, orders: orders));
     } catch (e) {
@@ -29,7 +30,6 @@ class ReportCubit extends Cubit<ReportState> {
     }
   }
 
-  /// Export report to Excel
   Future<void> exportToExcel() async {
     final currentState = state;
     if (currentState is! ReportLoaded) return;
@@ -42,15 +42,15 @@ class ReportCubit extends Cubit<ReportState> {
         currentState.data,
       );
 
-      // Share the file
       await _exportService.shareFile(filePath);
 
-      emit(ReportExported(
-        filePath: filePath,
-        message: 'Laporan berhasil di-export',
-      ));
+      emit(
+        ReportExported(
+          filePath: filePath,
+          message: 'Laporan berhasil di-export',
+        ),
+      );
 
-      // Restore previous state
       emit(currentState);
     } catch (e) {
       emit(ReportError(e.toString().replaceAll('Exception: ', '')));
@@ -58,7 +58,6 @@ class ReportCubit extends Cubit<ReportState> {
     }
   }
 
-  /// Export report to PDF
   Future<void> exportToPdf() async {
     final currentState = state;
     if (currentState is! ReportLoaded) return;
@@ -71,15 +70,15 @@ class ReportCubit extends Cubit<ReportState> {
         currentState.data,
       );
 
-      // Share the file
       await _exportService.shareFile(filePath);
 
-      emit(ReportExported(
-        filePath: filePath,
-        message: 'Laporan PDF berhasil di-export',
-      ));
+      emit(
+        ReportExported(
+          filePath: filePath,
+          message: 'Laporan PDF berhasil di-export',
+        ),
+      );
 
-      // Restore previous state
       emit(currentState);
     } catch (e) {
       emit(ReportError(e.toString().replaceAll('Exception: ', '')));

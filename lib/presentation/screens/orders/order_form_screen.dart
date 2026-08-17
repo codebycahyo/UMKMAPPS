@@ -17,6 +17,7 @@ import 'package:flutter_laundry_offline_app/logic/cubits/order/order_cubit.dart'
 import 'package:flutter_laundry_offline_app/logic/cubits/order/order_state.dart';
 import 'package:flutter_laundry_offline_app/logic/cubits/service/service_cubit.dart';
 import 'package:flutter_laundry_offline_app/logic/cubits/service/service_state.dart';
+import 'package:flutter_laundry_offline_app/presentation/screens/services/service_form_screen.dart';
 
 class OrderFormScreen extends StatefulWidget {
   const OrderFormScreen({super.key});
@@ -36,10 +37,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   PaymentMethod _paymentMethod = PaymentMethod.cash;
   bool _isLoading = false;
 
-  // Selected customer
   Customer? _selectedCustomer;
 
-  // Order items
   final List<_OrderItemEntry> _items = [];
 
   int get _totalPrice {
@@ -59,10 +58,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     setState(() {
       final existing = _items.indexWhere((e) => e.service.id == service.id);
       if (existing >= 0) {
-        // Sudah ada, hapus dari list
         _items.removeAt(existing);
       } else {
-        // Belum ada, tambahkan
         _items.add(_OrderItemEntry(service: service));
       }
     });
@@ -119,7 +116,12 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 ),
               ),
               onSubmitted: (_) {
-                _submitQuantityInput(dialogContext, controller.text, index, item);
+                _submitQuantityInput(
+                  dialogContext,
+                  controller.text,
+                  index,
+                  item,
+                );
               },
             ),
             if (isKg)
@@ -153,10 +155,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Text(
-              'OK',
-              style: GoogleFonts.poppins(color: Colors.white),
-            ),
+            child: Text('OK', style: GoogleFonts.poppins(color: Colors.white)),
           ),
         ],
       ),
@@ -164,9 +163,13 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   }
 
   void _submitQuantityInput(
-      BuildContext dialogContext, String input, int index, _OrderItemEntry item) {
+    BuildContext dialogContext,
+    String input,
+    int index,
+    _OrderItemEntry item,
+  ) {
     final isKg = item.service.unit == ServiceUnit.kg;
-    // Replace comma with dot for decimal parsing
+
     final normalizedInput = input.replaceAll(',', '.');
     final parsed = double.tryParse(normalizedInput);
 
@@ -182,10 +185,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
     double finalQuantity;
     if (isKg) {
-      // For kg: allow decimal, round to 1 decimal place
       finalQuantity = double.parse(parsed.toStringAsFixed(1));
     } else {
-      // For pcs: only integer
       finalQuantity = parsed.roundToDouble();
     }
 
@@ -250,9 +251,10 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
       return;
     }
 
-    final payment = ThousandSeparatorFormatter.parseToInt(_paymentController.text);
+    final payment = ThousandSeparatorFormatter.parseToInt(
+      _paymentController.text,
+    );
 
-    // Jika bayar lebih dari total, tampilkan dialog konfirmasi kembalian
     if (payment > _totalPrice) {
       _showChangeConfirmationDialog(payment);
     } else {
@@ -285,7 +287,10 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
             Flexible(
               child: Text(
                 'Konfirmasi Pembayaran',
-                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -301,7 +306,10 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               ),
               child: Column(
                 children: [
-                  _buildPaymentRow('Total', CurrencyFormatter.format(_totalPrice)),
+                  _buildPaymentRow(
+                    'Total',
+                    CurrencyFormatter.format(_totalPrice),
+                  ),
                   const SizedBox(height: 8),
                   _buildPaymentRow('Bayar', CurrencyFormatter.format(payment)),
                   const Divider(height: 16),
@@ -353,7 +361,12 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     );
   }
 
-  Widget _buildPaymentRow(String label, String value, {Color? valueColor, bool isBold = false}) {
+  Widget _buildPaymentRow(
+    String label,
+    String value, {
+    Color? valueColor,
+    bool isBold = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -381,30 +394,32 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     final userId = authState is AuthAuthenticated ? authState.user.id : null;
 
     final orderItems = _items
-        .map((e) => OrderItem(
-              orderId: 0,
-              serviceId: e.service.id,
-              serviceName: e.service.name,
-              quantity: e.quantity.toDouble(),
-              unit: e.service.unit.value,
-              pricePerUnit: e.service.price,
-              subtotal: e.subtotal,
-            ))
+        .map(
+          (e) => OrderItem(
+            orderId: 0,
+            serviceId: e.service.id,
+            serviceName: e.service.name,
+            quantity: e.quantity.toDouble(),
+            unit: e.service.unit.value,
+            pricePerUnit: e.service.price,
+            subtotal: e.subtotal,
+          ),
+        )
         .toList();
 
     context.read<OrderCubit>().createOrder(
-          customerName: _customerNameController.text,
-          customerPhone: _customerPhoneController.text.isNotEmpty
-              ? _customerPhoneController.text
-              : null,
-          customerId: _selectedCustomer?.id,
-          items: orderItems,
-          dueDate: _dueDate,
-          notes: _notesController.text.isNotEmpty ? _notesController.text : null,
-          createdBy: userId,
-          initialPayment: payment,
-          paymentMethod: _paymentMethod,
-        );
+      customerName: _customerNameController.text,
+      customerPhone: _customerPhoneController.text.isNotEmpty
+          ? _customerPhoneController.text
+          : null,
+      customerId: _selectedCustomer?.id,
+      items: orderItems,
+      dueDate: _dueDate,
+      notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+      createdBy: userId,
+      initialPayment: payment,
+      paymentMethod: _paymentMethod,
+    );
   }
 
   @override
@@ -418,7 +433,18 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
         }
 
         if (state is OrderCreated) {
-          Navigator.pop(context);
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            _customerNameController.clear();
+            _customerPhoneController.clear();
+            _notesController.clear();
+            _paymentController.clear();
+            setState(() {
+              _items.clear();
+              _selectedCustomer = null;
+            });
+          }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Order ${state.order.invoiceNo} berhasil dibuat'),
@@ -436,23 +462,21 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Order Baru'),
+          title: const Text('Kasir POS — Transaksi Baru'),
+          automaticallyImplyLeading: Navigator.canPop(context),
         ),
         body: Form(
           key: _formKey,
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // Customer Section
               _buildSectionTitle('Informasi Pelanggan'),
               const SizedBox(height: 12),
 
-              // Customer selection card
               if (_selectedCustomer != null) ...[
                 _buildSelectedCustomerCard(),
                 const SizedBox(height: 12),
               ] else ...[
-                // Search existing customer button
                 InkWell(
                   onTap: _showCustomerSearchDialog,
                   child: Container(
@@ -469,7 +493,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppThemeColors.primary.withValues(alpha: 0.1),
+                            color: AppThemeColors.primary.withValues(
+                              alpha: 0.1,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
@@ -512,7 +538,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
                 const SizedBox(height: 16),
 
-                // Divider with "atau"
                 Row(
                   children: [
                     Expanded(child: Divider(color: AppThemeColors.border)),
@@ -541,8 +566,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                   enabled: _selectedCustomer == null,
                 ),
                 textCapitalization: TextCapitalization.words,
-                validator: (v) =>
-                    v?.trim().isEmpty == true ? 'Nama tidak boleh kosong' : null,
+                validator: (v) => v?.trim().isEmpty == true
+                    ? 'Nama tidak boleh kosong'
+                    : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -558,14 +584,12 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
               const SizedBox(height: 24),
 
-              // Services Section
               _buildSectionTitle('Pilih Produk/Layanan'),
               const SizedBox(height: 12),
               _buildServiceSelector(),
 
               const SizedBox(height: 16),
 
-              // Selected Items
               if (_items.isNotEmpty) ...[
                 _buildSectionTitle('Item Dipilih'),
                 const SizedBox(height: 12),
@@ -578,7 +602,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
               const SizedBox(height: 24),
 
-              // Due Date
               _buildSectionTitle('Tanggal Ambil'),
               const SizedBox(height: 12),
               InkWell(
@@ -606,7 +629,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
               const SizedBox(height: 24),
 
-              // Notes
               _buildSectionTitle('Catatan (Opsional)'),
               const SizedBox(height: 12),
               TextFormField(
@@ -620,7 +642,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
               const SizedBox(height: 24),
 
-              // Payment Section
               _buildSectionTitle('Pembayaran'),
               const SizedBox(height: 12),
               Row(
@@ -642,9 +663,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                     child: DropdownButtonFormField<PaymentMethod>(
                       initialValue: _paymentMethod,
                       isExpanded: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Metode',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Metode'),
                       items: PaymentMethod.values.map((method) {
                         return DropdownMenuItem(
                           value: method,
@@ -664,7 +683,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
               const SizedBox(height: 32),
 
-              // Total & Submit
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -760,11 +778,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               color: AppThemeColors.success.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(22),
             ),
-            child: Icon(
-              Icons.person,
-              color: AppThemeColors.success,
-              size: 24,
-            ),
+            child: Icon(Icons.person, color: AppThemeColors.success, size: 24),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -834,17 +848,49 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Belum ada produk/layanan',
+                    'Belum ada produk jualan',
                     style: GoogleFonts.poppins(
-                      color: AppThemeColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+                      color: AppThemeColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
-                    'Tambah produk/layanan di menu',
+                    'Silakan tambahkan produk/layanan usaha Anda terlebih dahulu',
                     style: GoogleFonts.poppins(
                       color: AppThemeColors.textSecondary,
                       fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<ServiceCubit>(),
+                            child: const ServiceFormScreen(),
+                          ),
+                        ),
+                      ).then((_) {
+                        context.read<ServiceCubit>().loadServices();
+                      });
+                    },
+                    icon: const Icon(Icons.add, size: 18),
+                    label: const Text('Tambah Produk Pertama'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppThemeColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ],
@@ -863,10 +909,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: services.length,
-            separatorBuilder: (context, index) => Divider(
-              height: 1,
-              color: AppThemeColors.border,
-            ),
+            separatorBuilder: (context, index) =>
+                Divider(height: 1, color: AppThemeColors.border),
             itemBuilder: (context, index) {
               final service = services[index];
               final isSelected = _items.any((e) => e.service.id == service.id);
@@ -875,30 +919,44 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 onTap: () => _toggleItem(service),
                 borderRadius: BorderRadius.vertical(
                   top: index == 0 ? const Radius.circular(12) : Radius.zero,
-                  bottom: index == services.length - 1 ? const Radius.circular(12) : Radius.zero,
+                  bottom: index == services.length - 1
+                      ? const Radius.circular(12)
+                      : Radius.zero,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   child: Row(
                     children: [
-                      // Checkbox
                       Container(
                         width: 24,
                         height: 24,
                         decoration: BoxDecoration(
-                          color: isSelected ? AppThemeColors.primary : Colors.transparent,
+                          color: isSelected
+                              ? AppThemeColors.primary
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
-                            color: isSelected ? AppThemeColors.primary : AppThemeColors.textSecondary.withValues(alpha: 0.4),
+                            color: isSelected
+                                ? AppThemeColors.primary
+                                : AppThemeColors.textSecondary.withValues(
+                                    alpha: 0.4,
+                                  ),
                             width: 2,
                           ),
                         ),
                         child: isSelected
-                            ? const Icon(Icons.check, size: 16, color: Colors.white)
+                            ? const Icon(
+                                Icons.check,
+                                size: 16,
+                                color: Colors.white,
+                              )
                             : null,
                       ),
                       const SizedBox(width: 12),
-                      // Service info
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -920,7 +978,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                           ],
                         ),
                       ),
-                      // Price
+
                       Text(
                         CurrencyFormatter.format(service.price),
                         style: GoogleFonts.poppins(
@@ -947,7 +1005,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Row 1: Nama service dan tombol delete
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -987,13 +1044,12 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            // Row 2: Quantity controls dan subtotal
+
             Row(
               children: [
-                // Quantity controls
                 _buildQuantityControls(index, item),
                 const Spacer(),
-                // Subtotal
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -1035,7 +1091,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Minus button
           InkWell(
             onTap: () {
               final newQuantity = item.quantity - step;
@@ -1045,7 +1100,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 _removeItem(index);
               }
             },
-            borderRadius: const BorderRadius.horizontal(left: Radius.circular(7)),
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(7),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Icon(
@@ -1055,7 +1112,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               ),
             ),
           ),
-          // Quantity display - tappable for manual input
+
           GestureDetector(
             onTap: () => _showQuantityInputDialog(index, item),
             child: Container(
@@ -1077,17 +1134,15 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               ),
             ),
           ),
-          // Plus button
+
           InkWell(
             onTap: () => _updateItemQuantity(index, item.quantity + step),
-            borderRadius: const BorderRadius.horizontal(right: Radius.circular(7)),
+            borderRadius: const BorderRadius.horizontal(
+              right: Radius.circular(7),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.add,
-                color: AppThemeColors.primary,
-                size: 18,
-              ),
+              child: Icon(Icons.add, color: AppThemeColors.primary, size: 18),
             ),
           ),
         ],
@@ -1101,21 +1156,17 @@ class _OrderItemEntry {
   double quantity;
   int subtotal;
 
-  _OrderItemEntry({
-    required this.service,
-    this.quantity = 1,
-  }) : subtotal = (service.price * quantity).round();
+  _OrderItemEntry({required this.service, this.quantity = 1})
+    : subtotal = (service.price * quantity).round();
 
   void updateSubtotal() {
     subtotal = (service.price * quantity).round();
   }
 
-  /// Format quantity display based on unit type
   String get quantityDisplay {
     if (service.unit == ServiceUnit.pcs) {
       return quantity.toInt().toString();
     } else {
-      // For kg, show decimal if needed
       return quantity == quantity.roundToDouble()
           ? quantity.toInt().toString()
           : quantity.toStringAsFixed(1);
@@ -1123,7 +1174,6 @@ class _OrderItemEntry {
   }
 }
 
-// Customer Search Bottom Sheet
 class _CustomerSearchSheet extends StatefulWidget {
   final Function(Customer) onCustomerSelected;
 
@@ -1160,7 +1210,6 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
       ),
       child: Column(
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -1171,7 +1220,6 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
             ),
           ),
 
-          // Header
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -1192,7 +1240,6 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
             ),
           ),
 
-          // Search field
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -1226,7 +1273,6 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
 
           const SizedBox(height: 16),
 
-          // Customer list
           Expanded(
             child: BlocBuilder<CustomerCubit, CustomerState>(
               builder: (context, state) {
@@ -1248,7 +1294,9 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
                         Icon(
                           Icons.person_off_outlined,
                           size: 48,
-                          color: AppThemeColors.textSecondary.withValues(alpha: 0.5),
+                          color: AppThemeColors.textSecondary.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Text(
@@ -1267,10 +1315,8 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
                 return ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: customers.length,
-                  separatorBuilder: (context, index) => Divider(
-                    height: 1,
-                    color: AppThemeColors.border,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      Divider(height: 1, color: AppThemeColors.border),
                   itemBuilder: (context, index) {
                     final customer = customers[index];
                     return ListTile(
@@ -1279,7 +1325,9 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
                         vertical: 4,
                       ),
                       leading: CircleAvatar(
-                        backgroundColor: AppThemeColors.primary.withValues(alpha: 0.1),
+                        backgroundColor: AppThemeColors.primary.withValues(
+                          alpha: 0.1,
+                        ),
                         child: Text(
                           customer.name.isNotEmpty
                               ? customer.name[0].toUpperCase()
@@ -1292,11 +1340,10 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
                       ),
                       title: Text(
                         customer.name,
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                       ),
-                      subtitle: customer.phone != null && customer.phone!.isNotEmpty
+                      subtitle:
+                          customer.phone != null && customer.phone!.isNotEmpty
                           ? Text(
                               customer.phone!,
                               style: GoogleFonts.poppins(
@@ -1312,7 +1359,9 @@ class _CustomerSearchSheetState extends State<_CustomerSearchSheet> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppThemeColors.success.withValues(alpha: 0.1),
+                                color: AppThemeColors.success.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(

@@ -39,7 +39,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      // Load more when near the bottom
       context.read<OrderCubit>().loadMoreOrders();
     }
   }
@@ -69,88 +68,88 @@ class _OrderListScreenState extends State<OrderListScreen> {
       backgroundColor: AppThemeColors.background,
       body: Column(
         children: [
-          // Header
           _buildHeader(),
 
-          // Filter Chips
           _buildFilterChips(),
 
-          // Order List
           Expanded(
             child: BlocConsumer<OrderCubit, OrderState>(
-                listener: (context, state) {
-                  if (state is OrderOperationSuccess) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: AppThemeColors.success,
-                      ),
-                    );
-                  } else if (state is OrderError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: AppThemeColors.error,
-                      ),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is OrderLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppThemeColors.primary,
-                      ),
-                    );
-                  }
-
-                  final orders = context.read<OrderCubit>().orders;
-
-                  if (orders.isEmpty) {
-                    return _buildEmptyState();
-                  }
-
-                  final hasMore = state is OrderLoaded ? state.hasMore : false;
-                  final isLoadingMore = state is OrderLoaded ? state.isLoadingMore : false;
-
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      _loadOrders();
-                    },
-                    color: AppThemeColors.primary,
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      itemCount: orders.length + (hasMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        // Loading indicator at the bottom
-                        if (index >= orders.length) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                            child: Center(
-                              child: isLoadingMore
-                                  ? const CircularProgressIndicator(
-                                      color: AppThemeColors.primary,
-                                      strokeWidth: 2,
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
-                          );
-                        }
-
-                        final order = orders[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: OrderCard(
-                            order: order,
-                            onTap: () => _navigateToDetail(order),
-                          ),
-                        );
-                      },
+              listener: (context, state) {
+                if (state is OrderOperationSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppThemeColors.success,
                     ),
                   );
-                },
-              ),
+                } else if (state is OrderError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppThemeColors.error,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is OrderLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppThemeColors.primary,
+                    ),
+                  );
+                }
+
+                final orders = context.read<OrderCubit>().orders;
+
+                if (orders.isEmpty) {
+                  return _buildEmptyState();
+                }
+
+                final hasMore = state is OrderLoaded ? state.hasMore : false;
+                final isLoadingMore = state is OrderLoaded
+                    ? state.isLoadingMore
+                    : false;
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    _loadOrders();
+                  },
+                  color: AppThemeColors.primary,
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    itemCount: orders.length + (hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= orders.length) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.lg,
+                          ),
+                          child: Center(
+                            child: isLoadingMore
+                                ? const CircularProgressIndicator(
+                                    color: AppThemeColors.primary,
+                                    strokeWidth: 2,
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        );
+                      }
+
+                      final order = orders[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                        child: OrderCard(
+                          order: order,
+                          onTap: () => _navigateToDetail(order),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -160,16 +159,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              // Title Row
               Row(
                 children: [
                   Expanded(
@@ -181,7 +177,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       ),
                     ),
                   ),
-                  // Close button - only show when can pop (pushed from another screen)
+
                   if (Navigator.canPop(context))
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
@@ -202,7 +198,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 ],
               ),
 
-              // Search Field (Always visible)
               const SizedBox(height: AppSpacing.md),
               Container(
                 decoration: BoxDecoration(
@@ -241,7 +236,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     ),
                   ),
                   onChanged: (value) {
-                    setState(() {}); // Update UI for clear button
+                    setState(() {});
                     _performSearch(value);
                   },
                 ),

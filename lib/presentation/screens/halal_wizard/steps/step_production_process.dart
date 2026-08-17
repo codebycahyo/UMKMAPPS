@@ -30,11 +30,11 @@ class _StepProductionProcessState extends State<StepProductionProcess> {
 
   void _updateData() {
     context.read<HalalWizardCubit>().updateStep3Data(
-          deskripsiProses: _deskripsiController.text,
-          tempatProses: _tempatController.text,
-          prosesTerpisah: _prosesTerpisah,
-          alatTidakBersama: _alatTidakBersama,
-        );
+      deskripsiProses: _deskripsiController.text,
+      tempatProses: _tempatController.text,
+      prosesTerpisah: _prosesTerpisah,
+      alatTidakBersama: _alatTidakBersama,
+    );
   }
 
   @override
@@ -91,7 +91,9 @@ class _StepProductionProcessState extends State<StepProductionProcess> {
             checked: _prosesTerpisah,
             label: 'Checkbox Proses produksi terpisah',
             child: CheckboxListTile(
-              title: const Text('Proses produksi terpisah dari bahan non-halal'),
+              title: const Text(
+                'Proses produksi terpisah dari bahan non-halal',
+              ),
               value: _prosesTerpisah,
               onChanged: (val) {
                 setState(() => _prosesTerpisah = val ?? false);
@@ -104,7 +106,9 @@ class _StepProductionProcessState extends State<StepProductionProcess> {
             checked: _alatTidakBersama,
             label: 'Checkbox Peralatan tidak digunakan bersama',
             child: CheckboxListTile(
-              title: const Text('Peralatan tidak digunakan bersama produk non-halal'),
+              title: const Text(
+                'Peralatan tidak digunakan bersama produk non-halal',
+              ),
               value: _alatTidakBersama,
               onChanged: (val) {
                 setState(() => _alatTidakBersama = val ?? false);
@@ -123,7 +127,8 @@ class _StepProductionProcessState extends State<StepProductionProcess> {
             builder: (context, state) {
               final stepIndex = 2;
               final checklist = state.documentChecklist[stepIndex] ?? [];
-              final labels = HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
+              final labels =
+                  HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
               final checkedCount = checklist.where((c) => c).length;
 
               return Column(
@@ -132,7 +137,9 @@ class _StepProductionProcessState extends State<StepProductionProcess> {
                   Text('$checkedCount dari ${labels.length} dokumen siap'),
                   const SizedBox(height: 8),
                   ...List.generate(labels.length, (index) {
-                    final isChecked = index < checklist.length ? checklist[index] : false;
+                    final isChecked = index < checklist.length
+                        ? checklist[index]
+                        : false;
                     return Semantics(
                       checked: isChecked,
                       label: 'Checkbox ${labels[index]}',
@@ -141,7 +148,10 @@ class _StepProductionProcessState extends State<StepProductionProcess> {
                         value: isChecked,
                         activeColor: const Color(0xFFD97706),
                         onChanged: (val) {
-                          context.read<HalalWizardCubit>().toggleDocumentCheck(stepIndex, index);
+                          context.read<HalalWizardCubit>().toggleDocumentCheck(
+                            stepIndex,
+                            index,
+                          );
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),

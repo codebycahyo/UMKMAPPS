@@ -93,77 +93,74 @@ class _ReportScreenState extends State<ReportScreen> {
       backgroundColor: AppThemeColors.background,
       body: Column(
         children: [
-          // Header
           _buildHeader(),
 
-          // Period selector
           _buildPeriodSelector(),
 
-          // Report content
           Expanded(
             child: BlocConsumer<ReportCubit, ReportState>(
-                listener: (context, state) {
-                  if (state is ReportExported) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: AppThemeColors.success,
-                      ),
-                    );
-                  } else if (state is ReportError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: AppThemeColors.error,
-                      ),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is ReportLoading || state is ReportExporting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppThemeColors.primary,
-                      ),
-                    );
-                  }
-
-                  if (state is ReportLoaded) {
-                    return _buildReportContent(state);
-                  }
-
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.analytics_outlined,
-                          size: 64,
-                          color: AppThemeColors.textSecondary.withValues(alpha: 0.5),
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        Text(
-                          'Pilih periode untuk melihat laporan',
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppThemeColors.textSecondary,
-                          ),
-                        ),
-                      ],
+              listener: (context, state) {
+                if (state is ReportExported) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppThemeColors.success,
                     ),
                   );
-                },
-              ),
+                } else if (state is ReportError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppThemeColors.error,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is ReportLoading || state is ReportExporting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppThemeColors.primary,
+                    ),
+                  );
+                }
+
+                if (state is ReportLoaded) {
+                  return _buildReportContent(state);
+                }
+
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.analytics_outlined,
+                        size: 64,
+                        color: AppThemeColors.textSecondary.withValues(
+                          alpha: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Text(
+                        'Pilih periode untuk melihat laporan',
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppThemeColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -184,7 +181,6 @@ class _ReportScreenState extends State<ReportScreen> {
                   final isLoaded = state is ReportLoaded;
                   return Row(
                     children: [
-                      // PDF Export
                       Semantics(
                         label: 'Ekspor PDF',
                         button: true,
@@ -196,36 +192,45 @@ class _ReportScreenState extends State<ReportScreen> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: isLoaded ? 0.2 : 0.1),
+                              color: Colors.white.withValues(
+                                alpha: isLoaded ? 0.2 : 0.1,
+                              ),
                               borderRadius: AppRadius.smRadius,
                             ),
                             child: Icon(
                               Icons.picture_as_pdf_rounded,
-                              color: Colors.white.withValues(alpha: isLoaded ? 1.0 : 0.5),
+                              color: Colors.white.withValues(
+                                alpha: isLoaded ? 1.0 : 0.5,
+                              ),
                               size: 20,
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Excel Export
+
                       Semantics(
                         label: 'Ekspor Excel',
                         button: true,
                         child: GestureDetector(
                           onTap: isLoaded
-                              ? () => context.read<ReportCubit>().exportToExcel()
+                              ? () =>
+                                    context.read<ReportCubit>().exportToExcel()
                               : null,
                           child: Container(
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: isLoaded ? 0.2 : 0.1),
+                              color: Colors.white.withValues(
+                                alpha: isLoaded ? 0.2 : 0.1,
+                              ),
                               borderRadius: AppRadius.smRadius,
                             ),
                             child: Icon(
                               Icons.file_download_outlined,
-                              color: Colors.white.withValues(alpha: isLoaded ? 1.0 : 0.5),
+                              color: Colors.white.withValues(
+                                alpha: isLoaded ? 1.0 : 0.5,
+                              ),
                               size: 20,
                             ),
                           ),
@@ -251,7 +256,6 @@ class _ReportScreenState extends State<ReportScreen> {
       ),
       child: Column(
         children: [
-          // Quick period buttons
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -268,7 +272,6 @@ class _ReportScreenState extends State<ReportScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Date range display
           GestureDetector(
             onTap: _selectDateRange,
             child: Container(
@@ -351,19 +354,15 @@ class _ReportScreenState extends State<ReportScreen> {
       child: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
-          // Summary cards
           _buildSummaryCards(data),
           const SizedBox(height: AppSpacing.xl),
 
-          // Revenue chart
           _buildRevenueChart(data),
           const SizedBox(height: AppSpacing.xl),
 
-          // Status breakdown
           _buildStatusBreakdown(data),
           const SizedBox(height: AppSpacing.xl),
 
-          // Top services
           _buildTopServices(data),
           const SizedBox(height: AppSpacing.lg),
         ],
@@ -383,7 +382,6 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // Cash Flow Overview - 3 Cards (Pemasukan, Pengeluaran, Saldo/Laba)
         Row(
           children: [
             Expanded(
@@ -410,7 +408,9 @@ class _ReportScreenState extends State<ReportScreen> {
           icon: Icons.account_balance_wallet_rounded,
           label: 'Saldo / Laba Bersih',
           value: CurrencyFormatter.format(data.netProfit),
-          color: data.netProfit >= 0 ? AppThemeColors.primary : AppThemeColors.error,
+          color: data.netProfit >= 0
+              ? AppThemeColors.primary
+              : AppThemeColors.error,
           fullWidth: true,
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -423,7 +423,6 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // Main stats - 2x2 grid
         Row(
           children: [
             Expanded(
@@ -677,10 +676,7 @@ class _ReportScreenState extends State<ReportScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: AppTypography.labelMedium,
-                ),
+                Text(label, style: AppTypography.labelMedium),
                 const SizedBox(height: 4),
                 ClipRRect(
                   borderRadius: AppRadius.smRadius,
@@ -735,7 +731,6 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
             child: Row(
               children: [
-                // Rank badge
                 Container(
                   width: 28,
                   height: 28,
@@ -743,17 +738,19 @@ class _ReportScreenState extends State<ReportScreen> {
                     color: index == 0
                         ? AppThemeColors.warning
                         : index == 1
-                            ? AppThemeColors.textSecondary
-                            : index == 2
-                                ? const Color(0xFFCD7F32)
-                                : AppThemeColors.primarySurface,
+                        ? AppThemeColors.textSecondary
+                        : index == 2
+                        ? const Color(0xFFCD7F32)
+                        : AppThemeColors.primarySurface,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
                       '${index + 1}',
                       style: AppTypography.labelSmall.copyWith(
-                        color: index < 3 ? Colors.white : AppThemeColors.textSecondary,
+                        color: index < 3
+                            ? Colors.white
+                            : AppThemeColors.textSecondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

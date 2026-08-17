@@ -24,22 +24,24 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(
+    final db = await openDatabase(
       path,
-      version: 3,
+      version: AppConstants.databaseVersion,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
       onConfigure: _configureDB,
     );
+
+    await _ensureUmkmCatalog(db);
+
+    return db;
   }
 
   Future<void> _configureDB(Database db) async {
-    // Enable foreign keys
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
   Future<void> _createDB(Database db, int version) async {
-    // Create Users table
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +55,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Customers table
     await db.execute('''
       CREATE TABLE customers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,7 +70,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Services table
     await db.execute('''
       CREATE TABLE services (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,7 +82,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Orders table
     await db.execute('''
       CREATE TABLE orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,7 +105,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Order Items table
     await db.execute('''
       CREATE TABLE order_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -122,7 +120,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Payments table
     await db.execute('''
       CREATE TABLE payments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -139,7 +136,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create App Settings table
     await db.execute('''
       CREATE TABLE app_settings (
         key TEXT PRIMARY KEY,
@@ -147,7 +143,6 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create Expenses table (LegaliKas AI — OCR/Voice/Manual entries)
     await db.execute('''
       CREATE TABLE expenses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -162,47 +157,38 @@ class DatabaseHelper {
       )
     ''');
 
-    // Create indexes
     await _createIndexes(db);
 
-    // Seed default data
     await _seedData(db);
   }
 
   Future<void> _createIndexes(Database db) async {
-    // Users indexes
     await db.execute('CREATE INDEX idx_users_username ON users(username)');
     await db.execute('CREATE INDEX idx_users_role ON users(role)');
 
-    // Customers indexes
     await db.execute('CREATE INDEX idx_customers_phone ON customers(phone)');
     await db.execute('CREATE INDEX idx_customers_name ON customers(name)');
 
-    // Orders indexes
     await db.execute('CREATE INDEX idx_orders_status ON orders(status)');
     await db.execute('CREATE INDEX idx_orders_date ON orders(order_date)');
     await db.execute('CREATE INDEX idx_orders_invoice ON orders(invoice_no)');
     await db.execute('CREATE INDEX idx_orders_customer ON orders(customer_id)');
 
-    // Order Items indexes
     await db.execute(
       'CREATE INDEX idx_order_items_order ON order_items(order_id)',
     );
 
-    // Payments indexes
     await db.execute('CREATE INDEX idx_payments_order ON payments(order_id)');
     await db.execute(
       'CREATE INDEX idx_payments_date ON payments(payment_date)',
     );
 
-    // Expenses indexes
     await db.execute('CREATE INDEX idx_expenses_type ON expenses(type)');
     await db.execute('CREATE INDEX idx_expenses_source ON expenses(source)');
     await db.execute('CREATE INDEX idx_expenses_date ON expenses(tanggal)');
   }
 
   Future<void> _seedData(Database db) async {
-    // Seed default owner
     final passwordHash = PasswordHelper.hashPassword(
       AppConstants.defaultOwnerPassword,
     );
@@ -214,41 +200,6 @@ class DatabaseHelper {
       'is_active': 1,
     });
 
-    // Seed default services
-    final services = [
-      {'name': 'Cuci Kering', 'unit': 'kg', 'price': 8000, 'duration_days': 3},
-      {
-        'name': 'Cuci Setrika',
-        'unit': 'kg',
-        'price': 10000,
-        'duration_days': 3,
-      },
-      {'name': 'Setrika Saja', 'unit': 'kg', 'price': 5000, 'duration_days': 2},
-      {
-        'name': 'Cuci Bed Cover',
-        'unit': 'pcs',
-        'price': 25000,
-        'duration_days': 4,
-      },
-      {
-        'name': 'Cuci Karpet',
-        'unit': 'pcs',
-        'price': 35000,
-        'duration_days': 5,
-      },
-      {
-        'name': 'Cuci Boneka',
-        'unit': 'pcs',
-        'price': 15000,
-        'duration_days': 3,
-      },
-    ];
-
-    for (final service in services) {
-      await db.insert('services', {...service, 'is_active': 1});
-    }
-
-    // Seed default settings
     final settings = {
       AppConstants.keyLaundryName: AppConstants.defaultLaundryName,
       AppConstants.keyLaundryAddress: AppConstants.defaultLaundryAddress,
@@ -265,15 +216,12 @@ class DatabaseHelper {
   }
 
   Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
-    // Handle migrations here
     if (oldVersion < 2) {
-      // Add change column to payments table
       await db.execute(
         'ALTER TABLE payments ADD COLUMN change INTEGER DEFAULT 0',
       );
     }
     if (oldVersion < 3) {
-      // Add expenses table for LegaliKas AI OCR/Voice/Manual entries
       await db.execute('''
         CREATE TABLE IF NOT EXISTS expenses (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -287,13 +235,31 @@ class DatabaseHelper {
           created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
       ''');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_expenses_type ON expenses(type)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_expenses_source ON expenses(source)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(tanggal)');
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_expenses_type ON expenses(type)',
+      );
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_expenses_source ON expenses(source)',
+      );
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(tanggal)',
+      );
+    }
+    if (oldVersion < 4) {
+      await _ensureUmkmCatalog(db);
     }
   }
 
-  // Utility methods
+  Future<void> _ensureUmkmCatalog(Database db) async {
+    try {
+      await db.delete(
+        'services',
+        where:
+            "name LIKE '%Cuci%' OR name LIKE '%Setrika%' OR name LIKE '%Laundry%' OR name LIKE '%Bed Cover%' OR name LIKE '%Karpet%' OR name LIKE '%Boneka%' OR name LIKE '%Produk / Barang Reguler%' OR name LIKE '%Layanan / Jasa Standard%' OR name LIKE '%Paket Hemat UMKM%' OR name LIKE '%Paket Spesial Usaha%' OR name LIKE '%Barang Grosir%'",
+      );
+    } catch (_) {}
+  }
+
   Future<void> close() async {
     final db = await instance.database;
     db.close();
@@ -309,6 +275,6 @@ class DatabaseHelper {
 
   Future<void> resetDatabase() async {
     await deleteDatabase();
-    await database; // This will recreate the database
+    await database;
   }
 }

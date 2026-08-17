@@ -37,12 +37,12 @@ class _StepLocationState extends State<StepLocation> {
 
   void _updateData() {
     context.read<HalalWizardCubit>().updateStep4Data(
-          alamatProduksi: _alamatController.text,
-          statusTempat: _statusTempat,
-          luasArea: _luasController.text,
-          lokasiBersih: _lokasiBersih,
-          lokasiTerpisahHaram: _lokasiTerpisah,
-        );
+      alamatProduksi: _alamatController.text,
+      statusTempat: _statusTempat,
+      luasArea: _luasController.text,
+      lokasiBersih: _lokasiBersih,
+      lokasiTerpisahHaram: _lokasiTerpisah,
+    );
   }
 
   @override
@@ -86,10 +86,7 @@ class _StepLocationState extends State<StepLocation> {
                 border: OutlineInputBorder(),
               ),
               items: _statusOptions.map((status) {
-                return DropdownMenuItem(
-                  value: status,
-                  child: Text(status),
-                );
+                return DropdownMenuItem(value: status, child: Text(status));
               }).toList(),
               onChanged: (val) {
                 if (val != null) {
@@ -134,7 +131,9 @@ class _StepLocationState extends State<StepLocation> {
             checked: _lokasiTerpisah,
             label: 'Checkbox Lokasi terpisah dari barang haram',
             child: CheckboxListTile(
-              title: const Text('Terpisah dari tempat yang memproduksi barang haram'),
+              title: const Text(
+                'Terpisah dari tempat yang memproduksi barang haram',
+              ),
               value: _lokasiTerpisah,
               onChanged: (val) {
                 setState(() => _lokasiTerpisah = val ?? false);
@@ -153,7 +152,8 @@ class _StepLocationState extends State<StepLocation> {
             builder: (context, state) {
               final stepIndex = 3;
               final checklist = state.documentChecklist[stepIndex] ?? [];
-              final labels = HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
+              final labels =
+                  HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
               final checkedCount = checklist.where((c) => c).length;
 
               return Column(
@@ -162,7 +162,9 @@ class _StepLocationState extends State<StepLocation> {
                   Text('$checkedCount dari ${labels.length} dokumen siap'),
                   const SizedBox(height: 8),
                   ...List.generate(labels.length, (index) {
-                    final isChecked = index < checklist.length ? checklist[index] : false;
+                    final isChecked = index < checklist.length
+                        ? checklist[index]
+                        : false;
                     return Semantics(
                       checked: isChecked,
                       label: 'Checkbox ${labels[index]}',
@@ -171,7 +173,10 @@ class _StepLocationState extends State<StepLocation> {
                         value: isChecked,
                         activeColor: const Color(0xFFD97706),
                         onChanged: (val) {
-                          context.read<HalalWizardCubit>().toggleDocumentCheck(stepIndex, index);
+                          context.read<HalalWizardCubit>().toggleDocumentCheck(
+                            stepIndex,
+                            index,
+                          );
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),

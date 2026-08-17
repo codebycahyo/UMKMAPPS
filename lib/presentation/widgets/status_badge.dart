@@ -48,19 +48,13 @@ class StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: _backgroundColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: _backgroundColor.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: _backgroundColor.withValues(alpha: 0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showIcon) ...[
-            Icon(
-              _icon,
-              size: fontSize + 2,
-              color: _backgroundColor,
-            ),
+            Icon(_icon, size: fontSize + 2, color: _backgroundColor),
             const SizedBox(width: 4),
           ],
           Text(

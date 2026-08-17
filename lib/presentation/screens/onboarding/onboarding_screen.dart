@@ -66,9 +66,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeOut));
     _fadeController.forward();
   }
 
@@ -105,7 +106,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         opacity: _fadeAnimation,
         child: Stack(
           children: [
-            // Page View
             PageView.builder(
               controller: _pageController,
               physics: const BouncingScrollPhysics(),
@@ -120,7 +120,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               },
             ),
 
-            // Skip Button
             Positioned(
               top: 0,
               right: 0,
@@ -161,7 +160,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               ),
             ),
 
-            // Bottom Navigation
             Positioned(
               bottom: 0,
               left: 0,
@@ -186,7 +184,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Page Indicators
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -205,10 +202,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             boxShadow: _currentPage == index
                                 ? [
                                     BoxShadow(
-                                      color: Colors.white.withValues(alpha: 0.4),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.4,
+                                      ),
                                       blurRadius: 8,
                                       spreadRadius: 1,
-                                    )
+                                    ),
                                   ]
                                 : null,
                           ),
@@ -217,7 +216,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     ),
                     const SizedBox(height: 28),
 
-                    // Next/Start Button
                     GestureDetector(
                       onTap: _nextPage,
                       child: AnimatedContainer(
@@ -282,7 +280,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             children: [
               const Spacer(flex: 1),
 
-              // Logo or Icon Container with Animation
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
                 switchInCurve: Curves.easeOut,
@@ -293,7 +290,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               ),
               const SizedBox(height: 40),
 
-              // Title with better typography
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: Text(
@@ -311,7 +307,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               ),
               const SizedBox(height: 16),
 
-              // Subtitle badge
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -338,7 +333,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               ),
               const SizedBox(height: 28),
 
-              // Description with better line height
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
@@ -384,10 +378,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           ),
         ],
       ),
-      child: Image.asset(
-        'assets/icons/logo_baru.png',
-        fit: BoxFit.contain,
-      ),
+      child: Image.asset('assets/icons/logo_baru.png', fit: BoxFit.contain),
     );
   }
 
@@ -412,11 +403,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             shape: BoxShape.circle,
             color: Colors.white.withValues(alpha: 0.2),
           ),
-          child: Icon(
-            icon,
-            size: 48,
-            color: Colors.white,
-          ),
+          child: Icon(icon, size: 48, color: Colors.white),
         ),
       ),
     );

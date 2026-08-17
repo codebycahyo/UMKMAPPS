@@ -4,9 +4,8 @@ class SettingsRepository {
   final DatabaseHelper _databaseHelper;
 
   SettingsRepository({DatabaseHelper? databaseHelper})
-      : _databaseHelper = databaseHelper ?? DatabaseHelper.instance;
+    : _databaseHelper = databaseHelper ?? DatabaseHelper.instance;
 
-  /// Get single setting value
   Future<String?> getSetting(String key) async {
     final db = await _databaseHelper.database;
 
@@ -20,11 +19,9 @@ class SettingsRepository {
     return result.first['value'] as String;
   }
 
-  /// Set setting value
   Future<void> setSetting(String key, String value) async {
     final db = await _databaseHelper.database;
 
-    // Check if exists
     final existing = await getSetting(key);
 
     if (existing != null) {
@@ -35,14 +32,10 @@ class SettingsRepository {
         whereArgs: [key],
       );
     } else {
-      await db.insert('app_settings', {
-        'key': key,
-        'value': value,
-      });
+      await db.insert('app_settings', {'key': key, 'value': value});
     }
   }
 
-  /// Get all settings
   Future<Map<String, String>> getAllSettings() async {
     final db = await _databaseHelper.database;
 
@@ -53,7 +46,6 @@ class SettingsRepository {
     );
   }
 
-  /// Batch update settings
   Future<void> updateSettings(Map<String, String> settings) async {
     final db = await _databaseHelper.database;
 

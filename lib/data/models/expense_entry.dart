@@ -1,11 +1,11 @@
 class ExpenseEntry {
   final int? id;
-  final String type; // 'masuk' or 'keluar'
+  final String type;
   final String item;
   final int nominal;
   final DateTime tanggal;
   final String? supplier;
-  final String source; // 'ocr', 'voice', 'manual'
+  final String source;
   final String? rawText;
   final DateTime createdAt;
 

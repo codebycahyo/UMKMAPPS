@@ -87,7 +87,6 @@ class Customer extends Equatable {
     );
   }
 
-  // Helper methods
   bool get isLoyalCustomer => totalOrders >= 10;
 
   int get averageSpentPerOrder =>
@@ -109,15 +108,15 @@ class Customer extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        phone,
-        address,
-        notes,
-        totalOrders,
-        totalSpent,
-        lastOrderDate,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    name,
+    phone,
+    address,
+    notes,
+    totalOrders,
+    totalSpent,
+    lastOrderDate,
+    createdAt,
+    updatedAt,
+  ];
 }

@@ -45,7 +45,6 @@ class CustomCard extends StatelessWidget {
   }
 }
 
-/// Service Card like in the design
 class ServiceCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -81,10 +80,7 @@ class ServiceCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: AppTypography.titleMedium,
-                ),
+                Text(title, style: AppTypography.titleMedium),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   subtitle,
@@ -95,17 +91,13 @@ class ServiceCard extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(
-            Icons.chevron_right,
-            color: AppThemeColors.textSecondary,
-          ),
+          const Icon(Icons.chevron_right, color: AppThemeColors.textSecondary),
         ],
       ),
     );
   }
 }
 
-/// Stats Card for dashboard - Compact version
 class StatsCard extends StatelessWidget {
   final String title;
   final String value;
@@ -163,7 +155,6 @@ class StatsCard extends StatelessWidget {
   }
 }
 
-/// Promo Banner Card
 class PromoBannerCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -191,7 +182,6 @@ class PromoBannerCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Content
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -200,9 +190,7 @@ class PromoBannerCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTypography.titleLarge.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: AppTypography.titleLarge.copyWith(color: Colors.white),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(

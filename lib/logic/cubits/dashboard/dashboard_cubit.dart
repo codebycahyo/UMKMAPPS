@@ -14,16 +14,15 @@ class DashboardCubit extends Cubit<DashboardState> {
     OrderRepository? orderRepository,
     PaymentRepository? paymentRepository,
     ExpenseRepository? expenseRepository,
-  })  : _orderRepository = orderRepository ?? OrderRepository(),
-        _paymentRepository = paymentRepository ?? PaymentRepository(),
-        _expenseRepository = expenseRepository ?? ExpenseRepository(),
-        super(const DashboardInitial());
+  }) : _orderRepository = orderRepository ?? OrderRepository(),
+       _paymentRepository = paymentRepository ?? PaymentRepository(),
+       _expenseRepository = expenseRepository ?? ExpenseRepository(),
+       super(const DashboardInitial());
 
   Future<void> loadDashboard({String period = 'mingguan'}) async {
     emit(const DashboardLoading());
 
     try {
-      // Load all dashboard data in parallel
       final results = await Future.wait([
         _orderRepository.getTodayOrderCountByStatus(),
         _paymentRepository.getTodayRevenue(),
@@ -31,7 +30,6 @@ class DashboardCubit extends Cubit<DashboardState> {
         _orderRepository.getRecentOrders(limit: 5),
       ]);
 
-      // Determine date range based on period
       final now = DateTime.now();
       DateTime startDate;
       switch (period) {
@@ -47,22 +45,32 @@ class DashboardCubit extends Cubit<DashboardState> {
           break;
       }
 
-      // Load expense data
       int totalIncome = 0;
       int totalExpense = 0;
       List<DailyFinancial> chartData = [];
 
       try {
-        totalIncome = await _expenseRepository.getTotalByType('masuk', startDate, now);
-        totalExpense = await _expenseRepository.getTotalByType('keluar', startDate, now);
+        totalIncome = await _expenseRepository.getTotalByType(
+          'masuk',
+          startDate,
+          now,
+        );
+        totalExpense = await _expenseRepository.getTotalByType(
+          'keluar',
+          startDate,
+          now,
+        );
 
-        // Build chart data — daily aggregates
-        final expenses = await _expenseRepository.getExpensesByDateRange(startDate, now);
+        final expenses = await _expenseRepository.getExpensesByDateRange(
+          startDate,
+          now,
+        );
         final Map<String, int> incomeByDay = {};
         final Map<String, int> expenseByDay = {};
 
         for (final entry in expenses) {
-          final dayKey = '${entry.tanggal.year}-${entry.tanggal.month.toString().padLeft(2, '0')}-${entry.tanggal.day.toString().padLeft(2, '0')}';
+          final dayKey =
+              '${entry.tanggal.year}-${entry.tanggal.month.toString().padLeft(2, '0')}-${entry.tanggal.day.toString().padLeft(2, '0')}';
           if (entry.type == 'masuk') {
             incomeByDay[dayKey] = (incomeByDay[dayKey] ?? 0) + entry.nominal;
           } else {
@@ -70,32 +78,34 @@ class DashboardCubit extends Cubit<DashboardState> {
           }
         }
 
-        // Generate chart entries for date range
         final int dayCount = now.difference(startDate).inDays + 1;
         for (int i = 0; i < dayCount && i < 31; i++) {
           final date = startDate.add(Duration(days: i));
-          final dayKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-          chartData.add(DailyFinancial(
-            date: date,
-            income: incomeByDay[dayKey] ?? 0,
-            expense: expenseByDay[dayKey] ?? 0,
-          ));
+          final dayKey =
+              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+          chartData.add(
+            DailyFinancial(
+              date: date,
+              income: incomeByDay[dayKey] ?? 0,
+              expense: expenseByDay[dayKey] ?? 0,
+            ),
+          );
         }
-      } catch (_) {
-        // Expense data not available yet — that's OK, show zeroes
-      }
+      } catch (_) {}
 
-      emit(DashboardLoaded(
-        todayStatusCounts: results[0] as Map<OrderStatus, int>,
-        todayRevenue: results[1] as int,
-        monthOrderCount: results[2] as int,
-        recentOrders: results[3] as List<Order>,
-        totalIncome: totalIncome,
-        totalExpense: totalExpense,
-        netBalance: totalIncome - totalExpense,
-        chartData: chartData,
-        selectedPeriod: period,
-      ));
+      emit(
+        DashboardLoaded(
+          todayStatusCounts: results[0] as Map<OrderStatus, int>,
+          todayRevenue: results[1] as int,
+          monthOrderCount: results[2] as int,
+          recentOrders: results[3] as List<Order>,
+          totalIncome: totalIncome,
+          totalExpense: totalExpense,
+          netBalance: totalIncome - totalExpense,
+          chartData: chartData,
+          selectedPeriod: period,
+        ),
+      );
     } catch (e) {
       emit(DashboardError(e.toString().replaceAll('Exception: ', '')));
     }

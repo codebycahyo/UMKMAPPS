@@ -1,34 +1,73 @@
 import 'package:equatable/equatable.dart';
 
-enum ServiceUnit { kg, pcs }
+enum ServiceUnit { pcs, porsi, paket, kg, liter, box, unit, lusin }
 
 extension ServiceUnitExtension on ServiceUnit {
   String get value {
     switch (this) {
-      case ServiceUnit.kg:
-        return 'kg';
       case ServiceUnit.pcs:
         return 'pcs';
+      case ServiceUnit.porsi:
+        return 'porsi';
+      case ServiceUnit.paket:
+        return 'paket';
+      case ServiceUnit.kg:
+        return 'kg';
+      case ServiceUnit.liter:
+        return 'liter';
+      case ServiceUnit.box:
+        return 'box';
+      case ServiceUnit.unit:
+        return 'unit';
+      case ServiceUnit.lusin:
+        return 'lusin';
     }
   }
 
   String get displayName {
     switch (this) {
-      case ServiceUnit.kg:
-        return 'Kilogram';
       case ServiceUnit.pcs:
-        return 'Pieces';
+        return 'Pieces (Pcs)';
+      case ServiceUnit.porsi:
+        return 'Porsi';
+      case ServiceUnit.paket:
+        return 'Paket';
+      case ServiceUnit.kg:
+        return 'Kilogram (Kg)';
+      case ServiceUnit.liter:
+        return 'Liter';
+      case ServiceUnit.box:
+        return 'Box / Dus';
+      case ServiceUnit.unit:
+        return 'Unit';
+      case ServiceUnit.lusin:
+        return 'Lusin';
     }
   }
 
   static ServiceUnit fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'kg':
-        return ServiceUnit.kg;
+    switch (value.toLowerCase().trim()) {
       case 'pcs':
         return ServiceUnit.pcs;
-      default:
+      case 'porsi':
+        return ServiceUnit.porsi;
+      case 'paket':
+        return ServiceUnit.paket;
+      case 'kg':
+      case 'kilogram':
         return ServiceUnit.kg;
+      case 'liter':
+      case 'lt':
+        return ServiceUnit.liter;
+      case 'box':
+      case 'dus':
+        return ServiceUnit.box;
+      case 'unit':
+        return ServiceUnit.unit;
+      case 'lusin':
+        return ServiceUnit.lusin;
+      default:
+        return ServiceUnit.pcs;
     }
   }
 }
@@ -45,9 +84,9 @@ class Service extends Equatable {
   const Service({
     this.id,
     required this.name,
-    required this.unit,
+    this.unit = ServiceUnit.pcs,
     required this.price,
-    this.durationDays = 3,
+    this.durationDays = 1,
     this.isActive = true,
     this.createdAt,
   });
@@ -100,12 +139,12 @@ class Service extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        unit,
-        price,
-        durationDays,
-        isActive,
-        createdAt,
-      ];
+    id,
+    name,
+    unit,
+    price,
+    durationDays,
+    isActive,
+    createdAt,
+  ];
 }

@@ -15,7 +15,7 @@ import 'package:flutter_laundry_offline_app/presentation/screens/orders/order_de
 import 'package:flutter_laundry_offline_app/presentation/screens/orders/order_list_screen.dart';
 import 'package:flutter_laundry_offline_app/presentation/screens/settings/printer_settings_screen.dart';
 import 'package:flutter_laundry_offline_app/presentation/widgets/order_card.dart';
-// LegaliKas AI imports
+
 import 'package:flutter_laundry_offline_app/logic/cubits/report/report_cubit.dart';
 import 'package:flutter_laundry_offline_app/presentation/screens/reports/report_screen.dart';
 import 'package:flutter_laundry_offline_app/logic/cubits/expense/expense_cubit.dart';
@@ -77,31 +77,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header with gradient
                       _buildHeader(user, state),
 
-                      // Content
                       Padding(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Quick Actions
                             _buildQuickActions(),
 
                             const SizedBox(height: AppSpacing.xl),
 
-                            // Financial Summary & Chart
                             _buildFinancialSection(state),
 
                             const SizedBox(height: AppSpacing.xl),
 
-                            // Order Status Section
                             _buildOrderStatusSection(state),
 
                             const SizedBox(height: AppSpacing.xl),
 
-                            // Recent Orders
                             _buildRecentOrders(state),
 
                             const SizedBox(height: AppSpacing.lg),
@@ -174,9 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: Text(
               'Logout',
-              style: AppTypography.labelMedium.copyWith(
-                color: Colors.white,
-              ),
+              style: AppTypography.labelMedium.copyWith(color: Colors.white),
             ),
           ),
         ],
@@ -195,19 +187,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              // Top row - User info
               Row(
                 children: [
-                  // Avatar
                   Container(
                     width: 44,
                     height: 44,
@@ -222,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
-                  // Name & greeting
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +231,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                   ),
-                  // Role badge
+
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
@@ -262,7 +250,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  // Logout button
+
                   GestureDetector(
                     onTap: _showLogoutConfirmation,
                     child: Container(
@@ -284,7 +272,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // Stats cards
               Row(
                 children: [
                   Expanded(
@@ -321,9 +308,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),
         borderRadius: AppRadius.mdRadius,
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -359,7 +344,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // AI & Input Actions
         Text(
           'Pencatatan Cepat AI',
           style: AppTypography.titleMedium.copyWith(
@@ -380,7 +364,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => BlocProvider(
-                        create: (_) => ExpenseCubit(ExpenseRepository())..loadExpenses(),
+                        create: (_) =>
+                            ExpenseCubit(ExpenseRepository())..loadExpenses(),
                         child: const ScanReceiptScreen(),
                       ),
                     ),
@@ -400,7 +385,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => BlocProvider(
-                        create: (_) => ExpenseCubit(ExpenseRepository())..loadExpenses(),
+                        create: (_) =>
+                            ExpenseCubit(ExpenseRepository())..loadExpenses(),
                         child: const VoiceEntryScreen(),
                       ),
                     ),
@@ -420,7 +406,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => BlocProvider(
-                        create: (_) => ExpenseCubit(ExpenseRepository())..loadExpenses(),
+                        create: (_) =>
+                            ExpenseCubit(ExpenseRepository())..loadExpenses(),
                         child: const ManualEntryScreen(),
                       ),
                     ),
@@ -433,7 +420,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         const SizedBox(height: AppSpacing.xl),
 
-        // Quick Shortcuts
         Text(
           'Akses Cepat',
           style: AppTypography.titleMedium.copyWith(
@@ -527,7 +513,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [color.withValues(alpha: 0.08), color.withValues(alpha: 0.03)],
+                colors: [
+                  color.withValues(alpha: 0.08),
+                  color.withValues(alpha: 0.03),
+                ],
               ),
               borderRadius: AppRadius.lgRadius,
               border: Border.all(color: color.withValues(alpha: 0.2)),
@@ -618,9 +607,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.lg,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: AppRadius.lgRadius,
@@ -656,6 +643,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
   Widget _buildFinancialSection(DashboardState state) {
     int totalIncome = 0;
     int totalExpense = 0;
@@ -674,7 +662,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section title + period toggle
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -688,7 +675,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        // Period filter chips
         Wrap(
           spacing: AppSpacing.sm,
           children: [
@@ -699,7 +685,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // Summary cards row
         Row(
           children: [
             Expanded(
@@ -724,7 +709,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: _buildFinancialCard(
                 label: 'Saldo',
                 amount: netBalance,
-                color: netBalance >= 0 ? AppThemeColors.primary : AppThemeColors.error,
+                color: netBalance >= 0
+                    ? AppThemeColors.primary
+                    : AppThemeColors.error,
                 icon: Icons.account_balance_wallet_rounded,
               ),
             ),
@@ -732,7 +719,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // Chart
         if (chartData.isNotEmpty) _buildBarChart(chartData),
       ],
     );
@@ -807,7 +793,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBarChart(List<DailyFinancial> data) {
-    // Show at most 7 bars for readability
     final displayData = data.length > 7 ? data.sublist(data.length - 7) : data;
     final maxVal = displayData.fold<int>(0, (prev, d) {
       final m = d.income > d.expense ? d.income : d.expense;
@@ -839,7 +824,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const Spacer(),
-              // Legend
+
               _buildChartLegend('Masuk', AppThemeColors.success),
               const SizedBox(width: AppSpacing.md),
               _buildChartLegend('Keluar', AppThemeColors.error),
@@ -871,13 +856,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < displayData.length) {
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < displayData.length) {
                           final d = displayData[value.toInt()].date;
                           return Padding(
                             padding: const EdgeInsets.only(top: 4),
                             child: Text(
                               '${d.day}/${d.month}',
-                              style: const TextStyle(fontSize: 9, color: Colors.grey),
+                              style: const TextStyle(
+                                fontSize: 9,
+                                color: Colors.grey,
+                              ),
                             ),
                           );
                         }
@@ -886,9 +875,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       reservedSize: 22,
                     ),
                   ),
-                  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 borderData: FlBorderData(show: false),
                 gridData: const FlGridData(show: false),
@@ -901,13 +896,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         toY: d.income.toDouble(),
                         color: AppThemeColors.success,
                         width: 10,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(4),
+                        ),
                       ),
                       BarChartRodData(
                         toY: d.expense.toDouble(),
                         color: AppThemeColors.error,
                         width: 10,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(4),
+                        ),
                       ),
                     ],
                   );
@@ -1033,18 +1032,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildStatusDivider() {
-    return Container(
-      width: 1,
-      height: 50,
-      color: AppThemeColors.border,
-    );
+    return Container(width: 1, height: 50, color: AppThemeColors.border);
   }
 
   Widget _buildRecentOrders(DashboardState state) {
     List<Order> recentOrders = [];
 
     if (state is DashboardLoaded) {
-      // Limit to 5 orders
       recentOrders = state.recentOrders.take(5).toList();
     }
 
@@ -1062,7 +1056,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             GestureDetector(
               onTap: () {
-                // Navigate to orders list
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -1089,9 +1082,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const Center(
             child: Padding(
               padding: EdgeInsets.all(32),
-              child: CircularProgressIndicator(
-                color: AppThemeColors.primary,
-              ),
+              child: CircularProgressIndicator(color: AppThemeColors.primary),
             ),
           )
         else if (recentOrders.isEmpty)
@@ -1121,23 +1112,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           )
         else
-          ...recentOrders.map((order) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: OrderCard(
-                  order: order,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: context.read<OrderCubit>(),
-                          child: OrderDetailScreen(orderId: order.id!),
-                        ),
+          ...recentOrders.map(
+            (order) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: OrderCard(
+                order: order,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<OrderCubit>(),
+                        child: OrderDetailScreen(orderId: order.id!),
                       ),
-                    ).then((_) => _dashboardCubit.loadDashboard());
-                  },
-                ),
-              )),
+                    ),
+                  ).then((_) => _dashboardCubit.loadDashboard());
+                },
+              ),
+            ),
+          ),
       ],
     );
   }

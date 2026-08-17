@@ -42,7 +42,7 @@ class DailyRevenue {
   final DateTime date;
   final int revenue;
   final int orderCount;
-  final int paid; // Pembayaran yang diterima pada tanggal ini
+  final int paid;
 
   DailyRevenue({
     required this.date,

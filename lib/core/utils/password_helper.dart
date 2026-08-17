@@ -5,13 +5,10 @@ import 'package:uuid/uuid.dart';
 class PasswordHelper {
   static const Uuid _uuid = Uuid();
 
-  /// Generate a salt
   static String generateSalt() {
     return _uuid.v4().replaceAll('-', '').substring(0, 16);
   }
 
-  /// Hash password with salt
-  /// Returns: "salt:hashedPassword"
   static String hashPassword(String password) {
     final salt = generateSalt();
     final saltedPassword = '$salt$password';
@@ -19,8 +16,6 @@ class PasswordHelper {
     return '$salt:$hash';
   }
 
-  /// Verify password against stored hash
-  /// storedHash format: "salt:hashedPassword"
   static bool verifyPassword(String password, String storedHash) {
     try {
       final parts = storedHash.split(':');
@@ -30,7 +25,9 @@ class PasswordHelper {
       final hash = parts[1];
 
       final saltedPassword = '$salt$password';
-      final computedHash = sha256.convert(utf8.encode(saltedPassword)).toString();
+      final computedHash = sha256
+          .convert(utf8.encode(saltedPassword))
+          .toString();
 
       return hash == computedHash;
     } catch (e) {
@@ -38,8 +35,6 @@ class PasswordHelper {
     }
   }
 
-  /// Validate password strength
-  /// Returns null if valid, error message if invalid
   static String? validatePassword(String password) {
     if (password.isEmpty) {
       return 'Password tidak boleh kosong';
@@ -53,8 +48,6 @@ class PasswordHelper {
     return null;
   }
 
-  /// Validate username
-  /// Returns null if valid, error message if invalid
   static String? validateUsername(String username) {
     if (username.isEmpty) {
       return 'Username tidak boleh kosong';

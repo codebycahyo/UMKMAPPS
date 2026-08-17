@@ -86,9 +86,7 @@ class CustomButton extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 padding: padding,
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mdRadius,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
               ),
               child: child,
             ),
@@ -106,9 +104,7 @@ class CustomButton extends StatelessWidget {
               foregroundColor: AppThemeColors.primary,
               elevation: 0,
               padding: padding,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
             ),
             child: child,
           ),
@@ -128,9 +124,7 @@ class CustomButton extends StatelessWidget {
                     : AppThemeColors.disabled,
               ),
               padding: padding,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
             ),
             child: child,
           ),
@@ -206,7 +200,6 @@ class CustomButton extends StatelessWidget {
   }
 }
 
-/// Icon Button with background
 class CustomIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;

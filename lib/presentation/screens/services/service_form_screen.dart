@@ -21,7 +21,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _durationController = TextEditingController();
-  ServiceUnit _selectedUnit = ServiceUnit.kg;
+  ServiceUnit _selectedUnit = ServiceUnit.pcs;
   bool _isLoading = false;
 
   bool get isEditing => widget.service != null;
@@ -31,11 +31,13 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
     super.initState();
     if (widget.service != null) {
       _nameController.text = widget.service!.name;
-      _priceController.text = ThousandSeparatorFormatter.format(widget.service!.price);
+      _priceController.text = ThousandSeparatorFormatter.format(
+        widget.service!.price,
+      );
       _durationController.text = widget.service!.durationDays.toString();
       _selectedUnit = widget.service!.unit;
     } else {
-      _durationController.text = '3'; // Default 3 days
+      _durationController.text = '1';
     }
   }
 
@@ -84,9 +86,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
               content: Text(state.message),
               backgroundColor: AppThemeColors.error,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
             ),
           );
         }
@@ -95,10 +95,8 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
         backgroundColor: AppThemeColors.background,
         body: Column(
           children: [
-            // Header
             _buildHeader(),
 
-            // Form Content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.lg),
@@ -107,22 +105,18 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Service Icon
                       _buildServiceIcon(),
 
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Form Card
                       _buildFormCard(),
 
                       const SizedBox(height: AppSpacing.lg),
 
-                      // Info Card
                       _buildInfoCard(),
 
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Save Button
                       _buildSaveButton(),
 
                       const SizedBox(height: AppSpacing.lg),
@@ -139,16 +133,13 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -167,7 +158,6 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
               ),
               const SizedBox(width: AppSpacing.md),
 
-              // Title
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,11 +203,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
             ),
           ],
         ),
-        child: const Icon(
-          Icons.inventory_2,
-          color: Colors.white,
-          size: 40,
-        ),
+        child: const Icon(Icons.inventory_2, color: Colors.white, size: 40),
       ),
     );
   }
@@ -233,7 +219,6 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title
           Row(
             children: [
               Container(
@@ -256,7 +241,6 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Name Field
           _buildInputLabel('Nama Produk/Layanan', isRequired: true),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
@@ -265,7 +249,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.next,
             decoration: _buildInputDecoration(
-              hintText: 'Contoh: Barang / Jasa Umum',
+              hintText: 'Contoh: Nasi Goreng, Baju Kaos, Jasa Servis',
               prefixIcon: Icons.inventory_2,
             ),
             validator: (value) {
@@ -278,23 +262,19 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Unit Selection
           _buildInputLabel('Satuan', isRequired: true),
           const SizedBox(height: AppSpacing.sm),
           _buildUnitSelector(),
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Price Field
           _buildInputLabel('Harga', isRequired: true),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _priceController,
             style: AppTypography.bodyMedium,
             keyboardType: TextInputType.number,
-            inputFormatters: [
-              ThousandSeparatorFormatter(),
-            ],
+            inputFormatters: [ThousandSeparatorFormatter()],
             textInputAction: TextInputAction.next,
             decoration: _buildInputDecoration(
               hintText: 'Contoh: 10.000',
@@ -315,16 +295,13 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Duration Field
           _buildInputLabel('Durasi Pengerjaan', isRequired: true),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _durationController,
             style: AppTypography.bodyMedium,
             keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             textInputAction: TextInputAction.done,
             decoration: _buildInputDecoration(
               hintText: 'Contoh: 3',
@@ -382,10 +359,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
       hintStyle: AppTypography.bodyMedium.copyWith(
         color: AppThemeColors.textHint,
       ),
-      prefixIcon: Icon(
-        prefixIcon,
-        color: AppThemeColors.primary,
-      ),
+      prefixIcon: Icon(prefixIcon, color: AppThemeColors.primary),
       prefixText: prefixText,
       prefixStyle: AppTypography.bodyMedium.copyWith(
         color: AppThemeColors.textPrimary,
@@ -403,29 +377,19 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.border,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.primary,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.error,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: AppRadius.mdRadius,
-        borderSide: const BorderSide(
-          color: AppThemeColors.error,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppThemeColors.error, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -435,118 +399,63 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
   }
 
   Widget _buildUnitSelector() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildUnitOption(
-            unit: ServiceUnit.kg,
-            label: 'Kilogram',
-            sublabel: 'per kg',
-            icon: Icons.scale,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: _buildUnitOption(
-            unit: ServiceUnit.pcs,
-            label: 'Per Item',
-            sublabel: 'per pcs',
-            icon: Icons.checkroom,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUnitOption({
-    required ServiceUnit unit,
-    required String label,
-    required String sublabel,
-    required IconData icon,
-  }) {
-    final isSelected = _selectedUnit == unit;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedUnit = unit;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppThemeColors.primary.withValues(alpha: 0.1)
-              : Colors.white,
-          borderRadius: AppRadius.mdRadius,
-          border: Border.all(
-            color: isSelected ? AppThemeColors.primary : AppThemeColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppThemeColors.primary.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Column(
-          children: [
-            // Icon
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                gradient: isSelected ? AppThemeColors.primaryGradient : null,
-                color: isSelected ? null : AppThemeColors.background,
-                borderRadius: AppRadius.mdRadius,
-              ),
-              child: Icon(
-                icon,
-                color: isSelected ? Colors.white : AppThemeColors.textHint,
-                size: 24,
-              ),
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: ServiceUnit.values.map((unit) {
+        final isSelected = _selectedUnit == unit;
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedUnit = unit;
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
             ),
-
-            const SizedBox(height: AppSpacing.sm),
-
-            // Label
-            Text(
-              label,
-              style: AppTypography.labelMedium.copyWith(
+            decoration: BoxDecoration(
+              color: isSelected ? AppThemeColors.primary : Colors.white,
+              borderRadius: AppRadius.fullRadius,
+              border: Border.all(
                 color: isSelected
                     ? AppThemeColors.primary
-                    : AppThemeColors.textSecondary,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    : AppThemeColors.border,
+                width: isSelected ? 1.5 : 1,
               ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: AppThemeColors.primary.withValues(alpha: 0.25),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
             ),
-
-            // Sublabel
-            Text(
-              sublabel,
-              style: AppTypography.labelSmall.copyWith(
-                color: isSelected
-                    ? AppThemeColors.primary.withValues(alpha: 0.7)
-                    : AppThemeColors.textHint,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isSelected) ...[
+                  const Icon(Icons.check, color: Colors.white, size: 16),
+                  const SizedBox(width: 4),
+                ],
+                Text(
+                  unit.displayName,
+                  style: AppTypography.labelMedium.copyWith(
+                    color: isSelected
+                        ? Colors.white
+                        : AppThemeColors.textPrimary,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-
-            // Check icon
-            if (isSelected) ...[
-              const SizedBox(height: AppSpacing.xs),
-              const Icon(
-                Icons.check_circle,
-                color: AppThemeColors.primary,
-                size: 16,
-              ),
-            ],
-          ],
-        ),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -614,12 +523,8 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.lg,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mdRadius,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mdRadius),
         ),
         child: _isLoading
             ? const SizedBox(
@@ -633,10 +538,7 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    isEditing ? Icons.save : Icons.add,
-                    color: Colors.white,
-                  ),
+                  Icon(isEditing ? Icons.save : Icons.add, color: Colors.white),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     isEditing ? 'Simpan Perubahan' : 'Tambah Produk',

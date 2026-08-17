@@ -8,12 +8,11 @@ class CustomerCubit extends Cubit<CustomerState> {
   List<Customer> _customers = [];
 
   CustomerCubit({CustomerRepository? customerRepository})
-      : _customerRepository = customerRepository ?? CustomerRepository(),
-        super(const CustomerInitial());
+    : _customerRepository = customerRepository ?? CustomerRepository(),
+      super(const CustomerInitial());
 
   List<Customer> get customers => _customers;
 
-  /// Load all customers
   Future<void> loadCustomers() async {
     emit(const CustomerLoading());
 
@@ -25,7 +24,6 @@ class CustomerCubit extends Cubit<CustomerState> {
     }
   }
 
-  /// Search customers
   Future<void> searchCustomers(String query) async {
     emit(const CustomerLoading());
 
@@ -42,13 +40,17 @@ class CustomerCubit extends Cubit<CustomerState> {
     }
   }
 
-  /// Create customer
   Future<void> createCustomer(Customer customer) async {
     emit(const CustomerLoading());
 
     try {
       final created = await _customerRepository.createCustomer(customer);
-      emit(CustomerOperationSuccess('Customer berhasil ditambahkan', customer: created));
+      emit(
+        CustomerOperationSuccess(
+          'Customer berhasil ditambahkan',
+          customer: created,
+        ),
+      );
       await loadCustomers();
     } catch (e) {
       emit(CustomerError(e.toString().replaceAll('Exception: ', '')));
@@ -56,7 +58,6 @@ class CustomerCubit extends Cubit<CustomerState> {
     }
   }
 
-  /// Update customer
   Future<void> updateCustomer(Customer customer) async {
     emit(const CustomerLoading());
 
@@ -70,7 +71,6 @@ class CustomerCubit extends Cubit<CustomerState> {
     }
   }
 
-  /// Delete customer
   Future<void> deleteCustomer(int id) async {
     emit(const CustomerLoading());
 

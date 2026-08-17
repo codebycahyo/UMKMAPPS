@@ -14,17 +14,18 @@ class VoiceEntryScreen extends StatefulWidget {
   State<VoiceEntryScreen> createState() => _VoiceEntryScreenState();
 }
 
-class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerProviderStateMixin {
+class _VoiceEntryScreenState extends State<VoiceEntryScreen>
+    with SingleTickerProviderStateMixin {
   final VoiceInputService _voiceService = VoiceInputService();
   final VoiceTransactionParser _parser = VoiceTransactionParser();
-  
+
   bool _isListening = false;
   String _transcribedText = '';
   VoiceParseResult? _parseResult;
-  
+
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
-  
+
   final TextEditingController _itemController = TextEditingController();
   final TextEditingController _nominalController = TextEditingController();
   String _selectedType = 'keluar';
@@ -33,17 +34,17 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
   void initState() {
     super.initState();
     _initVoiceService();
-    
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-    
+
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
-  
+
   Future<void> _initVoiceService() async {
     await _voiceService.init();
   }
@@ -73,13 +74,15 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
         if (!available) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Layanan pengenalan suara tidak tersedia.')),
+              const SnackBar(
+                content: Text('Layanan pengenalan suara tidak tersedia.'),
+              ),
             );
           }
           return;
         }
       }
-      
+
       setState(() {
         _transcribedText = '';
         _parseResult = null;
@@ -87,7 +90,7 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
       });
       HapticFeedback.mediumImpact();
       _animationController.repeat(reverse: true);
-      
+
       await _voiceService.startListening((text) {
         setState(() {
           _transcribedText = text;
@@ -110,8 +113,9 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
       }
     });
 
-    // Accessibility Voice Announcement
-    if (result.feedbackMessage != null && result.feedbackMessage!.isNotEmpty && mounted) {
+    if (result.feedbackMessage != null &&
+        result.feedbackMessage!.isNotEmpty &&
+        mounted) {
       SemanticsService.sendAnnouncement(
         View.of(context),
         result.feedbackMessage!,
@@ -119,10 +123,12 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
       );
     }
 
-    // Voice Command Execution
-    if (result.detectedCommand == 'simpan' && result.entry != null && result.entry!.nominal > 0) {
+    if (result.detectedCommand == 'simpan' &&
+        result.entry != null &&
+        result.entry!.nominal > 0) {
       _saveTransaction();
-    } else if (result.detectedCommand == 'batal' || result.detectedCommand == 'kembali') {
+    } else if (result.detectedCommand == 'batal' ||
+        result.detectedCommand == 'kembali') {
       Navigator.pop(context);
     } else if (result.detectedCommand == 'ulangi') {
       setState(() {
@@ -139,16 +145,20 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
     final type = _selectedType;
     final item = _itemController.text.trim();
     final nominalText = _nominalController.text.trim();
-    final nominal = int.tryParse(nominalText) ?? (double.tryParse(nominalText)?.toInt() ?? 0);
+    final nominal =
+        int.tryParse(nominalText) ??
+        (double.tryParse(nominalText)?.toInt() ?? 0);
 
     if (item.isEmpty || nominal <= 0) {
       final msg = 'Mohon lengkapi data item dan nominal dengan benar.';
       if (mounted) {
-        SemanticsService.sendAnnouncement(View.of(context), msg, TextDirection.ltr);
+        SemanticsService.sendAnnouncement(
+          View.of(context),
+          msg,
+          TextDirection.ltr,
+        );
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(msg)),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
       return;
     }
 
@@ -213,8 +223,8 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
                 label: 'Tombol Simpan Transaksi',
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48), // Touch target 48x48
-                    backgroundColor: const Color(0xFF0F766E), // Teal primary
+                    minimumSize: const Size(double.infinity, 48),
+                    backgroundColor: const Color(0xFF0F766E),
                     foregroundColor: Colors.white,
                   ),
                   onPressed: _saveTransaction,
@@ -250,7 +260,7 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
                               color: Colors.red.withValues(alpha: 0.4),
                               blurRadius: 20,
                               spreadRadius: 10,
-                            )
+                            ),
                           ]
                         : [],
                   ),
@@ -286,7 +296,9 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
           style: TextStyle(
             fontSize: 16,
             color: _transcribedText.isEmpty ? Colors.grey[600] : Colors.black87,
-            fontStyle: _transcribedText.isEmpty ? FontStyle.italic : FontStyle.normal,
+            fontStyle: _transcribedText.isEmpty
+                ? FontStyle.italic
+                : FontStyle.normal,
           ),
           textAlign: TextAlign.center,
         ),
@@ -308,7 +320,7 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFD97706).withValues(alpha: 0.1), // Gold accent
+                color: const Color(0xFFD97706).withValues(alpha: 0.1),
                 border: Border.all(color: const Color(0xFFD97706)),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -354,7 +366,7 @@ class _VoiceEntryScreenState extends State<VoiceEntryScreen> with SingleTickerPr
           ),
           const SizedBox(height: 16),
         ],
-        
+
         Semantics(
           label: 'Pilih Tipe Transaksi',
           child: DropdownButtonFormField<String>(

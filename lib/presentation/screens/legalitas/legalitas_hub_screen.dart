@@ -21,7 +21,6 @@ class LegalitasHubScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero Banner
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.xl),
@@ -92,7 +91,6 @@ class LegalitasHubScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Card 1: Wizard Halal SEHATI
             _buildServiceCard(
               context: context,
               icon: Icons.verified_rounded,
@@ -105,16 +103,13 @@ class LegalitasHubScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const HalalWizardScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const HalalWizardScreen()),
                 );
               },
             ),
 
             const SizedBox(height: AppSpacing.lg),
 
-            // Card 2: Panduan NIB OSS
             _buildServiceCard(
               context: context,
               icon: Icons.business_center_rounded,
@@ -127,16 +122,13 @@ class LegalitasHubScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const NibGuideScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const NibGuideScreen()),
                 );
               },
             ),
 
             const SizedBox(height: AppSpacing.xxl),
 
-            // Info Card
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(

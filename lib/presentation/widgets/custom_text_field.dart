@@ -125,7 +125,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 }
 
-/// Search TextField with shadow
 class CustomSearchField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hint;

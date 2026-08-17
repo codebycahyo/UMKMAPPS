@@ -112,7 +112,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(e.toString().replaceAll('Exception: ', '')),
+                        content: Text(
+                          e.toString().replaceAll('Exception: ', ''),
+                        ),
                         backgroundColor: AppThemeColors.error,
                       ),
                     );
@@ -129,12 +131,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 onTap: () async {
                   Navigator.pop(bottomContext);
                   try {
-                    await WhatsAppService().sendOrderNotification(order, 'ready');
+                    await WhatsAppService().sendOrderNotification(
+                      order,
+                      'ready',
+                    );
                   } catch (e) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(e.toString().replaceAll('Exception: ', '')),
+                          content: Text(
+                            e.toString().replaceAll('Exception: ', ''),
+                          ),
                           backgroundColor: AppThemeColors.error,
                         ),
                       );
@@ -151,12 +158,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 onTap: () async {
                   Navigator.pop(bottomContext);
                   try {
-                    await WhatsAppService().sendOrderNotification(order, 'process');
+                    await WhatsAppService().sendOrderNotification(
+                      order,
+                      'process',
+                    );
                   } catch (e) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(e.toString().replaceAll('Exception: ', '')),
+                          content: Text(
+                            e.toString().replaceAll('Exception: ', ''),
+                          ),
                           backgroundColor: AppThemeColors.error,
                         ),
                       );
@@ -264,20 +276,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             }
           },
           child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.lgRadius,
-            ),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.lgRadius),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(
-                  color: AppThemeColors.primary,
-                ),
+                const CircularProgressIndicator(color: AppThemeColors.primary),
                 const SizedBox(height: AppSpacing.lg),
-                Text(
-                  'Mencetak struk...',
-                  style: AppTypography.bodyMedium,
-                ),
+                Text('Mencetak struk...', style: AppTypography.bodyMedium),
               ],
             ),
           ),
@@ -285,7 +290,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       ),
     );
 
-    // Panggil print setelah dialog ditampilkan
     await Future.delayed(const Duration(milliseconds: 100));
     printerCubit.printReceipt(order);
   }
@@ -299,13 +303,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.lgRadius,
-          ),
-          title: Text(
-            'Tambah Pembayaran',
-            style: AppTypography.titleLarge,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.lgRadius),
+          title: Text('Tambah Pembayaran', style: AppTypography.titleLarge),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,12 +340,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   labelText: 'Jumlah',
                   labelStyle: AppTypography.bodyMedium,
                   prefixText: 'Rp ',
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.mdRadius,
-                  ),
+                  border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
                   suffixIcon: TextButton(
                     onPressed: () {
-                      amountController.text = ThousandSeparatorFormatter.format(remaining);
+                      amountController.text = ThousandSeparatorFormatter.format(
+                        remaining,
+                      );
                     },
                     child: Text(
                       'Lunas',
@@ -369,17 +368,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 decoration: InputDecoration(
                   labelText: 'Metode',
                   labelStyle: AppTypography.bodyMedium,
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.mdRadius,
-                  ),
+                  border: OutlineInputBorder(borderRadius: AppRadius.mdRadius),
                 ),
                 items: PaymentMethod.values.map((m) {
                   return DropdownMenuItem(
                     value: m,
-                    child: Text(
-                      m.displayName,
-                      style: AppTypography.bodyMedium,
-                    ),
+                    child: Text(m.displayName, style: AppTypography.bodyMedium),
                   );
                 }).toList(),
                 onChanged: (v) {
@@ -400,33 +394,32 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                final amount = ThousandSeparatorFormatter.parseToInt(amountController.text);
+                final amount = ThousandSeparatorFormatter.parseToInt(
+                  amountController.text,
+                );
                 if (amount <= 0) return;
 
                 Navigator.pop(dialogContext);
 
                 final authState = this.context.read<AuthCubit>().state;
-                final userId =
-                    authState is AuthAuthenticated ? authState.user.id : null;
+                final userId = authState is AuthAuthenticated
+                    ? authState.user.id
+                    : null;
 
                 this.context.read<OrderCubit>().addPayment(
-                      orderId: order.id!,
-                      amount: amount,
-                      method: selectedMethod,
-                      receivedBy: userId,
-                    );
+                  orderId: order.id!,
+                  amount: amount,
+                  method: selectedMethod,
+                  receivedBy: userId,
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppThemeColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.smRadius,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.smRadius),
               ),
               child: Text(
                 'Bayar',
-                style: AppTypography.labelMedium.copyWith(
-                  color: Colors.white,
-                ),
+                style: AppTypography.labelMedium.copyWith(color: Colors.white),
               ),
             ),
           ],
@@ -439,8 +432,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<OrderCubit, OrderState>(
       listenWhen: (previous, current) {
-        // Hanya listen jika state berubah ke success atau error
-        // dan bukan dari loading ke detail loaded
         return current is OrderOperationSuccess || current is OrderError;
       },
       listener: (context, state) {
@@ -496,7 +487,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Icon(
                           Icons.receipt_long_outlined,
                           size: 64,
-                          color: AppThemeColors.textSecondary.withValues(alpha: 0.5),
+                          color: AppThemeColors.textSecondary.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
@@ -525,22 +518,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   children: [
-                    // Status Card
                     _buildStatusCard(order),
 
                     const SizedBox(height: AppSpacing.md),
 
-                    // Customer Info
                     _buildCustomerCard(order),
 
                     const SizedBox(height: AppSpacing.md),
 
-                    // Items
                     _buildItemsCard(order),
 
                     const SizedBox(height: AppSpacing.md),
 
-                    // Payment
                     _buildPaymentCard(order),
 
                     if (order.notes != null && order.notes!.isNotEmpty) ...[
@@ -561,9 +550,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   Widget _buildHeader(Order? order) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -673,10 +660,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
             const SizedBox(height: AppSpacing.lg),
 
-            // Status Stepper
             Row(
               children: List.generate(statuses.length * 2 - 1, (index) {
-                // Connector line (odd indices)
                 if (index.isOdd) {
                   final stepIndex = index ~/ 2;
                   final isCompleted = stepIndex < currentIndex;
@@ -690,7 +675,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   );
                 }
 
-                // Status circle (even indices)
                 final stepIndex = index ~/ 2;
                 final status = statuses[stepIndex];
                 final isCompleted = stepIndex < currentIndex;
@@ -704,7 +688,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       : null,
                   child: Column(
                     children: [
-                      // Circle indicator
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         width: isCurrent ? 44 : 36,
@@ -713,8 +696,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           color: isCompleted || isCurrent
                               ? color
                               : isNext
-                                  ? color.withValues(alpha: 0.15)
-                                  : AppThemeColors.border.withValues(alpha: 0.5),
+                              ? color.withValues(alpha: 0.15)
+                              : AppThemeColors.border.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                           border: isNext
                               ? Border.all(color: color, width: 2)
@@ -730,28 +713,30 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               : null,
                         ),
                         child: Icon(
-                          isCompleted
-                              ? Icons.check
-                              : _getStatusIcon(status),
+                          isCompleted ? Icons.check : _getStatusIcon(status),
                           size: isCurrent ? 22 : 18,
                           color: isCompleted || isCurrent
                               ? Colors.white
                               : isNext
-                                  ? color
-                                  : AppThemeColors.textSecondary.withValues(alpha: 0.5),
+                              ? color
+                              : AppThemeColors.textSecondary.withValues(
+                                  alpha: 0.5,
+                                ),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
-                      // Label
+
                       Text(
                         _getStatusLabel(status),
                         style: AppTypography.labelSmall.copyWith(
                           color: isCurrent
                               ? color
                               : isCompleted
-                                  ? AppThemeColors.textPrimary
-                                  : AppThemeColors.textSecondary,
-                          fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                              ? AppThemeColors.textPrimary
+                              : AppThemeColors.textSecondary,
+                          fontWeight: isCurrent
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           fontSize: 10,
                         ),
                       ),
@@ -761,7 +746,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               }),
             ),
 
-            // Next action hint
             if (order.status != OrderStatus.done) ...[
               const SizedBox(height: AppSpacing.lg),
               GestureDetector(
@@ -813,7 +797,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ),
             ],
 
-            // Overdue warning
             if (order.isOverdue) ...[
               const SizedBox(height: AppSpacing.md),
               Container(
@@ -824,7 +807,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.warning, color: AppThemeColors.error, size: 20),
+                    const Icon(
+                      Icons.warning,
+                      color: AppThemeColors.error,
+                      size: 20,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
@@ -859,7 +846,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   void _confirmStatusUpdate(Order order, OrderStatus newStatus) {
-    // Jika update ke Selesai tapi belum lunas, buka dialog pembayaran
     if (newStatus == OrderStatus.done && !order.isPaid) {
       _showAddPaymentDialog(order);
       return;
@@ -870,9 +856,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.lgRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgRadius),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -883,11 +867,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                _getStatusIcon(newStatus),
-                color: color,
-                size: 32,
-              ),
+              child: Icon(_getStatusIcon(newStatus), color: color, size: 32),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -923,15 +903,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: color,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.smRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.smRadius),
             ),
             child: Text(
               'Ya, Update',
-              style: AppTypography.labelMedium.copyWith(
-                color: Colors.white,
-              ),
+              style: AppTypography.labelMedium.copyWith(color: Colors.white),
             ),
           ),
         ],
@@ -998,10 +974,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Container(
-              height: 1,
-              color: AppThemeColors.divider,
-            ),
+            Container(height: 1, color: AppThemeColors.divider),
             const SizedBox(height: AppSpacing.md),
             _buildInfoRow(
               Icons.calendar_today,
@@ -1033,9 +1006,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         ),
         Text(
           value,
-          style: AppTypography.bodySmall.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
+          style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -1062,53 +1033,55 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
             if (order.items != null)
-              ...order.items!.map((item) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: AppThemeColors.primarySurface,
-                            borderRadius: AppRadius.smRadius,
-                          ),
-                          child: const Icon(
-                            Icons.local_laundry_service,
-                            color: AppThemeColors.primary,
-                            size: 18,
-                          ),
+              ...order.items!.map(
+                (item) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: AppThemeColors.primarySurface,
+                          borderRadius: AppRadius.smRadius,
                         ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.serviceName,
-                                style: AppTypography.titleSmall.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        child: const Icon(
+                          Icons.inventory_2,
+                          color: AppThemeColors.primary,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.serviceName,
+                              style: AppTypography.titleSmall.copyWith(
+                                fontWeight: FontWeight.w500,
                               ),
-                              Text(
-                                '${item.quantity} ${item.unit} x ${CurrencyFormatter.format(item.pricePerUnit)}',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppThemeColors.textSecondary,
-                                ),
+                            ),
+                            Text(
+                              '${item.quantity} ${item.unit} x ${CurrencyFormatter.format(item.pricePerUnit)}',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppThemeColors.textSecondary,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          CurrencyFormatter.format(item.subtotal),
-                          style: AppTypography.titleSmall.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ),
+                      Text(
+                        CurrencyFormatter.format(item.subtotal),
+                        style: AppTypography.titleSmall.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             Container(
               height: 1,
               color: AppThemeColors.divider,
@@ -1196,80 +1169,86 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
             if (order.payments != null && order.payments!.isNotEmpty)
-              ...order.payments!.map((payment) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: AppThemeColors.success.withValues(alpha: 0.1),
-                                borderRadius: AppRadius.smRadius,
+              ...order.payments!.map(
+                (payment) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: AppThemeColors.success.withValues(
+                                alpha: 0.1,
                               ),
-                              child: const Icon(
-                                Icons.payment,
-                                color: AppThemeColors.success,
-                                size: 18,
-                              ),
+                              borderRadius: AppRadius.smRadius,
                             ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    payment.paymentMethod.displayName,
-                                    style: AppTypography.titleSmall.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    DateFormatter.formatDateTime(payment.paymentDate),
-                                    style: AppTypography.labelSmall.copyWith(
-                                      color: AppThemeColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: const Icon(
+                              Icons.payment,
+                              color: AppThemeColors.success,
+                              size: 18,
                             ),
-                            Text(
-                              CurrencyFormatter.format(payment.amount),
-                              style: AppTypography.titleSmall.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppThemeColors.success,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Tampilkan kembalian jika ada
-                        if (payment.change > 0)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 48, top: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Kembalian',
-                                  style: AppTypography.labelSmall.copyWith(
-                                    color: AppThemeColors.textSecondary,
+                                  payment.paymentMethod.displayName,
+                                  style: AppTypography.titleSmall.copyWith(
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 Text(
-                                  CurrencyFormatter.format(payment.change),
+                                  DateFormatter.formatDateTime(
+                                    payment.paymentDate,
+                                  ),
                                   style: AppTypography.labelSmall.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: AppThemeColors.warning,
+                                    color: AppThemeColors.textSecondary,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                      ],
-                    ),
-                  ))
+                          Text(
+                            CurrencyFormatter.format(payment.amount),
+                            style: AppTypography.titleSmall.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppThemeColors.success,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      if (payment.change > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 48, top: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Kembalian',
+                                style: AppTypography.labelSmall.copyWith(
+                                  color: AppThemeColors.textSecondary,
+                                ),
+                              ),
+                              Text(
+                                CurrencyFormatter.format(payment.change),
+                                style: AppTypography.labelSmall.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppThemeColors.warning,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              )
             else
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
@@ -1288,10 +1267,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Dibayar',
-                  style: AppTypography.bodyMedium,
-                ),
+                Text('Dibayar', style: AppTypography.bodyMedium),
                 Text(
                   CurrencyFormatter.format(order.paid),
                   style: AppTypography.titleSmall.copyWith(
@@ -1302,8 +1278,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
-            // Jika lunas dan ada kelebihan bayar, tampilkan sebagai "Kembalian"
-            // Jika belum lunas, tampilkan sebagai "Sisa"
+
             if (order.isPaid && order.paidAmount > order.totalAmount) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1315,7 +1290,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ),
                   ),
                   Text(
-                    CurrencyFormatter.format(order.paidAmount - order.totalAmount),
+                    CurrencyFormatter.format(
+                      order.paidAmount - order.totalAmount,
+                    ),
                     style: AppTypography.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppThemeColors.success,
@@ -1354,7 +1331,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.check_circle, color: AppThemeColors.success),
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppThemeColors.success,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'LUNAS',
@@ -1411,10 +1391,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              order.notes!,
-              style: AppTypography.bodyMedium,
-            ),
+            Text(order.notes!, style: AppTypography.bodyMedium),
           ],
         ),
       ),

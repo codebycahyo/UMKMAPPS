@@ -36,7 +36,13 @@ class PrinterDevicesLoaded extends PrinterState {
   });
 
   @override
-  List<Object?> get props => [devices, connectedDevice, paperSize, bluetoothEnabled, savedPrinterMac];
+  List<Object?> get props => [
+    devices,
+    connectedDevice,
+    paperSize,
+    bluetoothEnabled,
+    savedPrinterMac,
+  ];
 }
 
 class PrinterConnecting extends PrinterState {

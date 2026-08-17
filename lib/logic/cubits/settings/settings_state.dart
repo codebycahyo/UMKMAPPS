@@ -1,25 +1,25 @@
 import 'package:equatable/equatable.dart';
 
-class LaundryInfo {
+class StoreInfo {
   final String name;
   final String address;
   final String phone;
   final String invoicePrefix;
 
-  const LaundryInfo({
+  const StoreInfo({
     required this.name,
     required this.address,
     required this.phone,
     required this.invoicePrefix,
   });
 
-  LaundryInfo copyWith({
+  StoreInfo copyWith({
     String? name,
     String? address,
     String? phone,
     String? invoicePrefix,
   }) {
-    return LaundryInfo(
+    return StoreInfo(
       name: name ?? this.name,
       address: address ?? this.address,
       phone: phone ?? this.phone,
@@ -27,6 +27,8 @@ class LaundryInfo {
     );
   }
 }
+
+typedef LaundryInfo = StoreInfo;
 
 abstract class SettingsState extends Equatable {
   const SettingsState();
@@ -40,27 +42,27 @@ class SettingsInitial extends SettingsState {}
 class SettingsLoading extends SettingsState {}
 
 class SettingsLoaded extends SettingsState {
-  final LaundryInfo laundryInfo;
+  final StoreInfo storeInfo;
+  StoreInfo get laundryInfo => storeInfo;
 
-  const SettingsLoaded({required this.laundryInfo});
+  const SettingsLoaded({required this.storeInfo, StoreInfo? laundryInfo})
+    : super();
 
   @override
-  List<Object?> get props => [laundryInfo];
+  List<Object?> get props => [storeInfo];
 }
 
 class SettingsUpdating extends SettingsState {}
 
 class SettingsUpdated extends SettingsState {
   final String message;
-  final LaundryInfo laundryInfo;
+  final StoreInfo storeInfo;
+  StoreInfo get laundryInfo => storeInfo;
 
-  const SettingsUpdated({
-    required this.message,
-    required this.laundryInfo,
-  });
+  const SettingsUpdated({required this.message, required this.storeInfo});
 
   @override
-  List<Object?> get props => [message, laundryInfo];
+  List<Object?> get props => [message, storeInfo];
 }
 
 class SettingsError extends SettingsState {

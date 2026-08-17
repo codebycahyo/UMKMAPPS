@@ -8,11 +8,7 @@ class OrderCard extends StatelessWidget {
   final Order order;
   final VoidCallback? onTap;
 
-  const OrderCard({
-    super.key,
-    required this.order,
-    this.onTap,
-  });
+  const OrderCard({super.key, required this.order, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +28,6 @@ class OrderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Invoice & Status
                 Row(
                   children: [
                     Expanded(
@@ -50,7 +45,6 @@ class OrderCard extends StatelessWidget {
 
                 const SizedBox(height: AppSpacing.md),
 
-                // Customer Info
                 Row(
                   children: [
                     Container(
@@ -69,7 +63,8 @@ class OrderCard extends StatelessWidget {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        order.customerPhone != null && order.customerPhone!.isNotEmpty
+                        order.customerPhone != null &&
+                                order.customerPhone!.isNotEmpty
                             ? '${order.customerName} - ${order.customerPhone}'
                             : order.customerName,
                         style: AppTypography.titleSmall,
@@ -81,18 +76,12 @@ class OrderCard extends StatelessWidget {
 
                 const SizedBox(height: AppSpacing.md),
 
-                // Divider
-                Container(
-                  height: 1,
-                  color: AppThemeColors.divider,
-                ),
+                Container(height: 1, color: AppThemeColors.divider),
 
                 const SizedBox(height: AppSpacing.md),
 
-                // Bottom: Total, Payment & Due Date
                 Row(
                   children: [
-                    // Total
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,14 +102,12 @@ class OrderCard extends StatelessWidget {
                       ),
                     ),
 
-                    // Payment Badge
                     _buildPaymentBadge(),
                   ],
                 ),
 
                 const SizedBox(height: AppSpacing.sm),
 
-                // Due Date
                 Row(
                   children: [
                     Icon(

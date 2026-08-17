@@ -69,20 +69,19 @@ class OrderItem extends Equatable {
     );
   }
 
-  // Helper: Calculate subtotal from quantity and price
   static int calculateSubtotal(double quantity, int pricePerUnit) {
     return (quantity * pricePerUnit).round();
   }
 
   @override
   List<Object?> get props => [
-        id,
-        orderId,
-        serviceId,
-        serviceName,
-        quantity,
-        unit,
-        pricePerUnit,
-        subtotal,
-      ];
+    id,
+    orderId,
+    serviceId,
+    serviceName,
+    quantity,
+    unit,
+    pricePerUnit,
+    subtotal,
+  ];
 }

@@ -18,11 +18,16 @@ class StepSummaryExport extends StatefulWidget {
 class _StepSummaryExportState extends State<StepSummaryExport> {
   bool _isExporting = false;
 
-  Future<void> _generatePdf(BuildContext context, HalalWizardState state) async {
+  Future<void> _generatePdf(
+    BuildContext context,
+    HalalWizardState state,
+  ) async {
     if (!state.setujuPernyataan) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Silakan centang persetujuan pernyataan terlebih dahulu.'),
+          content: Text(
+            'Silakan centang persetujuan pernyataan terlebih dahulu.',
+          ),
           backgroundColor: Color(0xFFD97706),
         ),
       );
@@ -33,7 +38,9 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
 
     try {
       final pdf = pw.Document();
-      final completionPercent = context.read<HalalWizardCubit>().getDocumentCompletionPercent();
+      final completionPercent = context
+          .read<HalalWizardCubit>()
+          .getDocumentCompletionPercent();
 
       pdf.addPage(
         pw.MultiPage(
@@ -51,17 +58,27 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                       children: [
                         pw.Text(
                           'DOKUMEN SELF-DECLARE HALAL SEHATI',
-                          style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+                          style: pw.TextStyle(
+                            fontSize: 16,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
                         ),
                         pw.Text(
                           'Pendampingan Sertifikasi Halal Usaha Mikro & Kecil (UMKM)',
-                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+                          style: const pw.TextStyle(
+                            fontSize: 10,
+                            color: PdfColors.grey700,
+                          ),
                         ),
                       ],
                     ),
                     pw.Text(
                       'LegaliKas AI',
-                      style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: PdfColors.teal700),
+                      style: pw.TextStyle(
+                        fontSize: 14,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.teal700,
+                      ),
                     ),
                   ],
                 ),
@@ -101,7 +118,9 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
 
               _buildPdfSection('5. Kelengkapan Berkas Persyaratan', [
                 'Tingkat Kesiapan Dokumen: $completionPercent%',
-                ..._getUncheckedDocs(state).map((doc) => '• Belum Lengkap: $doc'),
+                ..._getUncheckedDocs(
+                  state,
+                ).map((doc) => '• Belum Lengkap: $doc'),
               ]),
               pw.SizedBox(height: 20),
 
@@ -109,12 +128,20 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                 padding: const pw.EdgeInsets.all(10),
                 decoration: pw.BoxDecoration(
                   border: pw.Border.all(color: PdfColors.grey400),
-                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+                  borderRadius: const pw.BorderRadius.all(
+                    pw.Radius.circular(6),
+                  ),
                 ),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text('Surat Pernyataan Pelaku Usaha', style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+                    pw.Text(
+                      'Surat Pernyataan Pelaku Usaha',
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
                     pw.SizedBox(height: 4),
                     pw.Text(
                       'Dengan ini saya menyatakan bahwa seluruh data yang diisikan di atas adalah benar dan sesuai kondisi riil. Produk yang dihasilkan bebas dari bahan haram, najis, dan diproduksi sesuai standar kehalalan yang berlaku.',
@@ -131,11 +158,19 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
-                      pw.Text('Dibuat oleh Pelaku Usaha,', style: const pw.TextStyle(fontSize: 10)),
+                      pw.Text(
+                        'Dibuat oleh Pelaku Usaha,',
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
                       pw.SizedBox(height: 36),
                       pw.Text(
-                        state.namaUsaha.isEmpty ? '(...................................)' : state.namaUsaha,
-                        style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold),
+                        state.namaUsaha.isEmpty
+                            ? '(...................................)'
+                            : state.namaUsaha,
+                        style: pw.TextStyle(
+                          fontSize: 11,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -147,14 +182,17 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
       );
 
       final output = await getApplicationDocumentsDirectory();
-      final sanitizedName = state.namaUsaha.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
-      final fileName = 'Dokumen_Halal_SEHATI_${sanitizedName.isEmpty ? "UMKM" : sanitizedName}.pdf';
+      final sanitizedName = state.namaUsaha.replaceAll(
+        RegExp(r'[^a-zA-Z0-9]'),
+        '_',
+      );
+      final fileName =
+          'Dokumen_Halal_SEHATI_${sanitizedName.isEmpty ? "UMKM" : sanitizedName}.pdf';
       final file = File('${output.path}/$fileName');
       await file.writeAsBytes(await pdf.save());
 
       HapticFeedback.heavyImpact();
 
-      // Trigger SharePlus native sheet to view, save to Downloads, or share to WhatsApp
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path)],
@@ -174,7 +212,8 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                 SharePlus.instance.share(
                   ShareParams(
                     files: [XFile(file.path)],
-                    text: 'Dokumen Self-Declare Halal SEHATI - ${state.namaUsaha}',
+                    text:
+                        'Dokumen Self-Declare Halal SEHATI - ${state.namaUsaha}',
                   ),
                 );
               },
@@ -200,12 +239,21 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(title, style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, color: PdfColors.teal900)),
+        pw.Text(
+          title,
+          style: pw.TextStyle(
+            fontSize: 12,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.teal900,
+          ),
+        ),
         pw.SizedBox(height: 4),
-        ...content.map((text) => pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 2),
-              child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
-            )),
+        ...content.map(
+          (text) => pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 2),
+            child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
+          ),
+        ),
       ],
     );
   }
@@ -238,41 +286,33 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              _buildSectionCard(
-                '1. Informasi Usaha',
-                [
-                  'Nama: ${state.namaUsaha.isEmpty ? "-" : state.namaUsaha}',
-                  'NIB: ${state.nib.isEmpty ? "-" : state.nib}',
-                  'Alamat: ${state.alamatUsaha.isEmpty ? "-" : state.alamatUsaha}',
-                  'Kontak: ${state.teleponUsaha.isEmpty ? "-" : state.teleponUsaha}',
-                ],
-              ),
-              _buildSectionCard(
-                '2. Bahan Baku',
-                [
-                  'Bahan: ${state.bahanBaku.isEmpty ? "-" : state.bahanBaku.join(", ")}',
-                  if (state.bahanWaspada.isNotEmpty)
-                    'Bahan Diwaspadai: ${state.bahanWaspada.join(", ")}',
-                ],
-              ),
-              _buildSectionCard(
-                '3. Proses Produksi',
-                [
-                  'Tempat: ${state.tempatProses.isEmpty ? "-" : state.tempatProses}',
-                  'Deskripsi: ${state.deskripsiProses.isEmpty ? "-" : state.deskripsiProses}',
-                ],
-              ),
-              _buildSectionCard(
-                '4. Lokasi Produksi',
-                [
-                  'Alamat: ${state.alamatProduksi.isEmpty ? "-" : state.alamatProduksi}',
-                  'Status: ${state.statusTempat.isEmpty ? "-" : state.statusTempat}',
-                ],
-              ),
+              _buildSectionCard('1. Informasi Usaha', [
+                'Nama: ${state.namaUsaha.isEmpty ? "-" : state.namaUsaha}',
+                'NIB: ${state.nib.isEmpty ? "-" : state.nib}',
+                'Alamat: ${state.alamatUsaha.isEmpty ? "-" : state.alamatUsaha}',
+                'Kontak: ${state.teleponUsaha.isEmpty ? "-" : state.teleponUsaha}',
+              ]),
+              _buildSectionCard('2. Bahan Baku', [
+                'Bahan: ${state.bahanBaku.isEmpty ? "-" : state.bahanBaku.join(", ")}',
+                if (state.bahanWaspada.isNotEmpty)
+                  'Bahan Diwaspadai: ${state.bahanWaspada.join(", ")}',
+              ]),
+              _buildSectionCard('3. Proses Produksi', [
+                'Tempat: ${state.tempatProses.isEmpty ? "-" : state.tempatProses}',
+                'Deskripsi: ${state.deskripsiProses.isEmpty ? "-" : state.deskripsiProses}',
+              ]),
+              _buildSectionCard('4. Lokasi Produksi', [
+                'Alamat: ${state.alamatProduksi.isEmpty ? "-" : state.alamatProduksi}',
+                'Status: ${state.statusTempat.isEmpty ? "-" : state.statusTempat}',
+              ]),
               const SizedBox(height: 24),
               const Text(
                 'Pernyataan Pelaku Usaha',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFD97706)),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFD97706),
+                ),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -284,11 +324,15 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                 checked: state.setujuPernyataan,
                 label: 'Checkbox Setuju Pernyataan Kehalalan',
                 child: CheckboxListTile(
-                  title: const Text('Saya menyetujui pernyataan kehalalan di atas'),
+                  title: const Text(
+                    'Saya menyetujui pernyataan kehalalan di atas',
+                  ),
                   value: state.setujuPernyataan,
                   activeColor: const Color(0xFFD97706),
                   onChanged: (val) {
-                    context.read<HalalWizardCubit>().updateStep5Data(setujuPernyataan: val ?? false);
+                    context.read<HalalWizardCubit>().updateStep5Data(
+                      setujuPernyataan: val ?? false,
+                    );
                   },
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
@@ -303,7 +347,8 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                 builder: (context) {
                   final stepIndex = 4;
                   final checklist = state.documentChecklist[stepIndex] ?? [];
-                  final labels = HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
+                  final labels =
+                      HalalWizardState.defaultChecklistLabels[stepIndex] ?? [];
                   final checkedCount = checklist.where((c) => c).length;
 
                   return Column(
@@ -312,7 +357,9 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                       Text('$checkedCount dari ${labels.length} dokumen siap'),
                       const SizedBox(height: 8),
                       ...List.generate(labels.length, (index) {
-                        final isChecked = index < checklist.length ? checklist[index] : false;
+                        final isChecked = index < checklist.length
+                            ? checklist[index]
+                            : false;
                         return Semantics(
                           checked: isChecked,
                           label: 'Checkbox ${labels[index]}',
@@ -321,7 +368,9 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                             value: isChecked,
                             activeColor: const Color(0xFFD97706),
                             onChanged: (val) {
-                              context.read<HalalWizardCubit>().toggleDocumentCheck(stepIndex, index);
+                              context
+                                  .read<HalalWizardCubit>()
+                                  .toggleDocumentCheck(stepIndex, index);
                             },
                             controlAffinity: ListTileControlAffinity.leading,
                           ),
@@ -334,7 +383,9 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
               const Divider(height: 32),
               Builder(
                 builder: (context) {
-                  final percent = context.read<HalalWizardCubit>().getDocumentCompletionPercent();
+                  final percent = context
+                      .read<HalalWizardCubit>()
+                      .getDocumentCompletionPercent();
                   final missingDocs = _getUncheckedDocs(state);
 
                   return Column(
@@ -350,9 +401,17 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                       ),
                       if (missingDocs.isNotEmpty) ...[
                         const SizedBox(height: 8),
-                        const Text('Dokumen belum lengkap:', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ...missingDocs.map((doc) => Text('• $doc', style: const TextStyle(color: Colors.red))),
-                      ]
+                        const Text(
+                          'Dokumen belum lengkap:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        ...missingDocs.map(
+                          (doc) => Text(
+                            '• $doc',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
                     ],
                   );
                 },
@@ -370,17 +429,25 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       minimumSize: const Size(double.infinity, 48),
                     ),
-                    onPressed: _isExporting ? null : () => _generatePdf(context, state),
+                    onPressed: _isExporting
+                        ? null
+                        : () => _generatePdf(context, state),
                     icon: _isExporting
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
                           )
                         : const Icon(Icons.download_rounded),
                     label: Text(
                       _isExporting ? 'Memproses PDF...' : 'Unduh & Bagikan PDF',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -421,13 +488,18 @@ class _StepSummaryExportState extends State<StepSummaryExport> {
           children: [
             Text(
               title,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD97706)),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFD97706),
+              ),
             ),
             const Divider(),
-            ...items.map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(item),
-                )),
+            ...items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(item),
+              ),
+            ),
           ],
         ),
       ),

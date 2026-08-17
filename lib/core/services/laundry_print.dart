@@ -5,29 +5,31 @@ import 'package:flutter_laundry_offline_app/core/utils/currency_formatter.dart';
 import 'package:flutter_laundry_offline_app/core/utils/date_formatter.dart';
 import 'package:flutter_laundry_offline_app/core/constants/app_constants.dart';
 
-class LaundryPrint {
-  LaundryPrint._init();
+class ReceiptPrint {
+  ReceiptPrint._init();
 
-  static final LaundryPrint instance = LaundryPrint._init();
+  static final ReceiptPrint instance = ReceiptPrint._init();
 
   final SettingsRepository _settingsRepository = SettingsRepository();
 
-  Future<Map<String, String>> _getLaundryInfo() async {
+  Future<Map<String, String>> _getStoreInfo() async {
     final settings = await _settingsRepository.getAllSettings();
     return {
-      'name': settings[AppConstants.keyLaundryName] ??
-          AppConstants.defaultLaundryName,
-      'address': settings[AppConstants.keyLaundryAddress] ??
-          AppConstants.defaultLaundryAddress,
-      'phone': settings[AppConstants.keyLaundryPhone] ??
-          AppConstants.defaultLaundryPhone,
+      'name':
+          settings[AppConstants.keyStoreName] ??
+          settings[AppConstants.keyLaundryName] ??
+          AppConstants.defaultStoreName,
+      'address':
+          settings[AppConstants.keyStoreAddress] ??
+          settings[AppConstants.keyLaundryAddress] ??
+          AppConstants.defaultStoreAddress,
+      'phone':
+          settings[AppConstants.keyStorePhone] ??
+          settings[AppConstants.keyLaundryPhone] ??
+          AppConstants.defaultStorePhone,
     };
   }
 
-  /// Print order receipt
-  /// [order] - Order data to print
-  /// [paperSize] - Paper size (PaperSize.mm58 or PaperSize.mm80)
-  /// [paperSizeMm] - Paper size in mm ('58' or '80') for separator calculation
   Future<List<int>> printOrderReceipt(
     Order order, {
     PaperSize paperSize = PaperSize.mm58,
@@ -38,19 +40,16 @@ class LaundryPrint {
     final profile = await CapabilityProfile.load();
     final generator = Generator(paperSize, profile);
 
-    // Get laundry info from settings
-    final laundryInfo = await _getLaundryInfo();
+    final storeInfo = await _getStoreInfo();
 
-    // Define separator based on paper size
     final String separator = paperSizeMm == '80'
         ? '------------------------------------------------'
         : '--------------------------------';
 
     bytes += generator.reset();
 
-    // ========== HEADER ==========
     bytes += generator.text(
-      laundryInfo['name'] ?? 'Toko',
+      storeInfo['name'] ?? 'Toko',
       styles: const PosStyles(
         bold: true,
         align: PosAlign.center,
@@ -60,19 +59,13 @@ class LaundryPrint {
     );
 
     bytes += generator.text(
-      laundryInfo['address'] ?? '',
-      styles: const PosStyles(
-        bold: false,
-        align: PosAlign.center,
-      ),
+      storeInfo['address'] ?? '',
+      styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
     bytes += generator.text(
-      'Telp: ${laundryInfo['phone'] ?? '-'}',
-      styles: const PosStyles(
-        bold: false,
-        align: PosAlign.center,
-      ),
+      'Telp: ${storeInfo['phone'] ?? '-'}',
+      styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
     bytes += generator.text(
@@ -80,7 +73,6 @@ class LaundryPrint {
       styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
-    // ========== ORDER INFO ==========
     bytes += generator.text(
       'STRUK ORDER',
       styles: const PosStyles(
@@ -96,7 +88,6 @@ class LaundryPrint {
       styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
-    // Invoice Number
     bytes += generator.row([
       PosColumn(
         text: 'No Invoice:',
@@ -110,7 +101,6 @@ class LaundryPrint {
       ),
     ]);
 
-    // Date
     bytes += generator.row([
       PosColumn(
         text: 'Tanggal:',
@@ -124,7 +114,6 @@ class LaundryPrint {
       ),
     ]);
 
-    // Customer
     bytes += generator.row([
       PosColumn(
         text: 'Pelanggan:',
@@ -138,7 +127,6 @@ class LaundryPrint {
       ),
     ]);
 
-    // Phone (if available)
     if (order.customerPhone != null && order.customerPhone!.isNotEmpty) {
       bytes += generator.row([
         PosColumn(
@@ -154,7 +142,6 @@ class LaundryPrint {
       ]);
     }
 
-    // Status
     bytes += generator.row([
       PosColumn(
         text: 'Status:',
@@ -168,7 +155,6 @@ class LaundryPrint {
       ),
     ]);
 
-    // Due Date
     if (order.dueDate != null) {
       bytes += generator.row([
         PosColumn(
@@ -189,13 +175,9 @@ class LaundryPrint {
       styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
-    // ========== ITEMS ==========
     bytes += generator.text(
       'DETAIL PESANAN',
-      styles: const PosStyles(
-        bold: true,
-        align: PosAlign.center,
-      ),
+      styles: const PosStyles(bold: true, align: PosAlign.center),
     );
 
     bytes += generator.text(
@@ -204,16 +186,15 @@ class LaundryPrint {
     );
 
     for (final item in order.items ?? []) {
-      // Service name
       bytes += generator.text(
         item.serviceName,
         styles: const PosStyles(align: PosAlign.left, bold: true),
       );
 
-      // Quantity x Price = Subtotal
       bytes += generator.row([
         PosColumn(
-          text: '${item.quantity.toStringAsFixed(0)} ${item.unit} x ${CurrencyFormatter.formatNoSymbol(item.pricePerUnit)}',
+          text:
+              '${item.quantity.toStringAsFixed(0)} ${item.unit} x ${CurrencyFormatter.formatNoSymbol(item.pricePerUnit)}',
           width: 8,
           styles: const PosStyles(align: PosAlign.left),
         ),
@@ -230,7 +211,6 @@ class LaundryPrint {
       styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
-    // ========== TOTAL ==========
     bytes += generator.row([
       PosColumn(
         text: 'TOTAL',
@@ -244,7 +224,6 @@ class LaundryPrint {
       ),
     ]);
 
-    // ========== PAYMENT INFO ==========
     if (order.paidAmount > 0) {
       bytes += generator.row([
         PosColumn(
@@ -261,7 +240,6 @@ class LaundryPrint {
 
       final remaining = order.remainingPayment;
       if (remaining > 0) {
-        // Belum lunas - tampilkan kurang
         bytes += generator.row([
           PosColumn(
             text: 'Kurang',
@@ -275,7 +253,6 @@ class LaundryPrint {
           ),
         ]);
       } else {
-        // Lunas - cek apakah ada kembalian
         final change = order.paidAmount - order.totalAmount;
         if (change > 0) {
           bytes += generator.row([
@@ -313,7 +290,6 @@ class LaundryPrint {
       styles: const PosStyles(bold: false, align: PosAlign.center),
     );
 
-    // ========== NOTES ==========
     if (order.notes != null && order.notes!.isNotEmpty) {
       bytes += generator.text(
         'Catatan:',
@@ -329,7 +305,6 @@ class LaundryPrint {
       );
     }
 
-    // ========== FOOTER ==========
     bytes += generator.text(
       'Terima kasih atas kepercayaan Anda',
       styles: const PosStyles(bold: false, align: PosAlign.center),
@@ -341,7 +316,6 @@ class LaundryPrint {
 
     bytes += generator.feed(3);
 
-    // Auto cut for 80mm paper
     if (paperSizeMm == '80') {
       bytes += generator.cut();
     }
@@ -349,7 +323,6 @@ class LaundryPrint {
     return bytes;
   }
 
-  /// Print test receipt to verify printer connection
   Future<List<int>> printTest({
     PaperSize paperSize = PaperSize.mm58,
     String paperSizeMm = '58',
@@ -359,8 +332,7 @@ class LaundryPrint {
     final profile = await CapabilityProfile.load();
     final generator = Generator(paperSize, profile);
 
-    // Get laundry info from settings
-    final laundryInfo = await _getLaundryInfo();
+    final storeInfo = await _getStoreInfo();
 
     final String separator = paperSizeMm == '80'
         ? '------------------------------------------------'
@@ -368,9 +340,8 @@ class LaundryPrint {
 
     bytes += generator.reset();
 
-    // Header
     bytes += generator.text(
-      laundryInfo['name'] ?? 'Toko',
+      storeInfo['name'] ?? 'Toko',
       styles: const PosStyles(
         bold: true,
         align: PosAlign.center,
@@ -428,3 +399,5 @@ class LaundryPrint {
     return bytes;
   }
 }
+
+typedef LaundryPrint = ReceiptPrint;

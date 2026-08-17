@@ -29,9 +29,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.lgRadius,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.lgRadius),
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Form(
@@ -40,7 +38,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header
                   Row(
                     children: [
                       Container(
@@ -81,7 +78,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
                   const SizedBox(height: AppSpacing.xl),
 
-                  // Password Field
                   TextFormField(
                     controller: passwordController,
                     obscureText: obscurePassword,
@@ -147,7 +143,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
                   const SizedBox(height: AppSpacing.xl),
 
-                  // Action Buttons
                   Row(
                     children: [
                       Expanded(
@@ -183,9 +178,9 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 context.read<UserCubit>().resetPassword(
-                                      userId: user.id!,
-                                      newPassword: passwordController.text,
-                                    );
+                                  userId: user.id!,
+                                  newPassword: passwordController.text,
+                                );
                                 Navigator.pop(dialogContext);
                               }
                             },
@@ -227,33 +222,32 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.lgRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgRadius),
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon
               Container(
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: (isActive ? AppThemeColors.error : AppThemeColors.success)
-                      .withValues(alpha: 0.1),
+                  color:
+                      (isActive ? AppThemeColors.error : AppThemeColors.success)
+                          .withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   isActive ? Icons.block : Icons.check_circle,
-                  color: isActive ? AppThemeColors.error : AppThemeColors.success,
+                  color: isActive
+                      ? AppThemeColors.error
+                      : AppThemeColors.success,
                   size: 32,
                 ),
               ),
 
               const SizedBox(height: AppSpacing.lg),
 
-              // Title
               Text(
                 '$actionTitle User',
                 style: AppTypography.titleMedium.copyWith(
@@ -263,7 +257,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
               const SizedBox(height: AppSpacing.sm),
 
-              // Message
               Text(
                 'Apakah Anda yakin ingin $action ${user.name}?',
                 style: AppTypography.bodyMedium.copyWith(
@@ -274,7 +267,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // Action Buttons
               Row(
                 children: [
                   Expanded(
@@ -284,9 +276,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md,
                         ),
-                        side: const BorderSide(
-                          color: AppThemeColors.border,
-                        ),
+                        side: const BorderSide(color: AppThemeColors.border),
                         shape: RoundedRectangleBorder(
                           borderRadius: AppRadius.mdRadius,
                         ),
@@ -307,8 +297,9 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                         Navigator.pop(dialogContext);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            isActive ? AppThemeColors.error : AppThemeColors.success,
+                        backgroundColor: isActive
+                            ? AppThemeColors.error
+                            : AppThemeColors.success,
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md,
                         ),
@@ -340,14 +331,11 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       builder: (bottomSheetContext) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle
             Container(
               margin: const EdgeInsets.only(top: AppSpacing.md),
               width: 40,
@@ -358,7 +346,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
               ),
             ),
 
-            // User Info Header
             Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
@@ -388,7 +375,9 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppThemeColors.error.withValues(alpha: 0.1),
+                                  color: AppThemeColors.error.withValues(
+                                    alpha: 0.1,
+                                  ),
                                   borderRadius: AppRadius.smRadius,
                                 ),
                                 child: Text(
@@ -420,7 +409,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
             const Divider(height: 1),
 
-            // Actions
             _buildActionTile(
               icon: Icons.edit_outlined,
               iconColor: AppThemeColors.primary,
@@ -453,7 +441,9 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
             _buildActionTile(
               icon: user.isActive ? Icons.block : Icons.check_circle_outline,
-              iconColor: user.isActive ? AppThemeColors.error : AppThemeColors.success,
+              iconColor: user.isActive
+                  ? AppThemeColors.error
+                  : AppThemeColors.success,
               title: user.isActive ? 'Nonaktifkan User' : 'Aktifkan User',
               subtitle: user.isActive
                   ? 'User tidak bisa login'
@@ -496,11 +486,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                   color: iconColor.withValues(alpha: 0.1),
                   borderRadius: AppRadius.mdRadius,
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                  size: 22,
-                ),
+                child: Icon(icon, color: iconColor, size: 22),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -522,10 +508,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right,
-                color: AppThemeColors.textHint,
-              ),
+              const Icon(Icons.chevron_right, color: AppThemeColors.textHint),
             ],
           ),
         ),
@@ -539,10 +522,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       backgroundColor: AppThemeColors.background,
       body: Column(
         children: [
-          // Header
           _buildHeader(),
 
-          // User List
           Expanded(
             child: BlocConsumer<UserCubit, UserState>(
               listener: (context, state) {
@@ -611,16 +592,13 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
   Widget _buildHeader() {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: AppThemeColors.headerGradient,
-      ),
+      decoration: const BoxDecoration(gradient: AppThemeColors.headerGradient),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Row(
             children: [
-              // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
@@ -639,7 +617,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
               ),
               const SizedBox(width: AppSpacing.md),
 
-              // Title
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -661,7 +638,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                 ),
               ),
 
-              // Add Button
               GestureDetector(
                 onTap: () => _navigateToAddUser(),
                 child: Container(
@@ -743,17 +719,14 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: [
-                // Avatar
                 _buildUserAvatar(user),
 
                 const SizedBox(width: AppSpacing.md),
 
-                // User Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Name Row
                       Row(
                         children: [
                           Flexible(
@@ -773,7 +746,9 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: AppThemeColors.error.withValues(alpha: 0.1),
+                                color: AppThemeColors.error.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: AppRadius.smRadius,
                               ),
                               child: Text(
@@ -790,7 +765,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
                       const SizedBox(height: 4),
 
-                      // Username
                       Text(
                         '@${user.username}',
                         style: AppTypography.bodySmall.copyWith(
@@ -800,13 +774,11 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
                       const SizedBox(height: AppSpacing.sm),
 
-                      // Role Badge
                       _buildRoleBadge(user.role),
                     ],
                   ),
                 ),
 
-                // More Button
                 Container(
                   width: 36,
                   height: 36,
@@ -828,7 +800,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     );
   }
 
-  // Secondary purple color for Kasir role
   static const Color _kasirColor = Color(0xFF7E57C2);
 
   Widget _buildUserAvatar(User user, {double size = 48}) {
@@ -842,16 +813,14 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
             : const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF9575CD),
-                  Color(0xFF7E57C2),
-                ],
+                colors: [Color(0xFF9575CD), Color(0xFF7E57C2)],
               ),
         borderRadius: AppRadius.mdRadius,
         boxShadow: [
           BoxShadow(
-            color: (isOwner ? AppThemeColors.primary : _kasirColor)
-                .withValues(alpha: 0.3),
+            color: (isOwner ? AppThemeColors.primary : _kasirColor).withValues(
+              alpha: 0.3,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -873,8 +842,9 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: (isOwner ? AppThemeColors.primary : _kasirColor)
-            .withValues(alpha: 0.1),
+        color: (isOwner ? AppThemeColors.primary : _kasirColor).withValues(
+          alpha: 0.1,
+        ),
         borderRadius: AppRadius.smRadius,
       ),
       child: Row(

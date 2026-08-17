@@ -12,30 +12,40 @@ class WhatsAppService {
 
   final SettingsRepository _settingsRepository = SettingsRepository();
 
-  Future<Map<String, String>> _getLaundryInfo() async {
+  Future<Map<String, String>> _getStoreInfo() async {
     final settings = await _settingsRepository.getAllSettings();
     return {
-      'name': settings[AppConstants.keyLaundryName] ?? AppConstants.defaultLaundryName,
-      'address': settings[AppConstants.keyLaundryAddress] ?? AppConstants.defaultLaundryAddress,
-      'phone': settings[AppConstants.keyLaundryPhone] ?? AppConstants.defaultLaundryPhone,
+      'name':
+          settings[AppConstants.keyStoreName] ??
+          settings[AppConstants.keyLaundryName] ??
+          AppConstants.defaultStoreName,
+      'address':
+          settings[AppConstants.keyStoreAddress] ??
+          settings[AppConstants.keyLaundryAddress] ??
+          AppConstants.defaultStoreAddress,
+      'phone':
+          settings[AppConstants.keyStorePhone] ??
+          settings[AppConstants.keyLaundryPhone] ??
+          AppConstants.defaultStorePhone,
     };
   }
 
-  /// Send order receipt via WhatsApp
   Future<bool> shareOrderReceipt(Order order) async {
     if (order.customerPhone == null || order.customerPhone!.isEmpty) {
       throw Exception('Nomor HP pelanggan tidak tersedia');
     }
 
-    final laundryInfo = await _getLaundryInfo();
-    final message = _buildReceiptMessage(order, laundryInfo);
+    final storeInfo = await _getStoreInfo();
+    final message = _buildReceiptMessage(order, storeInfo);
     final phoneNumber = order.whatsappNumber;
 
     if (phoneNumber.isEmpty) {
       throw Exception('Format nomor HP tidak valid');
     }
 
-    final url = Uri.parse('https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}');
+    final url = Uri.parse(
+      'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}',
+    );
 
     try {
       if (await canLaunchUrl(url)) {
@@ -49,21 +59,29 @@ class WhatsAppService {
     }
   }
 
-  /// Send order notification to customer
-  Future<bool> sendOrderNotification(Order order, String notificationType) async {
+  Future<bool> sendOrderNotification(
+    Order order,
+    String notificationType,
+  ) async {
     if (order.customerPhone == null || order.customerPhone!.isEmpty) {
       throw Exception('Nomor HP pelanggan tidak tersedia');
     }
 
-    final laundryInfo = await _getLaundryInfo();
-    final message = _buildNotificationMessage(order, notificationType, laundryInfo);
+    final storeInfo = await _getStoreInfo();
+    final message = _buildNotificationMessage(
+      order,
+      notificationType,
+      storeInfo,
+    );
     final phoneNumber = order.whatsappNumber;
 
     if (phoneNumber.isEmpty) {
       throw Exception('Format nomor HP tidak valid');
     }
 
-    final url = Uri.parse('https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}');
+    final url = Uri.parse(
+      'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}',
+    );
 
     try {
       if (await canLaunchUrl(url)) {
@@ -77,39 +95,38 @@ class WhatsAppService {
     }
   }
 
-  String _buildReceiptMessage(Order order, Map<String, String> laundryInfo) {
+  String _buildReceiptMessage(Order order, Map<String, String> storeInfo) {
     final buffer = StringBuffer();
 
-    // Header
-    buffer.writeln('*${laundryInfo['name']}*');
-    buffer.writeln(laundryInfo['address']);
-    buffer.writeln('Telp: ${laundryInfo['phone']}');
+    buffer.writeln('*${storeInfo['name']}*');
+    buffer.writeln(storeInfo['address']);
+    buffer.writeln('Telp: ${storeInfo['phone']}');
     buffer.writeln('================================');
     buffer.writeln();
 
-    // Invoice info
     buffer.writeln('*STRUK ORDER*');
     buffer.writeln('No: ${order.invoiceNumber}');
-    buffer.writeln('Tgl: ${DateFormatter.formatDateTime(order.createdAt ?? DateTime.now())}');
+    buffer.writeln(
+      'Tgl: ${DateFormatter.formatDateTime(order.createdAt ?? DateTime.now())}',
+    );
     buffer.writeln('Pelanggan: ${order.customerName}');
     buffer.writeln('Status: ${order.status.displayName}');
     buffer.writeln();
 
-    // Items
     buffer.writeln('*Detail Pesanan:*');
     buffer.writeln('--------------------------------');
     for (final item in order.items ?? []) {
       buffer.writeln('• ${item.serviceName}');
-      buffer.writeln('  ${item.quantity} ${item.unit} x ${CurrencyFormatter.format(item.pricePerUnit)}');
+      buffer.writeln(
+        '  ${item.quantity} ${item.unit} x ${CurrencyFormatter.format(item.pricePerUnit)}',
+      );
       buffer.writeln('  = ${CurrencyFormatter.format(item.subtotal)}');
     }
     buffer.writeln('--------------------------------');
     buffer.writeln();
 
-    // Total
     buffer.writeln('*TOTAL: ${CurrencyFormatter.format(order.totalAmount)}*');
 
-    // Payment info
     if (order.paidAmount > 0) {
       buffer.writeln('Dibayar: ${CurrencyFormatter.format(order.paidAmount)}');
       final remaining = order.remainingPayment;
@@ -124,12 +141,10 @@ class WhatsAppService {
 
     buffer.writeln();
 
-    // Due date
     if (order.dueDate != null) {
       buffer.writeln('📅 Ambil: ${DateFormatter.formatDate(order.dueDate!)}');
     }
 
-    // Notes
     if (order.notes != null && order.notes!.isNotEmpty) {
       buffer.writeln();
       buffer.writeln('Catatan: ${order.notes}');
@@ -142,7 +157,11 @@ class WhatsAppService {
     return buffer.toString();
   }
 
-  String _buildNotificationMessage(Order order, String notificationType, Map<String, String> laundryInfo) {
+  String _buildNotificationMessage(
+    Order order,
+    String notificationType,
+    Map<String, String> storeInfo,
+  ) {
     final buffer = StringBuffer();
 
     buffer.writeln('Halo ${order.customerName},');
@@ -155,10 +174,12 @@ class WhatsAppService {
         buffer.writeln('No. Order: ${order.invoiceNumber}');
         buffer.writeln();
         buffer.writeln('Silakan ambil pesanan Anda di:');
-        buffer.writeln('📍 ${laundryInfo['address']}');
+        buffer.writeln('📍 ${storeInfo['address']}');
         if (order.remainingPayment > 0) {
           buffer.writeln();
-          buffer.writeln('*Sisa pembayaran: ${CurrencyFormatter.format(order.remainingPayment)}*');
+          buffer.writeln(
+            '*Sisa pembayaran: ${CurrencyFormatter.format(order.remainingPayment)}*',
+          );
         }
         break;
 
@@ -167,7 +188,9 @@ class WhatsAppService {
         buffer.writeln();
         buffer.writeln('No. Order: ${order.invoiceNumber}');
         if (order.dueDate != null) {
-          buffer.writeln('Estimasi selesai: ${DateFormatter.formatDate(order.dueDate!)}');
+          buffer.writeln(
+            'Estimasi selesai: ${DateFormatter.formatDate(order.dueDate!)}',
+          );
         }
         break;
 
@@ -187,8 +210,8 @@ class WhatsAppService {
 
     buffer.writeln();
     buffer.writeln('---');
-    buffer.writeln('${laundryInfo['name']}');
-    buffer.writeln('Telp: ${laundryInfo['phone']}');
+    buffer.writeln('${storeInfo['name']}');
+    buffer.writeln('Telp: ${storeInfo['phone']}');
 
     return buffer.toString();
   }

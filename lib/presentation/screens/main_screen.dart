@@ -44,7 +44,6 @@ class _MainScreenState extends State<MainScreen> {
         final user = state.user;
         final isOwner = user.role == UserRole.owner;
 
-        // Build navigation items — 5 core operational tabs for LegaliKas AI
         final navItems = <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
@@ -73,11 +72,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ];
 
-        // Build screens list
         final screens = <Widget>[
-          // Tab 0: Beranda (Dashboard)
           const DashboardScreen(),
-          // Tab 1: Kasir POS (Fast POS Sales & Checkout)
+
           MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => ServiceCubit()..loadServices()),
@@ -86,37 +83,32 @@ class _MainScreenState extends State<MainScreen> {
             ],
             child: const OrderFormScreen(),
           ),
-          // Tab 2: Buku Kas (Catatan Keuangan OCR/Voice/Manual)
+
           BlocProvider(
             create: (_) => ExpenseCubit(ExpenseRepository())..loadExpenses(),
             child: const ExpenseListScreen(),
           ),
-          // Tab 3: Laporan (Laba Rugi, Grafik, Ekspor Excel/PDF)
+
           BlocProvider(
             create: (_) => ReportCubit(),
             child: const ReportScreen(),
           ),
-          // Tab 4: Lainnya (Pelanggan, Legalitas Hub, Produk, Pengaturan)
+
           _buildLainnyaScreen(isOwner),
         ];
 
-        // Ensure current index is valid
         if (_currentIndex >= screens.length) {
           _currentIndex = 0;
         }
 
         return Scaffold(
-          body: IndexedStack(
-            index: _currentIndex,
-            children: screens,
-          ),
+          body: IndexedStack(index: _currentIndex, children: screens),
           bottomNavigationBar: _buildCustomBottomNav(navItems),
         );
       },
     );
   }
 
-  /// "Lainnya" tab — central hub for Customers, Legalities, Product Catalog, Settings
   Widget _buildLainnyaScreen(bool isOwner) {
     return Scaffold(
       appBar: AppBar(
@@ -130,7 +122,6 @@ class _MainScreenState extends State<MainScreen> {
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
-          // 1. Legalitas & Sertifikasi (Merged Halal + NIB)
           _buildMenuCard(
             icon: Icons.verified_user_rounded,
             title: 'Pusat Legalitas & Sertifikasi',
@@ -139,15 +130,12 @@ class _MainScreenState extends State<MainScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const LegalitasHubScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const LegalitasHubScreen()),
               );
             },
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 2. Customer Management (Database Pelanggan)
           _buildMenuCard(
             icon: Icons.people_alt_rounded,
             title: 'Database Pelanggan',
@@ -167,7 +155,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 3. Product / Service Catalog
           _buildMenuCard(
             icon: Icons.inventory_2_rounded,
             title: 'Katalog Produk & Layanan',
@@ -187,7 +174,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 4. POS Orders History
           _buildMenuCard(
             icon: Icons.receipt_long_rounded,
             title: 'Riwayat Struk & Order Kasir',
@@ -207,7 +193,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // 5. Settings (Owner/Manager)
           if (isOwner)
             _buildMenuCard(
               icon: Icons.settings_rounded,
@@ -347,8 +332,9 @@ class _MainScreenState extends State<MainScreen> {
                             color: isSelected
                                 ? activeColor
                                 : AppThemeColors.textSecondary,
-                            fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.normal,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
                             fontSize: 11,
                           ),
                           maxLines: 1,
@@ -366,4 +352,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-

@@ -18,7 +18,7 @@ class ExpenseListScreen extends StatefulWidget {
 
 class _ExpenseListScreenState extends State<ExpenseListScreen> {
   String _selectedSourceFilter = 'Semua';
-  String _selectedTypeFilter = 'semua'; // 'semua', 'masuk', 'keluar'
+  String _selectedTypeFilter = 'semua';
 
   @override
   void initState() {
@@ -54,7 +54,9 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
             children: [
               Text(
                 'Tambah Transaksi Baru',
-                style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.bold),
+                style: AppTypography.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -148,7 +150,10 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
           ),
           child: Icon(icon, color: color, size: 24),
         ),
-        title: Text(title, style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600)),
+        title: Text(
+          title,
+          style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(subtitle, style: AppTypography.bodySmall),
         trailing: const Icon(Icons.chevron_right),
       ),
@@ -173,10 +178,12 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
       backgroundColor: AppThemeColors.background,
       body: Column(
         children: [
-          // Filter Chips (Source: Semua, OCR, Suara, Manual)
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             child: Row(
               children: ['Semua', 'OCR', 'Suara', 'Manual'].map((filter) {
                 final isSelected = _selectedSourceFilter == filter;
@@ -189,11 +196,17 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                     child: FilterChip(
                       label: Text(filter),
                       selected: isSelected,
-                      selectedColor: AppThemeColors.primary.withValues(alpha: 0.2),
+                      selectedColor: AppThemeColors.primary.withValues(
+                        alpha: 0.2,
+                      ),
                       checkmarkColor: AppThemeColors.primary,
                       labelStyle: TextStyle(
-                        color: isSelected ? AppThemeColors.primary : AppThemeColors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? AppThemeColors.primary
+                            : AppThemeColors.textPrimary,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                         fontSize: 12,
                       ),
                       onSelected: (_) => _onSourceFilterChanged(filter),
@@ -204,13 +217,14 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
             ),
           ),
 
-          // Content
           Expanded(
             child: BlocBuilder<ExpenseCubit, ExpenseState>(
               builder: (context, state) {
                 if (state is ExpenseLoading) {
                   return const Center(
-                    child: CircularProgressIndicator(color: AppThemeColors.primary),
+                    child: CircularProgressIndicator(
+                      color: AppThemeColors.primary,
+                    ),
                   );
                 } else if (state is ExpenseError) {
                   return Center(
@@ -219,12 +233,20 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.error_outline, size: 48, color: AppThemeColors.error),
+                          const Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: AppThemeColors.error,
+                          ),
                           const SizedBox(height: AppSpacing.md),
-                          Text('Terjadi kesalahan: ${state.message}', textAlign: TextAlign.center),
+                          Text(
+                            'Terjadi kesalahan: ${state.message}',
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: AppSpacing.md),
                           ElevatedButton(
-                            onPressed: () => context.read<ExpenseCubit>().loadExpenses(),
+                            onPressed: () =>
+                                context.read<ExpenseCubit>().loadExpenses(),
                             child: const Text('Coba Lagi'),
                           ),
                         ],
@@ -234,9 +256,10 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                 } else if (state is ExpenseLoaded) {
                   var expenses = state.expenses;
 
-                  // Apply type filter if active
                   if (_selectedTypeFilter != 'semua') {
-                    expenses = expenses.where((e) => e.type == _selectedTypeFilter).toList();
+                    expenses = expenses
+                        .where((e) => e.type == _selectedTypeFilter)
+                        .toList();
                   }
 
                   int totalMasuk = 0;
@@ -249,9 +272,10 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
 
                   return Column(
                     children: [
-                      // Financial Summary Card
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
                         child: Container(
                           padding: const EdgeInsets.all(AppSpacing.md),
                           decoration: BoxDecoration(
@@ -271,7 +295,11 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                                       Icons.arrow_downward_rounded,
                                     ),
                                   ),
-                                  Container(width: 1, height: 40, color: AppThemeColors.border),
+                                  Container(
+                                    width: 1,
+                                    height: 40,
+                                    color: AppThemeColors.border,
+                                  ),
                                   Expanded(
                                     child: _buildSummaryMetric(
                                       'Pengeluaran',
@@ -280,12 +308,18 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                                       Icons.arrow_upward_rounded,
                                     ),
                                   ),
-                                  Container(width: 1, height: 40, color: AppThemeColors.border),
+                                  Container(
+                                    width: 1,
+                                    height: 40,
+                                    color: AppThemeColors.border,
+                                  ),
                                   Expanded(
                                     child: _buildSummaryMetric(
                                       'Saldo Kas',
                                       CurrencyFormatter.format(saldo),
-                                      saldo >= 0 ? AppThemeColors.primary : AppThemeColors.error,
+                                      saldo >= 0
+                                          ? AppThemeColors.primary
+                                          : AppThemeColors.error,
                                       Icons.account_balance_wallet_rounded,
                                     ),
                                   ),
@@ -297,9 +331,10 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                       ),
                       const SizedBox(height: AppSpacing.sm),
 
-                      // Type toggle chips (Semua, Masuk, Keluar)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
                         child: Row(
                           children: [
                             _buildTypeFilterChip('Semua Transaksi', 'semua'),
@@ -312,7 +347,6 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xs),
 
-                      // List View
                       Expanded(
                         child: expenses.isEmpty
                             ? Center(
@@ -322,7 +356,8 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                                     Icon(
                                       Icons.receipt_long_outlined,
                                       size: 56,
-                                      color: AppThemeColors.textSecondary.withValues(alpha: 0.4),
+                                      color: AppThemeColors.textSecondary
+                                          .withValues(alpha: 0.4),
                                     ),
                                     const SizedBox(height: AppSpacing.md),
                                     Text(
@@ -356,7 +391,8 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                                   Color sourceColor;
                                   switch (e.source) {
                                     case 'ocr':
-                                      sourceIcon = Icons.document_scanner_rounded;
+                                      sourceIcon =
+                                          Icons.document_scanner_rounded;
                                       sourceColor = AppThemeColors.primary;
                                       break;
                                     case 'voice':
@@ -369,73 +405,99 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                                   }
 
                                   return Semantics(
-                                    label: '${isMasuk ? "Pemasukan" : "Pengeluaran"} ${e.item} senilai ${CurrencyFormatter.format(e.nominal)} tanggal ${DateFormatter.formatDate(e.tanggal)}',
+                                    label:
+                                        '${isMasuk ? "Pemasukan" : "Pengeluaran"} ${e.item} senilai ${CurrencyFormatter.format(e.nominal)} tanggal ${DateFormatter.formatDate(e.tanggal)}',
                                     child: Container(
-                                      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+                                      margin: const EdgeInsets.only(
+                                        bottom: AppSpacing.xs,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: AppRadius.mdRadius,
                                         boxShadow: AppShadows.small,
                                       ),
                                       child: ListTile(
-                                        contentPadding: const EdgeInsets.symmetric(
-                                          horizontal: AppSpacing.md,
-                                          vertical: AppSpacing.xs,
-                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: AppSpacing.md,
+                                              vertical: AppSpacing.xs,
+                                            ),
                                         leading: Container(
                                           width: 44,
                                           height: 44,
                                           decoration: BoxDecoration(
-                                            color: (isMasuk ? AppThemeColors.success : AppThemeColors.error)
-                                                .withValues(alpha: 0.1),
+                                            color:
+                                                (isMasuk
+                                                        ? AppThemeColors.success
+                                                        : AppThemeColors.error)
+                                                    .withValues(alpha: 0.1),
                                             borderRadius: AppRadius.mdRadius,
                                           ),
                                           child: Icon(
-                                            isMasuk ? Icons.arrow_downward : Icons.arrow_upward,
-                                            color: isMasuk ? AppThemeColors.success : AppThemeColors.error,
+                                            isMasuk
+                                                ? Icons.arrow_downward
+                                                : Icons.arrow_upward,
+                                            color: isMasuk
+                                                ? AppThemeColors.success
+                                                : AppThemeColors.error,
                                             size: 22,
                                           ),
                                         ),
                                         title: Text(
                                           e.item,
-                                          style: AppTypography.titleSmall.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                          style: AppTypography.titleSmall
+                                              .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                         ),
                                         subtitle: Row(
                                           children: [
-                                            Icon(sourceIcon, size: 14, color: sourceColor),
+                                            Icon(
+                                              sourceIcon,
+                                              size: 14,
+                                              color: sourceColor,
+                                            ),
                                             const SizedBox(width: 4),
                                             Text(
                                               '${e.source.toUpperCase()} • ${DateFormatter.formatDateCompact(e.tanggal)}',
-                                              style: AppTypography.bodySmall.copyWith(
-                                                color: AppThemeColors.textSecondary,
-                                                fontSize: 11,
-                                              ),
+                                              style: AppTypography.bodySmall
+                                                  .copyWith(
+                                                    color: AppThemeColors
+                                                        .textSecondary,
+                                                    fontSize: 11,
+                                                  ),
                                             ),
-                                            if (e.supplier != null && e.supplier!.isNotEmpty) ...[
+                                            if (e.supplier != null &&
+                                                e.supplier!.isNotEmpty) ...[
                                               const SizedBox(width: 4),
                                               Text(
                                                 '• ${e.supplier}',
-                                                style: AppTypography.bodySmall.copyWith(
-                                                  color: AppThemeColors.textHint,
-                                                  fontSize: 11,
-                                                ),
+                                                style: AppTypography.bodySmall
+                                                    .copyWith(
+                                                      color: AppThemeColors
+                                                          .textHint,
+                                                      fontSize: 11,
+                                                    ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ],
                                           ],
                                         ),
                                         trailing: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
                                             Text(
                                               '${isMasuk ? "+" : "-"} ${CurrencyFormatter.format(e.nominal)}',
-                                              style: AppTypography.labelLarge.copyWith(
-                                                color: isMasuk ? AppThemeColors.success : AppThemeColors.error,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              style: AppTypography.labelLarge
+                                                  .copyWith(
+                                                    color: isMasuk
+                                                        ? AppThemeColors.success
+                                                        : AppThemeColors.error,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                             ),
                                           ],
                                         ),
@@ -468,7 +530,12 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     );
   }
 
-  Widget _buildSummaryMetric(String label, String value, Color color, IconData icon) {
+  Widget _buildSummaryMetric(
+    String label,
+    String value,
+    Color color,
+    IconData icon,
+  ) {
     return Column(
       children: [
         Row(

@@ -78,7 +78,6 @@ class Order extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  // Relations (loaded separately)
   final List<OrderItem>? items;
   final List<Payment>? payments;
 
@@ -193,15 +192,13 @@ class Order extends Equatable {
     );
   }
 
-  // Helper methods
   int get remainingPayment => totalPrice - paid;
   bool get isPaid => paid >= totalPrice;
   bool get hasDeposit => paid > 0 && paid < totalPrice;
 
-  // Aliases for printer service
   String get invoiceNumber => invoiceNo;
   int get subtotal => totalPrice;
-  int get discount => 0; // No discount feature yet
+  int get discount => 0;
   int get totalAmount => totalPrice;
   int get paidAmount => paid;
 
@@ -211,18 +208,16 @@ class Order extends Equatable {
     return DateTime.now().isAfter(dueDate!);
   }
 
-  // Get available next status transitions (flexible workflow)
   List<OrderStatus> getNextStatusOptions() {
     switch (status) {
       case OrderStatus.pending:
         return [OrderStatus.process];
       case OrderStatus.process:
-        // Flexible: bisa langsung Done atau lewat Ready dulu
         return [OrderStatus.ready, OrderStatus.done];
       case OrderStatus.ready:
         return [OrderStatus.done];
       case OrderStatus.done:
-        return []; // Final state
+        return [];
     }
   }
 
@@ -237,21 +232,21 @@ class Order extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        invoiceNo,
-        customerId,
-        customerName,
-        customerPhone,
-        orderDate,
-        dueDate,
-        status,
-        totalItems,
-        totalWeight,
-        totalPrice,
-        paid,
-        notes,
-        createdBy,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    invoiceNo,
+    customerId,
+    customerName,
+    customerPhone,
+    orderDate,
+    dueDate,
+    status,
+    totalItems,
+    totalWeight,
+    totalPrice,
+    paid,
+    notes,
+    createdBy,
+    createdAt,
+    updatedAt,
+  ];
 }
